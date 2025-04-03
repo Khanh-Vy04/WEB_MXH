@@ -188,7 +188,7 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `status` enum('đang chờ xử lý','đang xử lý','đã vận chuyển','đã giao','đã hủy') NOT NULL DEFAULT 'đang chờ xử lý',
   `shipping_address_id` int(11) NOT NULL,
-  `payment_id` int(11) NOT NULL,
+  `payment_id` int(11) NULL,
   `refund_status` enum('không hoàn tiền','đang chờ xử lý','chấp nhận','từ chối') NOT NULL DEFAULT 'không hoàn tiền'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -525,7 +525,8 @@ ALTER TABLE `notifications`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
   ADD KEY `orders_buyerID` (`buyer_id`),
-  ADD KEY `orders_ShippingAddress` (`shipping_address_id`);
+  ADD KEY `orders_ShippingAddress` (`shipping_address_id`),
+  ADD KEY `orders_payment_id` (`payment_id`);
 
 --
 -- Indexes for table `order_details`
@@ -878,7 +879,8 @@ ALTER TABLE `notifications`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ShippingAddress` FOREIGN KEY (`shipping_address_id`) REFERENCES `addresses` (`address_id`),
-  ADD CONSTRAINT `orders_buyerID` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `orders_buyerID` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `orders_payment_id` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`payment_id`);
 
 --
 -- Constraints for table `order_details`
