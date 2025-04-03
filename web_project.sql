@@ -883,7 +883,7 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `orders_payment_id` FOREIGN KEY (`payment_id`) REFERENCES `payments` (`payment_id`);
 
 --
--- Constraints for table `order_details`
+-- Constraints for table `orsder_details`
 --
 ALTER TABLE `order_details`
   ADD CONSTRAINT `order_details_orderID` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
