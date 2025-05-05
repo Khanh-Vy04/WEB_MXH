@@ -9,7 +9,7 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="/projectweb/admin/img/favicon.ico" rel="icon">
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,14 +21,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="/projectweb/admin/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/projectweb/admin/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="/WEB_MXH/admin/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/WEB_MXH/admin/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="/projectweb/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
-    <link href="/projectweb/admin/pages/dashboard/css/style.css" rel="stylesheet">
+    <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -195,7 +195,7 @@
                                 <a href=""class="show-all-link">Show All</a>
                             </div>
                             <div class="d-flex align-items-center border-bottom py-3">
-                                <img class="rounded-circle flex-shrink-0" src="/projectweb/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                <img class="rounded-circle flex-shrink-0" src="/WEB_MXH/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                 <div class="w-100 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-0">Jhon Doe</h6>
@@ -205,7 +205,7 @@
                                 </div>
                             </div>
                             <div class="d-flex align-items-center border-bottom py-3">
-                                <img class="rounded-circle flex-shrink-0" src="/projectweb/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                <img class="rounded-circle flex-shrink-0" src="/WEB_MXH/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                 <div class="w-100 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-0">Jhon Doe</h6>
@@ -215,7 +215,7 @@
                                 </div>
                             </div>
                             <div class="d-flex align-items-center border-bottom py-3">
-                                <img class="rounded-circle flex-shrink-0" src="/projectweb/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                <img class="rounded-circle flex-shrink-0" src="/WEB_MXH/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                 <div class="w-100 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-0">Jhon Doe</h6>
@@ -225,7 +225,7 @@
                                 </div>
                             </div>
                             <div class="d-flex align-items-center pt-3">
-                                <img class="rounded-circle flex-shrink-0" src="/projectweb/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                <img class="rounded-circle flex-shrink-0" src="/WEB_MXH/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
                                 <div class="w-100 ms-3">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h6 class="mb-0">Jhon Doe</h6>
@@ -254,17 +254,17 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/projectweb/admin/lib/chart/chart.min.js"></script>
-    <script src="/projectweb/admin/lib/easing/easing.min.js"></script>
-    <script src="/projectweb/admin/lib/waypoints/waypoints.min.js"></script>
-    <script src="/projectweb/admin/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/projectweb/admin/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/projectweb/admin/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/projectweb/admin/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/chart/chart.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/easing/easing.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/waypoints/waypoints.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/WEB_MXH/admin/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <!-- Template Javascript -->
     
-    <script src="/projectweb/admin/pages/dashboard/dashboard.js"></script>
+    <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
 </body>
 
 </html>
