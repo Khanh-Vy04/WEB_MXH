@@ -1,0 +1,500 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  background-color: #f5f5f7;
+  color: #1a1a1a;
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-space {
+  width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #e0e0e0;
+  position: fixed;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 2rem;
+  background: #f5f5f7;
+  min-height: calc(100vh - 60px); /* Trừ đi chiều cao của navbar */
+}
+
+/* Stats Cards */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon i {
+  font-size: 1.25rem;
+  color: #0f172b;
+}
+
+.stat-info h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #0f172b;
+}
+
+.stat-info p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Controls Container */
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  width: 300px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #0f172b;
+}
+
+.right-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.entries-dropdown select {
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.export-btn {
+  padding: 0.5rem 1rem;
+  background: #0f172b;
+  border: none;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: white;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.export-btn:hover {
+  background: #1a2a4a;
+}
+
+/* Table Styles */
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172b;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f9fafb;
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  color: #0f172b;
+}
+
+tr:hover {
+  background-color: #f9fafb;
+}
+
+.order-link {
+  color: #0f172b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.order-link:hover {
+  color: #1a2a4a;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.customer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #0f172b;
+  font-size: 0.875rem;
+}
+
+.customer-info .customer-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #0f172b;
+}
+
+.customer-info .customer-email {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.cancelled {
+  background: #f3f4f6;
+  color: #0f172b;
+}
+
+.status-badge.out-delivery {
+  background: #e0e7ff;
+  color: #0f172b;
+  white-space: nowrap;
+}
+
+/* Payment Method */
+.payment-method {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+.payment-method i {
+  font-size: 1rem;
+  color: #0f172b;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.payment-method i.fa-credit-card {
+  color: #0f172b;
+}
+
+.payment-method i.fa-money-bill-wave {
+  color: #0f172b;
+}
+
+.payment-method i.fa-mobile-alt {
+  color: #0f172b;
+}
+
+.payment-text {
+  font-size: 0.8rem;
+  color: #0f172b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Action Button */
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #0f172b;
+  transition: color 0.3s ease;
+}
+
+.action-btn:hover {
+  color: #1a2a4a;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.entries-info {
+  color: #0f172b;
+  font-size: 0.875rem;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: white;
+  color: #0f172b;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+  background: #f3f4f6;
+  border-color: #0f172b;
+  color: #0f172b;
+}
+
+.page-btn.active {
+  background: #0f172b;
+  color: white;
+  border-color: #0f172b;
+}
+
+/* Đảm bảo các nút có thể click */
+.page-btn,
+.action-btn,
+.export-btn,
+.dropdown-item {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Đảm bảo các form có thể submit */
+form {
+  pointer-events: auto;
+}
+
+/* Đảm bảo các input có thể tương tác */
+input[type="text"],
+input[type="checkbox"],
+select {
+  pointer-events: auto;
+}
+
+/* Đảm bảo các link có thể click */
+a {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Đảm bảo dropdown menu có thể tương tác */
+.dropdown-menu {
+  pointer-events: auto;
+  z-index: 1000;
+}
+
+/* Đảm bảo các phần tử không bị chặn */
+.layout,
+.main-content,
+.table-container,
+.pagination {
+  pointer-events: auto;
+}
+
+/* Action Dropdown */
+.action-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 120px;
+  z-index: 1000;
+  display: none;
+  border: 1px solid #e5e7eb;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #0f172b;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-item i {
+  font-size: 0.875rem;
+  width: 16px;
+}
+
+.dropdown-item.text-danger {
+  color: #dc2626;
+}
+
+.dropdown-item.text-danger:hover {
+  background-color: #fef2f2;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-space {
+    width: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+
+  .controls-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
+  .right-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .customer-info .customer-email {
+    display: none;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .pagination-controls {
+    justify-content: center;
+  }
+}
