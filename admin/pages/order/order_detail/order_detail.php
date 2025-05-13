@@ -1,182 +1,211 @@
-<?php $currentPage = 'order_detail'; ?>
+<?php
+$currentPage = 'orderdetail';
+?>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết đơn hàng</title>
-    <!-- Bootstrap CSS -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Detail</title>
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Template Stylesheet -->
-    <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Order Detail CSS -->
-    <link rel="stylesheet" href="order_detail.css">
+    <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="order_detail.css" />
+    <style>
+        .bg-white-box {
+            background: #fff !important;
+            color: #222;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .section-title {
+            color: #222 !important;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-    <!-- Sidebar Start -->
-    <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-secondary navbar-dark">
-            <a href="/WEB_MXH/admin/pages/dashboard/dashboard.php" class="navbar-brand mx-4 mb-3">
-                <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>AuraDisc</h3>
-            </a>
-            <div class="d-flex align-items-center ms-4 mb-4">
-                <div class="ms-3">
-                    <h6 class="mb-0">ADMIN</h6>
-                </div>
-            </div>
-            <div class="navbar-nav w-100">
-                <a href="/WEB_MXH/admin/pages/dashboard/dashboard.php" class="nav-item nav-link <?php if(isset($currentPage) && $currentPage == 'dashboard') echo 'active'; ?>">
-                    <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-                <a href="/WEB_MXH/admin/pages/product/product_list/product_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'product') === 0) echo 'active'; ?>">
-                    <i class="fa fa-shopping-basket me-2"></i>Product List</a>
-                <a href="/WEB_MXH/admin/pages/order/order_detail/order_detail.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'order') === 0) echo 'active'; ?>">
-                    <i class="fa fa-receipt me-2"></i>Order List</a>
-                <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'customer') === 0) echo 'active'; ?>" ><i class="fa fa-user-astronaut me-2"></i>Customer List</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && strpos($currentPage, 'support') === 0) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-people-carry me-2"></i>Customer Support</a>
-                    <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && strpos($currentPage, 'support') === 0) echo 'show'; ?>">
-                        <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'feedbacks') echo 'active'; ?>">Feedbacks</a>
-                        <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'messages') echo 'active'; ?>">Messages</a>                        
-                    </div>
-                </div>
-                <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'refund') === 0) echo 'active'; ?>"><i class="fa fa-hand-holding-usd me-2"></i>Refund List</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && strpos($currentPage, 'setting') === 0) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-users-cog me-2"></i>Setting</a>
-                    <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && strpos($currentPage, 'setting') === 0) echo 'show'; ?>">
-                        <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'notification') echo 'active'; ?>">Notification</a>
-                        <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'voucher') echo 'active'; ?>">Voucher</a>
-                    </div>
-                </div>
-                <a href="#" class="nav-item nav-link"><i class="fa fa-sign-out-alt me-2"></i>Log Out</a>
-            </div>
-        </nav>
-    </div>
-    <!-- Sidebar End -->
+<div class="container-fluid position-relative d-flex p-0">
+    <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
     <div class="content">
-    <div class="container">
-        <header class="header">
-            <div class="header-actions">
-                <button class="btn-delete">Huỷ đơn</button>
-                <div class="user-avatar">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
-                </div>
-            </div>
-        </header>
-        <main class="main-content">
-            <section class="order-info">
-                <div class="order-title">
-                    <h2>Đơn hàng #10001 <span class="badge paid">Đã thanh toán</span> <span class="badge ready">Sẵn sàng giao</span></h2>
-                    <div class="order-date">Ngày đặt: 12/06/2024, 14:30</div>
-                </div>
-                <div class="order-details">
-                    <h3>Chi tiết sản phẩm</h3>
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th>Sản phẩm</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Tổng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src="https://via.placeholder.com/40x40?text=Vinyl1" class="product-img">
-                                    <div>
-                                        <strong>Đĩa than: The Beatles - Abbey Road</strong><br>
-                                        Định dạng: Vinyl, 180g
-                                    </div>
-                                </td>
-                                <td>650.000đ</td>
-                                <td>1</td>
-                                <td>650.000đ</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="https://via.placeholder.com/40x40?text=Vinyl2" class="product-img">
-                                    <div>
-                                        <strong>Đĩa than: Pink Floyd - The Wall</strong><br>
-                                        Định dạng: Vinyl, 2LP
-                                    </div>
-                                </td>
-                                <td>800.000đ</td>
-                                <td>2</td>
-                                <td>1.600.000đ</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="order-summary">
-                        <div>Tạm tính: <span>2.250.000đ</span></div>
-                        <div>Giảm giá: <span>0đ</span></div>
-                        <div>Thuế: <span>0đ</span></div>
-                        <div class="total">Tổng cộng: <span>2.250.000đ</span></div>
-                    </div>
-                </div>
-            </section>
-            <aside class="order-side">
-                <div class="card customer-details">
-                    <h4>Khách hàng</h4>
-                    <div class="user-info">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
-                        <div>
-                            <div><strong>Nguyễn Văn A</strong></div>
-                            <div>Mã KH: #C1001</div>
-                            <div>Đơn đã mua: 5</div>
+        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <!-- Order Details -->
+                <div class="col-lg-8">
+                    <div class="bg-white-box rounded p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 section-title">Order details</h5>
+                            <a href="#" class="text-primary">Edit</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0" style="background: #fff; border-radius: 8px; overflow: hidden;">
+                                <thead>
+                                    <tr style="background: #f8f9fa;">
+                                        <th scope="col" class="text-center" style="width:40px;"><input type="checkbox"></th>
+                                        <th scope="col">PRODUCTS</th>
+                                        <th scope="col" class="text-center">PRICE</th>
+                                        <th scope="col" class="text-center">QTY</th>
+                                        <th scope="col" class="text-center">TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"><input type="checkbox"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="Abbey Road" width="40" class="rounded me-2">
+                                                <div>
+                                                    <div style="font-weight:600;">The Beatles - Abbey Road</div>
+                                                    <small class="text-muted">Vinyl, 180g, 2019 Remaster</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">650,000₫</td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-center">650,000₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"><input type="checkbox"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="Kind of Blue" width="40" class="rounded me-2">
+                                                <div>
+                                                    <div style="font-weight:600;">Miles Davis - Kind of Blue</div>
+                                                    <small class="text-muted">Vinyl, 180g, Jazz Classic</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">720,000₫</td>
+                                        <td class="text-center">2</td>
+                                        <td class="text-center">1,440,000₫</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"><input type="checkbox"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="The Wall" width="40" class="rounded me-2">
+                                                <div>
+                                                    <div style="font-weight:600;">Pink Floyd - The Wall</div>
+                                                    <small class="text-muted">Vinyl, 2LP, Gatefold</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">800,000₫</td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-center">800,000₫</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex flex-column align-items-end mt-4">
+                            <div>Subtotal: <b>2,890,000₫</b></div>
+                            <div>Discount: <b>0₫</b></div>
+                            <div>Tax: <b>20,000₫</b></div>
+                            <div>Total: <b>2,910,000₫</b></div>
                         </div>
                     </div>
-                    <div class="contact-info">
-                        <div>Email: nguyenvana@email.com</div>
-                        <div>Điện thoại: 0901 234 567</div>
+                    <!-- Shipping Activity -->
+                    <div class="bg-white-box rounded p-4">
+                        <h5 class="mb-3 section-title">Shipping activity</h5>
+                        <ul class="timeline">
+                            <li class="timeline-item active">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Order was placed (Order ID: #10001)</b>
+                                    <div>Your order for vinyl records has been placed successfully</div>
+                                    <small class="text-muted">Monday 09:00 AM</small>
+                                </div>
+                            </li>
+                            <li class="timeline-item active">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Pick-up</b>
+                                    <div>Pick-up scheduled with courier</div>
+                                    <small class="text-muted">Monday 15:00 PM</small>
+                                </div>
+                            </li>
+                            <li class="timeline-item active">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Dispatched</b>
+                                    <div>Records picked up by courier</div>
+                                    <small class="text-muted">Tuesday 10:00 AM</small>
+                                </div>
+                            </li>
+                            <li class="timeline-item active">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Package arrived</b>
+                                    <div>Arrived at Ho Chi Minh City sorting center</div>
+                                    <small class="text-muted">Tuesday 18:00 PM</small>
+                                </div>
+                            </li>
+                            <li class="timeline-item active">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Dispatched for delivery</b>
+                                    <div>Out for delivery to customer</div>
+                                    <small class="text-muted">Wednesday 08:00 AM</small>
+                                </div>
+                            </li>
+                            <li class="timeline-item">
+                                <span class="timeline-point"></span>
+                                <div class="timeline-content">
+                                    <b>Delivery</b>
+                                    <div>Expected delivery by today</div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="card shipping-address">
-                    <h4>Địa chỉ giao hàng</h4>
-                    <div>123 Đường Lê Lợi, Quận 1, TP.HCM</div>
+                <!-- Customer & Address Details -->
+                <div class="col-lg-4">
+                    <div class="bg-white-box rounded p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 section-title">Customer details</h5>
+                            <a href="#" class="text-primary">Edit</a>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar" class="rounded-circle me-2" width="40">
+                            <div>
+                                <div><b>Nguyen Van A</b></div>
+                                <div class="text-muted small">Customer ID: #20001</div>
+                                <div class="text-success small"><i class="fa fa-check-circle"></i> 5 Orders</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="fw-bold">Contact info</div>
+                            <div>Email: <a href="mailto:nguyenvana@gmail.com">nguyenvana@gmail.com</a></div>
+                            <div>Mobile: <a href="tel:+84901234567">+84 901 234 567</a></div>
+                        </div>
+                    </div>
+                    <div class="bg-white-box rounded p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 section-title">Shipping address</h5>
+                            <a href="#" class="text-primary">Edit</a>
+                        </div>
+                        <div>123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam</div>
+                    </div>
+                    <div class="bg-white-box rounded p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 section-title">Billing address</h5>
+                            <a href="#" class="text-primary">Edit</a>
+                        </div>
+                        <div>123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam</div>
+                        <div class="mt-2">
+                            <div class="fw-bold">Visa</div>
+                            <div>Card Number: ******1234</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card billing-address">
-                    <h4>Địa chỉ thanh toán</h4>
-                    <div>123 Đường Lê Lợi, Quận 1, TP.HCM</div>
-                </div>
-                <div class="card payment-method">
-                    <h4>Phương thức thanh toán</h4>
-                    <div>Thẻ Visa **** 1234</div>
-                </div>
-            </aside>
-        </main>
-        <section class="shipping-activity">
-            <h3>Hoạt động giao hàng</h3>
-            <ul class="activity-list">
-                <li>
-                    <span class="dot active"></span>
-                    Đơn hàng đã được đặt thành công <span class="activity-time">12/06/2024 14:30</span>
-                </li>
-                <li>
-                    <span class="dot"></span>
-                    Đang chuẩn bị hàng <span class="activity-time">12/06/2024 15:00</span>
-                </li>
-                <li>
-                    <span class="dot"></span>
-                    Đã bàn giao cho đơn vị vận chuyển <span class="activity-time">13/06/2024 09:00</span>
-                </li>
-                <li>
-                    <span class="dot"></span>
-                    Đang giao hàng <span class="activity-time">13/06/2024 15:00</span>
-                </li>
-                <li>
-                    <span class="dot"></span>
-                    Đã giao hàng thành công <span class="activity-time">14/06/2024 10:00</span>
-                </li>
-            </ul>
-        </section>
+            </div>
+        </div>
+        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
     </div>
-    </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Dashboard JS (nếu có) -->
-    <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
 </body>
 </html>
