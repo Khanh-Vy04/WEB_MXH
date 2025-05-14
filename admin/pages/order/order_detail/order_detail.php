@@ -1,28 +1,140 @@
 <?php
-$currentPage = 'orderdetail';
+$currentPage = 'order';
+
+// Get order ID from URL
+$order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// TODO: Replace with actual database query
+// For now using mock data
+$orderDetails = [
+    [
+        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
+        'name' => 'The Beatles - Abbey Road',
+        'description' => 'Vinyl, 180g, 2019 Remaster',
+        'price' => 650000,
+        'quantity' => 1,
+        'total' => 650000
+    ],
+    [
+        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
+        'name' => 'Miles Davis - Kind of Blue',
+        'description' => 'Vinyl, 180g, Jazz Classic',
+        'price' => 720000,
+        'quantity' => 2,
+        'total' => 1440000
+    ],
+    [
+        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
+        'name' => 'Pink Floyd - The Wall',
+        'description' => 'Vinyl, 2LP, Gatefold',
+        'price' => 800000,
+        'quantity' => 1,
+        'total' => 800000
+    ],
+];
+
+// Data giả cho tổng tiền
+$orderSummary = [
+    'subtotal' => 2890000,
+    'discount' => 0,
+    'tax' => 20000,
+    'total' => 2910000
+];
+
+// Data giả cho khách hàng
+$customer = [
+    'avatar' => 'https://randomuser.me/api/portraits/men/32.jpg',
+    'name' => 'Nguyen Van A',
+    'customer_id' => '20001',
+    'orders_count' => 5,
+    'email' => 'nguyenvana@gmail.com',
+    'phone' => '+84 901 234 567'
+];
+
+// Data giả cho địa chỉ
+$shipping_address = "123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam";
+$billing_address = "123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam";
+$payment = [
+    'method' => 'Visa',
+    'card_number' => '******1234'
+];
+
+// Data giả cho shipping activity
+$orderTracking = [
+    [
+        'status' => 'Order was placed (Order ID: #' . $order_id . ')',
+        'desc' => 'Your order for vinyl records has been placed successfully',
+        'time' => 'Monday 09:00 AM',
+        'active' => true
+    ],
+    [
+        'status' => 'Pick-up',
+        'desc' => 'Pick-up scheduled with courier',
+        'time' => 'Monday 15:00 PM',
+        'active' => true
+    ],
+    [
+        'status' => 'Dispatched',
+        'desc' => 'Records picked up by courier',
+        'time' => 'Tuesday 10:00 AM',
+        'active' => true
+    ],
+    [
+        'status' => 'Package arrived',
+        'desc' => 'Arrived at Ho Chi Minh City sorting center',
+        'time' => 'Tuesday 18:00 PM',
+        'active' => true
+    ],
+    [
+        'status' => 'Dispatched for delivery',
+        'desc' => 'Out for delivery to customer',
+        'time' => 'Wednesday 08:00 AM',
+        'active' => true
+    ],
+    [
+        'status' => 'Delivery',
+        'desc' => 'Expected delivery by today',
+        'time' => '',
+        'active' => false
+    ],
+];
+
+// Add back button to return to order list
+$backButton = '<a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary mb-3">
+    <i class="fas fa-arrow-left"></i> Back to Order List
+</a>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
     <title>Order Detail</title>
-    <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
+    
+    <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="/WEB_MXH/admin/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/WEB_MXH/admin/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="order_detail.css" />
-    <style>
-        .bg-white-box {
-            background: #fff !important;
-            color: #222;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-        .section-title {
-            color: #222 !important;
-            font-weight: 600;
-        }
-    </style>
+    <link rel="stylesheet" href="/WEB_MXH/admin/pages/order/order_detail/order_detail.css" />
 </head>
 <body>
 <div class="container-fluid position-relative d-flex p-0">
@@ -30,6 +142,7 @@ $currentPage = 'orderdetail';
     <div class="content">
         <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
         <div class="container-fluid pt-4 px-4">
+            <?php echo $backButton; ?>
             <div class="row g-4">
                 <!-- Order Details -->
                 <div class="col-lg-8">
@@ -39,9 +152,9 @@ $currentPage = 'orderdetail';
                             <a href="#" class="text-primary">Edit</a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table align-middle mb-0" style="background: #fff; border-radius: 8px; overflow: hidden;">
+                            <table class="table align-middle mb-0 order-table-bg">
                                 <thead>
-                                    <tr style="background: #f8f9fa;">
+                                    <tr class="order-table-header">
                                         <th scope="col" class="text-center" style="width:40px;"><input type="checkbox"></th>
                                         <th scope="col">PRODUCTS</th>
                                         <th scope="col" class="text-center">PRICE</th>
@@ -50,51 +163,23 @@ $currentPage = 'orderdetail';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="text-center"><input type="checkbox"></td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="Abbey Road" width="40" class="rounded me-2">
-                                                <div>
-                                                    <div style="font-weight:600;">The Beatles - Abbey Road</div>
-                                                    <small class="text-muted">Vinyl, 180g, 2019 Remaster</small>
+                                    <?php foreach ($orderDetails as $item): ?>
+                                        <tr>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <img src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" width="40" class="rounded me-2">
+                                                    <div>
+                                                        <div class="product-name-bold"><?= htmlspecialchars($item['name']) ?></div>
+                                                        <small class="text-muted"><?= htmlspecialchars($item['description']) ?></small>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">650,000₫</td>
-                                        <td class="text-center">1</td>
-                                        <td class="text-center">650,000₫</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center"><input type="checkbox"></td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="Kind of Blue" width="40" class="rounded me-2">
-                                                <div>
-                                                    <div style="font-weight:600;">Miles Davis - Kind of Blue</div>
-                                                    <small class="text-muted">Vinyl, 180g, Jazz Classic</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">720,000₫</td>
-                                        <td class="text-center">2</td>
-                                        <td class="text-center">1,440,000₫</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center"><input type="checkbox"></td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" alt="The Wall" width="40" class="rounded me-2">
-                                                <div>
-                                                    <div style="font-weight:600;">Pink Floyd - The Wall</div>
-                                                    <small class="text-muted">Vinyl, 2LP, Gatefold</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">800,000₫</td>
-                                        <td class="text-center">1</td>
-                                        <td class="text-center">800,000₫</td>
-                                    </tr>
+                                            </td>
+                                            <td class="text-center"><?= number_format($item['price']) ?>₫</td>
+                                            <td class="text-center"><?= $item['quantity'] ?></td>
+                                            <td class="text-center"><?= number_format($item['total']) ?>₫</td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -107,55 +192,18 @@ $currentPage = 'orderdetail';
                     </div>
                     <!-- Shipping Activity -->
                     <div class="bg-white-box rounded p-4">
-                        <h5 class="mb-3 section-title">Shipping activity</h5>
+                        <h5 class="mb-3 section-title">Order Tracking</h5>
                         <ul class="timeline">
-                            <li class="timeline-item active">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Order was placed (Order ID: #10001)</b>
-                                    <div>Your order for vinyl records has been placed successfully</div>
-                                    <small class="text-muted">Monday 09:00 AM</small>
-                                </div>
-                            </li>
-                            <li class="timeline-item active">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Pick-up</b>
-                                    <div>Pick-up scheduled with courier</div>
-                                    <small class="text-muted">Monday 15:00 PM</small>
-                                </div>
-                            </li>
-                            <li class="timeline-item active">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Dispatched</b>
-                                    <div>Records picked up by courier</div>
-                                    <small class="text-muted">Tuesday 10:00 AM</small>
-                                </div>
-                            </li>
-                            <li class="timeline-item active">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Package arrived</b>
-                                    <div>Arrived at Ho Chi Minh City sorting center</div>
-                                    <small class="text-muted">Tuesday 18:00 PM</small>
-                                </div>
-                            </li>
-                            <li class="timeline-item active">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Dispatched for delivery</b>
-                                    <div>Out for delivery to customer</div>
-                                    <small class="text-muted">Wednesday 08:00 AM</small>
-                                </div>
-                            </li>
-                            <li class="timeline-item">
-                                <span class="timeline-point"></span>
-                                <div class="timeline-content">
-                                    <b>Delivery</b>
-                                    <div>Expected delivery by today</div>
-                                </div>
-                            </li>
+                            <?php foreach ($orderTracking as $item): ?>
+                                <li class="timeline-item <?= $item['active'] ? 'active' : '' ?>">
+                                    <span class="timeline-point"></span>
+                                    <div class="timeline-content">
+                                        <b><?= htmlspecialchars($item['status']) ?></b>
+                                        <div><?= htmlspecialchars($item['desc']) ?></div>
+                                        <small class="text-muted"><?= htmlspecialchars($item['time']) ?></small>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
                         </ul>
                     </div>
                 </div>
@@ -167,17 +215,17 @@ $currentPage = 'orderdetail';
                             <a href="#" class="text-primary">Edit</a>
                         </div>
                         <div class="d-flex align-items-center mb-2">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="avatar" class="rounded-circle me-2" width="40">
+                            <img src="<?= htmlspecialchars($customer['avatar']) ?>" alt="avatar" class="rounded-circle me-2" width="40">
                             <div>
-                                <div><b>Nguyen Van A</b></div>
-                                <div class="text-muted small">Customer ID: #20001</div>
-                                <div class="text-success small"><i class="fa fa-check-circle"></i> 5 Orders</div>
+                                <div><b><?= htmlspecialchars($customer['name']) ?></b></div>
+                                <div class="text-muted small">Customer ID: #<?= htmlspecialchars($customer['customer_id']) ?></div>
+                                <div class="text-success small"><i class="fa fa-check-circle"></i> <?= htmlspecialchars($customer['orders_count']) ?> Orders</div>
                             </div>
                         </div>
                         <div class="mb-2">
                             <div class="fw-bold">Contact info</div>
-                            <div>Email: <a href="mailto:nguyenvana@gmail.com">nguyenvana@gmail.com</a></div>
-                            <div>Mobile: <a href="tel:+84901234567">+84 901 234 567</a></div>
+                            <div>Email: <a href="mailto:<?= htmlspecialchars($customer['email']) ?>"><?= htmlspecialchars($customer['email']) ?></a></div>
+                            <div>Mobile: <a href="tel:<?= htmlspecialchars($customer['phone']) ?>"><?= htmlspecialchars($customer['phone']) ?></a></div>
                         </div>
                     </div>
                     <div class="bg-white-box rounded p-4 mb-4">
@@ -185,17 +233,17 @@ $currentPage = 'orderdetail';
                             <h5 class="mb-0 section-title">Shipping address</h5>
                             <a href="#" class="text-primary">Edit</a>
                         </div>
-                        <div>123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam</div>
+                        <div><?= htmlspecialchars($shipping_address) ?></div>
                     </div>
                     <div class="bg-white-box rounded p-4 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0 section-title">Billing address</h5>
                             <a href="#" class="text-primary">Edit</a>
                         </div>
-                        <div>123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam</div>
+                        <div><?= htmlspecialchars($billing_address) ?></div>
                         <div class="mt-2">
                             <div class="fw-bold">Visa</div>
-                            <div>Card Number: ******1234</div>
+                            <div>Card Number: <?= htmlspecialchars($payment['card_number']) ?></div>
                         </div>
                     </div>
                 </div>

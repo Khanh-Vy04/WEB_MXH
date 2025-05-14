@@ -1,5 +1,5 @@
 <?php
-$currentPage = 'productlist';
+$currentPage = 'product';
 // Dữ liệu mẫu sản phẩm đĩa than
 $products = [
     [
@@ -224,9 +224,9 @@ $rowsPerPage = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
 $rowsPerPage = in_array($rowsPerPage, [3, 10, 25, 50, 100]) ? $rowsPerPage : 10;
 $totalRows = count($filteredProducts);
 $totalPages = ceil($totalRows / $rowsPerPage);
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$currentPage = max(1, min($currentPage, $totalPages));
-$start = ($currentPage - 1) * $rowsPerPage;
+$currentPageNumber = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPageNumber = max(1, min($currentPageNumber, $totalPages));
+$start = ($currentPageNumber - 1) * $rowsPerPage;
 $end = min($start + $rowsPerPage, $totalRows);
 $currentPageProducts = array_slice($filteredProducts, $start, $rowsPerPage);
 
@@ -242,6 +242,7 @@ function getUrlWithParams($params) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Product List</title>
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -364,18 +365,18 @@ function getUrlWithParams($params) {
             <div class="pagination-bar">
                 <span class="entries-info">Showing <?php echo $start + 1; ?> to <?php echo $end; ?> of <?php echo $totalRows; ?> entries</span>
                 <div class="pagination-controls">
-                    <?php if ($currentPage > 1): ?>
-                    <a href="<?php echo getUrlWithParams(['page' => $currentPage - 1]); ?>" class="page-btn">
+                    <?php if ($currentPageNumber > 1): ?>
+                    <a href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>" class="page-btn">
                         <i class="fas fa-chevron-left"></i>
                     </a>
                     <?php endif; ?>
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="<?php echo getUrlWithParams(['page' => $i]); ?>" class="page-btn <?php echo $i === $currentPage ? 'active' : ''; ?>">
+                    <a href="<?php echo getUrlWithParams(['page' => $i]); ?>" class="page-btn <?php echo $i === $currentPageNumber ? 'active' : ''; ?>">
                         <?php echo $i; ?>
                     </a>
                     <?php endfor; ?>
-                    <?php if ($currentPage < $totalPages): ?>
-                    <a href="<?php echo getUrlWithParams(['page' => $currentPage + 1]); ?>" class="page-btn">
+                    <?php if ($currentPageNumber < $totalPages): ?>
+                    <a href="<?php echo getUrlWithParams(['page' => $currentPageNumber + 1]); ?>" class="page-btn">
                         <i class="fas fa-chevron-right"></i>
                     </a>
                     <?php endif; ?>

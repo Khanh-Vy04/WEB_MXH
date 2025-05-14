@@ -1,5 +1,5 @@
 <?php
-$currentPage = 'orderlist';
+$currentPage = 'order';
 // Mock data - Trong thực tế sẽ lấy từ database
 $orders = [
     [
@@ -129,23 +129,17 @@ if ($search) {
 // Xử lý phân trang
 $totalRows = count($orders);
 $totalPages = ceil($totalRows / $rowsPerPage);
-
-// Lấy trang hiện tại từ URL
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$currentPage = max(1, min($currentPage, $totalPages)); // Đảm bảo trang hợp lệ
-
-// Tính toán vị trí bắt đầu và kết thúc
-$start = ($currentPage - 1) * $rowsPerPage;
+$currentPageNumber = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPageNumber = max(1, min($currentPageNumber, $totalPages));
+$start = ($currentPageNumber - 1) * $rowsPerPage;
 $end = min($start + $rowsPerPage, $totalRows);
-
-// Lấy dữ liệu cho trang hiện tại
 $currentPageOrders = array_slice($orders, $start, $rowsPerPage);
 
 // Debug thông tin
 error_log("Total Rows: " . $totalRows);
 error_log("Rows Per Page: " . $rowsPerPage);
 error_log("Total Pages: " . $totalPages);
-error_log("Current Page: " . $currentPage);
+error_log("Current Page: " . $currentPageNumber);
 error_log("Start: " . $start);
 error_log("End: " . $end);
 
@@ -188,8 +182,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Order List</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
-    <!-- Bootstrap & FontAwesome -->
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
+        <!-- Bootstrap & FontAwesome -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -331,7 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <i class="fas fa-ellipsis-v"></i>
                       </button>
                       <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item">
+                        <a href="/WEB_MXH/admin/pages/order/order_detail/order_detail.php?id=<?php echo $order['id']; ?>" class="dropdown-item">
                           <i class="fas fa-eye"></i>
                           View
                         </a>
@@ -356,20 +350,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="pagination">
             <span class="entries-info">Showing <?php echo $start + 1; ?> to <?php echo $end; ?> of <?php echo $totalRows; ?> entries</span>
             <div class="pagination-controls">
-              <?php if ($currentPage > 1): ?>
-              <a href="<?php echo getUrlWithParams(['page' => $currentPage - 1]); ?>" class="page-btn">
+              <?php if ($currentPageNumber > 1): ?>
+              <a href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>" class="page-btn">
                 <i class="fas fa-chevron-left"></i>
               </a>
               <?php endif; ?>
 
               <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-              <a href="<?php echo getUrlWithParams(['page' => $i]); ?>" class="page-btn <?php echo $i === $currentPage ? 'active' : ''; ?>">
+              <a href="<?php echo getUrlWithParams(['page' => $i]); ?>" class="page-btn <?php echo $i === $currentPageNumber ? 'active' : ''; ?>">
                 <?php echo $i; ?>
               </a>
               <?php endfor; ?>
 
-              <?php if ($currentPage < $totalPages): ?>
-              <a href="<?php echo getUrlWithParams(['page' => $currentPage + 1]); ?>" class="page-btn">
+              <?php if ($currentPageNumber < $totalPages): ?>
+              <a href="<?php echo getUrlWithParams(['page' => $currentPageNumber + 1]); ?>" class="page-btn">
                 <i class="fas fa-chevron-right"></i>
               </a>
               <?php endif; ?>

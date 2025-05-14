@@ -12,14 +12,14 @@
                 <div class="navbar-nav w-100">
                     <a href="/WEB_MXH/admin/pages/dashboard/dashboard.php" class="nav-item nav-link <?php if(isset($currentPage) && $currentPage == 'dashboard') echo 'active'; ?>">
                         <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>                    
-                    <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'product') === 0) echo 'active'; ?>"><i class="fa fa-shopping-basket me-2"></i>Product List</a>
-                    <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'order') === 0) echo 'active'; ?>"><i class="fa fa-receipt me-2"></i>Order List</a>
-                    <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'customer') === 0) echo 'active'; ?>" ><i class="fa fa-user-astronaut me-2"></i>Customer List</a>
+                    <a href="/WEB_MXH/admin/pages/product/product_list/product_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'product') === 0) echo 'active'; ?>"><i class="fa fa-shopping-basket me-2"></i>Product List</a>
+                    <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'order') === 0) echo 'active'; ?>"><i class="fa fa-receipt me-2"></i>Order List</a>
+                    <a href="/WEB_MXH/admin/pages/customer/all_customer/all_customer.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'customer') === 0) echo 'active'; ?>" ><i class="fa fa-user-astronaut me-2"></i>Customer List</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && strpos($currentPage, 'support') === 0) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-people-carry me-2"></i>Customer Support</a>
-                        <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && strpos($currentPage, 'support') === 0) echo 'show'; ?>">
-                            <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'feedbacks') echo 'active'; ?>">Feedbacks</a>
-                            <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'messages') echo 'active'; ?>">Messages</a>                        
+                        <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && (in_array($currentPage, ['feedbacks', 'messages']) || strpos($currentPage, 'support') === 0)) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-people-carry me-2"></i>Customer Support</a>
+                        <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && (in_array($currentPage, ['feedbacks', 'messages']) || strpos($currentPage, 'support') === 0)) echo 'show'; ?>">
+                            <a href="/WEB_MXH/admin/pages/customer_support/feedback/feedback.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'feedbacks') echo 'active'; ?>">Feedbacks</a>
+                            <a href="/WEB_MXH/admin/pages/customer_support/messages/messages.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'messages') echo 'active'; ?>">Messages</a>                        
                         </div>
                     </div>
                     <a href="#" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'refund') === 0) echo 'active'; ?>"><i class="fa fa-hand-holding-usd me-2"></i>Refund List</a>

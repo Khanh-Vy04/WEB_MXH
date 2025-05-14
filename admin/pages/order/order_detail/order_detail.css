@@ -1,3 +1,12 @@
+.bg-white-box {
+  background: #fff !important;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.section-title {
+  color: #222 !important;
+  font-weight: 600;
+}
 /* Timeline shipping activity style */
 .timeline {
   position: relative;
@@ -61,4 +70,39 @@
   .timeline-item { min-height: 40px; }
   .timeline-point { width: 16px; height: 16px; left: -2px; }
   .timeline-item:not(:last-child):after, .timeline-item:last-child:after { left: 6px; }
+}
+.order-table-bg {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.order-table-header {
+  background: #f8f9fa;
+}
+.product-name-bold {
+  font-weight: 600;
+}
+
+/* Back button style */
+.btn-primary {
+    background-color: #deccca !important;
+    color: #412d3b !important;
+    border: none !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #412d3b !important;
+    color: #deccca !important;
+    transform: translateX(-5px);
+}
+
+.btn-primary i {
+    font-size: 14px;
+    font-weight: bold !important;
 }

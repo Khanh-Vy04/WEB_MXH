@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Customer List - AuraDisc Admin</title>
+    <title>Customer List</title>
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap & FontAwesome -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
