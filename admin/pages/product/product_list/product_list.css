@@ -8,7 +8,7 @@
 
 .filter-bar {
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1.5px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
   border-radius: 18px;
   padding: 1.1rem 1.5rem 1.2rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -58,7 +58,7 @@
   border-radius: 16px;
   padding: 1.2rem 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 1.5px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
   gap: 1.5rem;
 }
 
@@ -142,7 +142,8 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
 }
-th, td {
+th,
+td {
   text-align: center;
   vertical-align: middle;
   padding: 1rem;
@@ -217,7 +218,7 @@ td.product-cell {
   align-items: center;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.12), 0 1.5px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
   padding: 1.2rem 1.5rem;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
@@ -247,7 +248,8 @@ td.product-cell {
   cursor: pointer;
   text-decoration: none;
 }
-.page-btn.active, .page-btn:active {
+.page-btn.active,
+.page-btn:active {
   background: #111827;
   color: #fff;
   border-color: #111827;
@@ -256,7 +258,55 @@ td.product-cell {
   background: #f3f4f6;
 }
 
-.table-container, .product-action-bar, .pagination-bar, .filter-bar {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1.5px 4px rgba(0,0,0,0.04);
+.table-container,
+.product-action-bar,
+.pagination-bar,
+.filter-bar {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
   border-radius: 18px;
 }
+
+/* Dropdown menu styles */
+.navbar-nav .dropdown-menu {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.navbar-nav .dropdown-menu.show {
+  display: block !important;
+}
+
+.navbar-nav .dropdown-item {
+  padding: 8px 16px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+}
+
+.navbar-nav .dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.navbar-nav .dropdown-item.active {
+  background-color: #e9ecef;
+}
+
+/* Ensure dropdown toggle is clickable */
+.nav-link.dropdown-toggle {
+  cursor: pointer;
+  position: relative;
+}
+
+/* Ensure dropdown menu is visible when parent is active */
+.nav-item.dropdown.active .dropdown-menu {
+  display: block !important;
+}
+
+/* Override any conflicting styles */

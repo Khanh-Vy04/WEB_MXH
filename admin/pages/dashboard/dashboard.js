@@ -374,3 +374,24 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== AUTO UPDATE =====
 // Cập nhật số liệu mỗi 5 phút
 setInterval(updateDashboardStats, 5 * 60 * 1000);
+
+// Handle sidebar dropdowns
+$(document).ready(function() {
+    // Handle sidebar dropdowns
+    $('.sidebar .nav-link.dropdown-toggle').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).next('.dropdown-menu').toggleClass('show');
+        $(this).attr('aria-expanded', function(i, attr) {
+            return attr === 'true' ? 'false' : 'true';
+        });
+    });
+
+    // Close sidebar dropdowns when clicking outside
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.nav-item.dropdown').length) {
+            $('.sidebar .dropdown-menu').removeClass('show');
+            $('.sidebar .dropdown-toggle').attr('aria-expanded', 'false');
+        }
+    });
+});

@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Order List</title>
     <!-- Favicon -->
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
-        <!-- Bootstrap & FontAwesome -->
+    <!-- Bootstrap & FontAwesome -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -390,6 +390,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Template Javascript -->
     <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+    <script src="order_list.js"></script>
 
     <!-- Custom JavaScript for Order List -->
     <script>
@@ -421,25 +422,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           checkboxes.forEach(checkbox => {
             checkbox.checked = this.checked;
           });
-        });
-
-        // Handle navbar dropdowns
-        const dropdownToggles = document.querySelectorAll('.nav-link.dropdown-toggle');
-        dropdownToggles.forEach(toggle => {
-          toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            const dropdown = this.nextElementSibling;
-            dropdown.classList.toggle('show');
-          });
-        });
-
-        // Close navbar dropdowns when clicking outside
-        document.addEventListener('click', function(e) {
-          if (!e.target.matches('.nav-link.dropdown-toggle')) {
-            document.querySelectorAll('.navbar-nav .dropdown-menu.show').forEach(dropdown => {
-              dropdown.classList.remove('show');
-            });
-          }
         });
       });
     </script>
