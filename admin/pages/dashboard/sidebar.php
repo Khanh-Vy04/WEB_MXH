@@ -20,13 +20,13 @@
                         <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && (in_array($currentPage, ['feedbacks', 'messages']) || strpos($currentPage, 'support') === 0)) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-people-carry me-2"></i>Customer Support</a>
                         <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && (in_array($currentPage, ['feedbacks', 'messages']) || strpos($currentPage, 'support') === 0)) echo 'show'; ?>">
                             <a href="/WEB_MXH/admin/pages/customer_support/feedback/feedback.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'feedbacks') echo 'active'; ?>">Feedbacks</a>
-                            <a href="/WEB_MXH/admin/pages/customer_support/messages/messages.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'messages') echo 'active'; ?>">Messages</a>                        
+                            <a href="/WEB_MXH/admin/pages/customer_support/message/message.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'messages') echo 'active'; ?>">Messages</a>                        
                         </div>
                     </div>
-                    <a href="/WEB_MXH/admin/pages/refund/refund_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'refund') === 0) echo 'active'; ?>"><i class="fa fa-hand-holding-usd me-2"></i>Refund List</a>
+                    <a href="/WEB_MXH/admin/pages/refund/refund_list/refund_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'refund') === 0) echo 'active'; ?>"><i class="fa fa-hand-holding-usd me-2"></i>Refund List</a>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && strpos($currentPage, 'setting') === 0) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-users-cog me-2"></i>Setting</a>
-                        <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && strpos($currentPage, 'setting') === 0) echo 'show'; ?>">
+                        <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) &&(in_array($currentPage, ['notification', 'voucher']) || strpos($currentPage, 'setting') === 0)) echo 'active'; ?>" data-bs-toggle="dropdown"><i class="fa fa-users-cog me-2"></i>Setting</a>
+                        <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && (in_array($currentPage, ['notification', 'voucher']) || strpos($currentPage, 'setting') === 0)) echo 'show'; ?>">
                             <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'notification') echo 'active'; ?>">Notification</a>
                             <a href="/WEB_MXH/admin/pages/setting/voucher.php" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'voucher') echo 'active'; ?>">Voucher</a>
                         </div>
