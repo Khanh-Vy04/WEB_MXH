@@ -1,0 +1,94 @@
+body {
+    background: #f5f6fa;
+}
+.container {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+}
+.customer-card, .address-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.customer-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 24px;
+    border: 2px solid #e5e7eb;
+}
+.customer-meta {
+    font-size: 1.1em;
+    color: #888;
+}
+.customer-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 18px;
+}
+.customer-stats .stat {
+    text-align: center;
+}
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #222;
+}
+.table th, .table td {
+    vertical-align: middle;
+    background: #fff;
+}
+.table thead th {
+    background: #f5f6fa;
+    color: #222;
+    font-weight: 600;
+    border-bottom: 2px solid #e5e7eb;
+}
+.badge-status {
+    font-size: 0.95em;
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+.badge-PAID {background: #d1fae5; color: #065f46;}
+.badge-CANCELLED {background: #fee2e2; color: #991b1b;}
+.badge-PENDING {background: #fef9c3; color: #92400e;}
+.badge-FAILED {background: #fee2e2; color: #991b1b;}
+.badge-ORDER\ FULFILLED {background: #d1fae5; color: #065f46;}
+.badge-READY\ TO\ PICKUP {background: #bfdbfe; color: #1e40af;}
+.badge-PARTIAL\ FULFILLED {background: #fef9c3; color: #92400e;}
+.badge-ORDER\ CANCELLED {background: #fee2e2; color: #991b1b;}
+.badge-DELIVERY\ DELAYED {background: #fee2e2; color: #991b1b;}
+.wishlist-img {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+    border: 1px solid #e5e7eb;
+}
+.star {
+    color: #f59e42;
+    font-size: 1.1em;
+}
+.table-responsive {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 16px 0 0 0;
+    margin-bottom: 24px;
+}
+@media (max-width: 991.98px) {
+    .customer-stats { flex-direction: column; gap: 0.5rem; }
+    .customer-card, .address-card, .table-responsive { padding: 12px; }
+}
+@media (max-width: 767.98px) {
+    .customer-avatar { width: 56px; height: 56px; margin-right: 12px; }
+    .customer-card, .address-card, .table-responsive { padding: 8px; }
+    .section-title { font-size: 1.1rem; }
+}
