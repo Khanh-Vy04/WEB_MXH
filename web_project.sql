@@ -78,6 +78,14 @@ CREATE TABLE `artists` (
   `image_url` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `artists`
+--
+
+INSERT INTO `artists` (`artist_id`, `artist_name`, `bio`, `image_url`) VALUES
+(1, 'The Beatles', 'The Beatles là ban nhạc rock người Anh được thành lập tại Liverpool năm 1960. Gồm John Lennon, Paul McCartney, George Harrison và Ringo Starr, họ được coi là ban nhạc có ảnh hưởng nhất trong lịch sử âm nhạc đại chúng. Với những album kinh điển như "Abbey Road", "Sgt. Pepper\'s Lonely Hearts Club Band", The Beatles đã thay đổi hoàn toàn bộ mặt của âm nhạc rock và pop.', 'https://upload.wikimedia.org/wikipedia/commons/d/df/The_Fabs.JPG'),
+(2, 'Adele', 'Adele Laurie Blue Adkins MBE là một ca sĩ kiêm nhạc sĩ người Anh. Cô nổi tiếng với giọng hát nội lực đầy cảm xúc và khả năng sáng tác những bản ballad sâu sắc về tình yêu và cuộc sống. Với các album "19", "21", "25" và "30", Adele đã giành được nhiều giải Grammy và trở thành một trong những nghệ sĩ bán đĩa nhạc thành công nhất thế giới.', 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Adele_2016.jpg');
+
 -- --------------------------------------------------------
 
 --
@@ -89,6 +97,17 @@ CREATE TABLE `artist_products` (
   `artist_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `artist_products`
+--
+
+INSERT INTO `artist_products` (`artist_product_id`, `artist_id`, `product_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 2, 4),
+(5, 2, 5);
 
 -- --------------------------------------------------------
 

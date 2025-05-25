@@ -4,19 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Product</title>
+    <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
+    <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="add_product.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
   </head>
   <body>
-    <div class="layout">
-      <!-- Left space for sidebar -->
-      <div class="sidebar-space"></div>
-
-      <!-- Main content -->
-      <div class="main-content">
+    <div class="container-fluid position-relative d-flex p-0">
+      <?php
+        $currentPage = 'product';
+        include __DIR__.'/../../dashboard/sidebar.php';
+      ?>
+      <div class="content">
+        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
         <div class="header">
           <div class="header-left">
             <h1>Add a new Product</h1>
@@ -28,7 +30,6 @@
             <button class="btn-publish">Publish product</button>
           </div>
         </div>
-
         <div class="content-wrapper">
           <!-- Left Column -->
           <div class="product-info">
@@ -38,12 +39,10 @@
                 <label>Name</label>
                 <input type="text" placeholder="Product title" />
               </div>
-
               <div class="form-group">
                 <label>SKU</label>
                 <input type="text" placeholder="SKU" />
               </div>
-
               <div class="form-group">
                 <label>Description (Optional)</label>
                 <div class="editor-toolbar">
@@ -58,7 +57,6 @@
                 <textarea placeholder="Product Description"></textarea>
               </div>
             </div>
-
             <div class="card">
               <h2>Product Image</h2>
               <div class="image-upload">
@@ -73,7 +71,6 @@
                 </div>
               </div>
             </div>
-
             <div class="card">
               <h2>Variants</h2>
               <div class="variants-section">
@@ -87,7 +84,6 @@
                 <button class="btn-add-option">+ Add another option</button>
               </div>
             </div>
-
             <div class="card">
               <h2>Inventory</h2>
               <div class="inventory-section">
@@ -121,7 +117,6 @@
               </div>
             </div>
           </div>
-
           <!-- Right Column -->
           <div class="product-sidebar">
             <div class="card">
@@ -146,9 +141,24 @@
                 <span class="switch-label">In stock</span>
               </div>
             </div>
-
             <div class="card">
               <h2>Organize</h2>
+              <div class="form-group">
+                <label>Artist</label>
+                <div class="custom-select">
+                  <div class="select-selected">
+                    <span>Select Artist</span>
+                    <i class="fas fa-chevron-down"></i>
+                  </div>
+                  <div class="select-items">
+                    <div class="select-item">The Beatles</div>
+                    <div class="select-item">Adele</div>
+                    <div class="select-item">Pink Floyd</div>
+                    <div class="select-item">Queen</div>
+                    <div class="select-item">Led Zeppelin</div>
+                  </div>
+                </div>
+              </div>
               <div class="form-group">
                 <label>Vendor</label>
                 <div class="custom-select">
@@ -210,8 +220,12 @@
             </div>
           </div>
         </div>
+        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
       </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Get all custom select elements

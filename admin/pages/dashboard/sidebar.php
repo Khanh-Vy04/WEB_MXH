@@ -13,6 +13,7 @@
                     <a href="/WEB_MXH/admin/pages/dashboard/dashboard.php" class="nav-item nav-link <?php if(isset($currentPage) && $currentPage == 'dashboard') echo 'active'; ?>">
                         <i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>                    
                     <a href="/WEB_MXH/admin/pages/product/product_list/product_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'product') === 0) echo 'active'; ?>"><i class="fa fa-shopping-basket me-2"></i>Product List</a>
+                    <a href="/WEB_MXH/admin/pages/artist/artist_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'artist') === 0) echo 'active'; ?>"><i class="fa fa-microphone me-2"></i>Artist List</a>
                     <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'order') === 0) echo 'active'; ?>"><i class="fa fa-receipt me-2"></i>Order List</a>
                     <a href="/WEB_MXH/admin/pages/customer/all_customer/all_customer.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'customer') === 0) echo 'active'; ?>" ><i class="fa fa-user-astronaut me-2"></i>Customer List</a>
                     <div class="nav-item dropdown">
