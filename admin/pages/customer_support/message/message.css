@@ -1,0 +1,150 @@
+/* Message List */
+.list-group-item.active {
+  background: #deccca !important;
+  color: #412d3b !important;
+  border-color: #cc8889 !important;
+  font-weight: bold;
+}
+.list-group-item .badge {
+  font-size: 0.85em;
+}
+#chat-box {
+  min-height: 300px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-bottom: 16px;
+}
+.bg-primary {
+  background: #cc8889 !important;
+  color: #fff !important;
+}
+.bg-light {
+  background: #fff !important;
+  color: #412d3b !important;
+  border: 1px solid #ebecef;
+}
+form input[type="text"],
+.form-control[type="text"] {
+  border-radius: 6px;
+  background: #f8f9fa !important;
+  color: #222 !important;
+  border: 1.5px solid #ebecef !important;
+  box-shadow: none !important;
+}
+form input[type="text"]:focus,
+.form-control[type="text"]:focus {
+  background: #f8f9fa !important;
+  border-color: #412d3b !important;
+}
+form .btn,
+form .btn-light,
+form .btn-primary {
+  padding: 0.4rem !important;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+}
+form .btn-primary i,
+form .btn-light i {
+  margin: 0;
+}
+.dot-status {
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #eee;
+}
+.col-md-4 h5 {
+  color: #412d3b;
+  font-weight: 700;
+}
+.col-md-4 ul {
+  padding-left: 0;
+}
+.col-md-4 li {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.col-md-4 li:hover,
+.col-md-4 li.active {
+  background: #f3f6fb;
+}
+
+/* Chat bubble */
+.chat-bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  margin-bottom: 4px;
+  max-width: 70%;
+  word-break: break-word;
+  font-size: 1.05em;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  background: #fff;
+  color: #222;
+  display: inline-block;
+}
+.customer-bubble {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ebecef;
+  align-self: flex-start;
+}
+.admin-bubble {
+  background: #deccca;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.col-md-4 {
+  border-right: 1px solid #f3f6fb !important;
+}
+.chat-header {
+  border-bottom: 1px solid #f3f6fb !important;
+}
+
+/* Chỉ style nút gửi tin nhắn trong form chat */
+form .btn-primary,
+form .btn-primary:active,
+form .btn-primary:focus {
+  background: #deccca !important;
+  color: #412d3b !important;
+  border: none !important;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+form .btn-primary:hover {
+  background: #412d3b !important;
+  color: #deccca !important;
+}
+
+form input[type="text"]::placeholder,
+.form-control[type="text"]::placeholder {
+  color: #b9b9b9 !important;
+  opacity: 1;
+}
+
+.msg-time {
+  margin-top: 2px;
+  font-size: 0.92em;
+  color: #b9b9b9 !important;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Nút search lớn vừa với input */
+form .btn[type="submit"] {
+  height: 40px;
+  min-width: 90px;
+  font-size: 1.05em;
+  padding: 0 18px;
+  border-radius: 6px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
