@@ -1,87 +1,85 @@
 /********** Template CSS **********/
 :root {
-    --primary: #EB1616;
-    --secondary: #ebecef;
-    --light: #000000;
-    --dark: #ffffff;
+  --primary: #eb1616;
+  --secondary: #ebecef;
+  --light: #000000;
+  --dark: #ffffff;
 }
 
 .back-to-top {
-    position: fixed;
-    display: none;
-    right: 45px;
-    bottom: 45px;
-    z-index: 99;
+  position: fixed;
+  display: none;
+  right: 45px;
+  bottom: 45px;
+  z-index: 99;
 }
 
 .bg-secondary {
-    background-color: #ebecef !important;
-    border-color: #ebecef !important;
+  background-color: #ebecef !important;
+  border-color: #ebecef !important;
 }
 .bg-secondary.d-flex.justify-content-between {
-    justify-content: flex-start !important;
-    gap: 18px; /* hoặc giá trị bạn muốn */
+  justify-content: flex-start !important;
+  gap: 18px; /* hoặc giá trị bạn muốn */
 }
 
 /*** Spinner ***/
 #spinner {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .5s ease-out, visibility 0s linear .5s;
-    z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-out, visibility 0s linear 0.5s;
+  z-index: 99999;
 }
 
 #spinner.show {
-    transition: opacity .5s ease-out, visibility 0s linear 0s;
-    visibility: visible;
-    opacity: 1;
+  transition: opacity 0.5s ease-out, visibility 0s linear 0s;
+  visibility: visible;
+  opacity: 1;
 }
-
 
 /*** Button ***/
 .btn {
-    transition: .5s;
+  transition: 0.5s;
 }
 
 .btn-square {
-    width: 38px;
-    height: 38px;
+  width: 38px;
+  height: 38px;
 }
 
 .btn-sm-square {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .btn-lg-square {
-    width: 48px;
-    height: 48px;
+  width: 48px;
+  height: 48px;
 }
 
 .btn-square,
 .btn-sm-square,
 .btn-lg-square {
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: normal;
-    border-radius: 50px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: normal;
+  border-radius: 50px;
 }
-
 
 /*** Layout ***/
 .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 250px;
-    height: 100vh;
-    overflow-y: auto;
-    background: var(--secondary);
-    transition: 0.5s;
-    z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 250px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--secondary);
+  transition: 0.5s;
+  z-index: 999;
 }
 /* Điều chỉnh cho chữ "ADMIN" trong sidebar */
 /* Căn giữa chữ ADMIN */
@@ -89,328 +87,325 @@
 .sidebar h3,
 .sidebar h2,
 .sidebar .text-primary {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    text-align: center;
-    padding: 10px 0;
-    margin: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  margin: 0;
 }
 
 /* Xóa margin-left mặc định nếu có */
 .sidebar .ms-3 {
-    margin-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 /* Đảm bảo container của ADMIN có width 100% */
 .sidebar .d-flex {
-    width: 100%;
-    justify-content: center;
+  width: 100%;
+  justify-content: center;
 }
 /* Style riêng cho chữ ADMIN */
 .sidebar h6.mb-0 {
-    font-size: 25px !important;  /* Kích thước chữ */
-    font-weight: 700 !important; /* Độ đậm */
-    letter-spacing: 2px !important; /* Khoảng cách giữa các chữ */
-    color: #412d3b !important;
+  font-size: 25px !important; /* Kích thước chữ */
+  font-weight: 700 !important; /* Độ đậm */
+  letter-spacing: 2px !important; /* Khoảng cách giữa các chữ */
+  color: #412d3b !important;
 }
 .text-primary {
-    color: #cc8889 !important;
+  color: #cc8889 !important;
 }
 .content {
-    margin-left: 250px;
-    min-height: 100vh;
-    background: var(--dark);
-    transition: 0.5s;
+  margin-left: 250px;
+  min-height: 100vh;
+  background: var(--dark);
+  transition: 0.5s;
 }
 /* Ví dụ nếu là .navbar hoặc .search-bar */
 .navbar {
-    min-height: 60px; /* hoặc height: 60px; */
-    /* hoặc tăng padding-top/padding-bottom */
-    padding-top: 12px;
-    padding-bottom: 12px;
+  min-height: 60px; /* hoặc height: 60px; */
+  /* hoặc tăng padding-top/padding-bottom */
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
-#worldwide-sales, #salse-revenue {
-    min-height: 300px;
-    min-width: 100%;
-    display: block;
+#worldwide-sales,
+#salse-revenue {
+  min-height: 300px;
+  min-width: 100%;
+  display: block;
 }
 @media (min-width: 992px) {
-    .sidebar {
-        margin-left: 0;
-    }
+  .sidebar {
+    margin-left: 0;
+  }
 
-    .sidebar.open {
-        margin-left: -250px;
-    }
+  .sidebar.open {
+    margin-left: -250px;
+  }
 
-    .content {
-        width: calc(100% - 250px);
-    }
+  .content {
+    width: calc(100% - 250px);
+  }
 
-    .content.open {
-        width: 100%;
-        margin-left: 0;
-    }
+  .content.open {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 991.98px) {
-    .sidebar {
-        margin-left: -250px;
-    }
+  .sidebar {
+    margin-left: -250px;
+  }
 
-    .sidebar.open {
-        margin-left: 0;
-    }
+  .sidebar.open {
+    margin-left: 0;
+  }
 
-    .content {
-        width: 100%;
-        margin-left: 0;
-    }
+  .content {
+    width: 100%;
+    margin-left: 0;
+  }
 }
-
 
 /*** Navbar ***/
 .sidebar .navbar .navbar-nav .nav-link {
-    padding: 7px 35px 7px 20px;
-    color: var(--light);
-    font-weight: 500;
-    border-left: 3px solid var(--secondary);
-    border-radius: 0 30px 30px 0;
-    outline: none;
-    white-space: normal;
-    word-wrap: break-word;
-    min-height: 54px;
-    display: flex;
-    align-items: center;
+  padding: 7px 35px 7px 20px;
+  color: var(--light);
+  font-weight: 500;
+  border-left: 3px solid var(--secondary);
+  border-radius: 0 30px 30px 0;
+  outline: none;
+  white-space: normal;
+  word-wrap: break-word;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
 }
 
 .sidebar .navbar .navbar-nav .nav-link:hover,
 .sidebar .navbar .navbar-nav .nav-link.active {
-    color: #412d3bca;
-    background: #deccca;
-    border-color: #412d3b;
-    font-weight: bold;
+  color: #412d3bca;
+  background: #deccca;
+  border-color: #412d3b;
+  font-weight: bold;
 }
 
 .sidebar .navbar .navbar-nav .nav-link i {
-    width: 40px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--dark);
-    border-radius: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+  border-radius: 40px;
 }
 
 .sidebar .navbar .navbar-nav .nav-link:hover i,
 .sidebar .navbar .navbar-nav .nav-link.active i {
-    background: var(--secondary);
+  background: var(--secondary);
 }
 
 .sidebar .navbar .dropdown-toggle::after {
-    position: absolute;
-    top: 17px;  /* Giữ cố định vị trí ngang với text */
-    right: 15px;
-    border: none;
-    content: "\f107";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    transition: transform .3s;
+  position: absolute;
+  top: 17px; /* Giữ cố định vị trí ngang với text */
+  right: 15px;
+  border: none;
+  content: "\f107";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  transition: transform 0.3s;
 }
 
-.sidebar .navbar .dropdown-toggle[aria-expanded=true]::after {
-    transform: rotate(180deg);
+.sidebar .navbar .dropdown-toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
 }
 
 .sidebar .navbar .dropdown-item {
-    padding-left: 25px;
-    border-radius: 0 30px 30px 0;
-    color: var(--light);
+  padding-left: 25px;
+  border-radius: 0 30px 30px 0;
+  color: var(--light);
 }
 
 .sidebar .navbar .dropdown-item:hover,
 .sidebar .navbar .dropdown-item.active {
-    font-weight: bold;
-    color: #412d3bca;
-    background: #deccca;
+  font-weight: bold;
+  color: #412d3bca;
+  background: #deccca;
 }
 
 .content .navbar .navbar-nav .nav-link {
-    margin-left: 25px;
-    padding: 12px 0;
-    color: var(--light);
-    outline: none;
+  margin-left: 25px;
+  padding: 12px 0;
+  color: var(--light);
+  outline: none;
 }
 
 .content .navbar .navbar-nav .nav-link:hover,
 .content .navbar .navbar-nav .nav-link.active {
-    color: var(--primary);
+  color: var(--primary);
 }
 
 .content .navbar .sidebar-toggler,
 .content .navbar .navbar-nav .nav-link i {
-    width: 40px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--dark);
-    border-radius: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark);
+  border-radius: 40px;
 }
 .sidebar-toggler .fa-bars::before {
-    color: #cc8889;
+  color: #cc8889;
 }
 .sidebar-toggler:active .fa-bars::before,
 .sidebar-toggler:focus .fa-bars::before,
 .sidebar-toggler:hover .fa-bars::before {
-    color: #412d3bca;
+  color: #412d3bca;
 }
 
 p.mb-2 {
-    color: #412d3b !important; /* Đổi #màu cho taday sale */
-    font-weight: bold !important;
+  color: #412d3b !important; /* Đổi #màu cho taday sale */
+  font-weight: bold !important;
 }
 
 h6.mb-0 {
-    color: #412d3b !important; /* Đổi màu cho 1234 */
+  color: #412d3b !important; /* Đổi màu cho 1234 */
 }
 .content .navbar .dropdown-item {
-    color: var(--light);
+  color: var(--light);
 }
 
 .content .navbar .dropdown-item:hover,
 .content .navbar .dropdown-item.active {
-    background: var(--dark);
+  background: var(--dark);
 }
 
 .content .navbar .dropdown-toggle::after {
-    margin-left: 6px;
-    vertical-align: middle;
-    border: none;
-    content: "\f107";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    transition: .5s;
+  margin-left: 6px;
+  vertical-align: middle;
+  border: none;
+  content: "\f107";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  transition: 0.5s;
 }
 
-.content .navbar .dropdown-toggle[aria-expanded=true]::after {
-    transform: rotate(-180deg);
+.content .navbar .dropdown-toggle[aria-expanded="true"]::after {
+  transform: rotate(-180deg);
 }
 
 @media (max-width: 575.98px) {
-    .content .navbar .navbar-nav .nav-link {
-        margin-left: 15px;
-    }
+  .content .navbar .navbar-nav .nav-link {
+    margin-left: 15px;
+  }
 }
-
 
 /*** Date Picker ***/
 .bootstrap-datetimepicker-widget.bottom {
-    top: auto !important;
+  top: auto !important;
 }
 
 .bootstrap-datetimepicker-widget .table * {
-    border-bottom-width: 0px;
+  border-bottom-width: 0px;
 }
 
 .bootstrap-datetimepicker-widget .table th {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
-    padding: 10px;
-    border-radius: 2px;
+  padding: 10px;
+  border-radius: 2px;
 }
 
 .bootstrap-datetimepicker-widget table td.active,
 .bootstrap-datetimepicker-widget table td.active:hover {
-    background: var(--primary);
+  background: var(--primary);
 }
 
 .bootstrap-datetimepicker-widget table td.today::before {
-    border-bottom-color: var(--primary);
+  border-bottom-color: var(--primary);
 }
-
 
 /*** Testimonial ***/
 .progress .progress-bar {
-    width: 0px;
-    transition: 2s;
+  width: 0px;
+  transition: 2s;
 }
-
 
 /*** Testimonial ***/
 .testimonial-carousel .owl-dots {
-    margin-top: 24px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+  margin-top: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .testimonial-carousel .owl-dot {
-    position: relative;
-    display: inline-block;
-    margin: 0 5px;
-    width: 15px;
-    height: 15px;
-    border: 5px solid var(--primary);
-    border-radius: 15px;
-    transition: .5s;
+  position: relative;
+  display: inline-block;
+  margin: 0 5px;
+  width: 15px;
+  height: 15px;
+  border: 5px solid var(--primary);
+  border-radius: 15px;
+  transition: 0.5s;
 }
 
 .testimonial-carousel .owl-dot.active {
-    background: var(--dark);
-    border-color: var(--primary);
+  background: var(--dark);
+  border-color: var(--primary);
 }
 
 input.form-control.bg-dark {
-    background-color: #ffffff !important;
-    color: #191C24 !important; /* hoặc màu chữ bạn muốn */
+  background-color: #ffffff !important;
+  color: #191c24 !important; /* hoặc màu chữ bạn muốn */
 }
 .table th {
-    color: #412d3b !important; 
-    text-align: center !important;
-    vertical-align: middle !important;
+  color: #412d3b !important;
+  text-align: center !important;
+  vertical-align: middle !important;
 }
 .show-all-link {
-    color: #cc8889 !important;         /* Màu mặc định */
-    font-weight: bold;                 /* (Tùy chọn) In đậm */
-    text-decoration: none;
-    transition: color 0.2s;
+  color: #cc8889 !important; /* Màu mặc định */
+  font-weight: bold; /* (Tùy chọn) In đậm */
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
 .show-all-link:hover,
 .show-all-link:focus,
 .show-all-link:active {
-    color: #412d3b !important;         /* Màu khi hover/bấm vào */     
+  color: #412d3b !important; /* Màu khi hover/bấm vào */
 }
 .table td:last-child {
-    text-align: center;
-    vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
 }
 .btn.btn-sm.btn-primary {
-    background-color: #deccca !important; /* Màu nền mặc định */
-    color: #412d3b !important;               /* Màu chữ mặc định */
-    border: none !important;              /* (Tùy chọn) Bỏ viền */
-    transition: background 0.2s, color 0.2s;
+  background-color: #deccca !important; /* Màu nền mặc định */
+  color: #412d3b !important; /* Màu chữ mặc định */
+  border: none !important; /* (Tùy chọn) Bỏ viền */
+  transition: background 0.2s, color 0.2s;
 }
 .btn.btn-sm.btn-primary:hover,
 .btn.btn-sm.btn-primary:focus,
 .btn.btn-sm.btn-primary:active {
-    background-color: #412d3b !important; /* Màu nền khi hover/bấm */
-    color: #deccca !important;               /* Màu chữ khi hover/bấm */
+  background-color: #412d3b !important; /* Màu nền khi hover/bấm */
+  color: #deccca !important; /* Màu chữ khi hover/bấm */
 }
 .back-to-top {
-    background-color: #cc8889 !important; /* Đổi #2E86C1 thành màu bạn muốn */
-    color: #fff !important;               /* Màu icon mũi tên */
-    border: none !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* (Tùy chọn) Đổ bóng nhẹ */
-    transition: background 0.2s, color 0.2s;
+  background-color: #cc8889 !important; /* Đổi #2E86C1 thành màu bạn muốn */
+  color: #fff !important; /* Màu icon mũi tên */
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* (Tùy chọn) Đổ bóng nhẹ */
+  transition: background 0.2s, color 0.2s;
 }
 .back-to-top:hover,
 .back-to-top:focus,
 .back-to-top:active {
-    background-color: #412d3b !important; /* Màu khi hover/bấm */
-    color: #fff !important;
+  background-color: #412d3b !important; /* Màu khi hover/bấm */
+  color: #fff !important;
 }
