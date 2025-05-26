@@ -1,24 +1,80 @@
 <?php
+// Bật hiển thị lỗi để debug
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $currentPage = 'artist';
-// Dữ liệu mẫu nghệ sĩ
-$artists = [
-    [
-        'artist_id' => 1,
-        'artist_name' => 'The Beatles',
-        'bio' => 'The Beatles là ban nhạc rock người Anh được thành lập tại Liverpool năm 1960...',
-        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/d/df/The_Fabs.JPG',
-        'product_count' => 3,
-        'status' => 'active'
-    ],
-    [
-        'artist_id' => 2,
-        'artist_name' => 'Adele',
-        'bio' => 'Adele Laurie Blue Adkins MBE là một ca sĩ kiêm nhạc sĩ người Anh...',
-        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Adele_2016.jpg',
-        'product_count' => 2,
-        'status' => 'active'
-    ]
-];
+
+// Kết nối database
+$config_path = '../../../config/database.php';
+if (!file_exists($config_path)) {
+    echo "<script>console.error('Database config file not found at: " . addslashes($config_path) . "');</script>";
+    die("Cannot find database config file");
+}
+
+try {
+    require_once $config_path;
+    echo "<script>console.log('Database connection successful');</script>";
+} catch (Exception $e) {
+    echo "<script>console.error('Database connection failed: " . addslashes($e->getMessage()) . "');</script>";
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Xử lý thay đổi status nếu có request
+if (isset($_GET['action']) && isset($_GET['id'])) {
+    $action = $_GET['action'];
+    $id = (int)$_GET['id'];
+    
+    if ($action == 'toggle_status') {
+        // Lấy status hiện tại
+        $sql = "SELECT status FROM artists WHERE artist_id = $id";
+        $result = $conn->query($sql);
+        if ($result && $row = $result->fetch_assoc()) {
+            $newStatus = $row['status'] == 1 ? 0 : 1;
+            $sql = "UPDATE artists SET status = $newStatus WHERE artist_id = $id";
+            if ($conn->query($sql)) {
+                $statusText = $newStatus == 1 ? 'activated' : 'deactivated';
+                echo "<script>alert('Artist $statusText successfully!'); window.location.href = 'artist_list.php';</script>";
+            }
+        }
+    }
+}
+
+// Lấy dữ liệu nghệ sĩ từ database với số lượng sản phẩm
+$sql = "SELECT a.*, COUNT(ap.product_id) as product_count 
+        FROM artists a 
+        LEFT JOIN artist_products ap ON a.artist_id = ap.artist_id 
+        GROUP BY a.artist_id 
+        ORDER BY a.artist_name ASC";
+
+echo "<script>console.log('SQL Query: " . addslashes($sql) . "');</script>";
+
+$result = $conn->query($sql);
+
+if (!$result) {
+    echo "<script>console.error('SQL Error: " . addslashes($conn->error) . "');</script>";
+    die("SQL Error: " . $conn->error);
+}
+
+echo "<script>console.log('Query executed successfully. Rows found: " . $result->num_rows . "');</script>";
+
+$artists = [];
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $artists[] = [
+            'artist_id' => $row['artist_id'],
+            'artist_name' => $row['artist_name'],
+            'bio' => $row['bio'],
+            'image_url' => $row['image_url'],
+            'product_count' => $row['product_count'],
+            'status' => $row['status'] == 1 ? 'active' : 'inactive', // Chuyển đổi từ 1/0 sang active/inactive
+            'status_value' => $row['status'] // Giữ giá trị gốc để xử lý
+        ];
+    }
+    echo "<script>console.log('Artists loaded: " . count($artists) . "');</script>";
+} else {
+    echo "<script>console.log('No artists found in database');</script>";
+}
 
 // Xử lý tìm kiếm và lọc
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -61,16 +117,40 @@ function getUrlWithParams($params) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="artist_list.css" />
+    <script>
+        console.log('HTML head loaded');
+        console.log('Total artists to display: <?php echo count($currentPageArtists); ?>');
+    </script>
 </head>
 
 <body>
+    <script>console.log('Body started loading');</script>
     <div class="container-fluid position-relative d-flex p-0">
-        <?php include __DIR__.'/../dashboard/sidebar.php'; ?>
+        <?php 
+        echo "<script>console.log('Loading sidebar...');</script>";
+        if (file_exists(__DIR__.'/../dashboard/sidebar.php')) {
+            include __DIR__.'/../dashboard/sidebar.php'; 
+            echo "<script>console.log('Sidebar loaded successfully');</script>";
+        } else {
+            echo "<script>console.error('Sidebar file not found');</script>";
+            echo "<div>Sidebar not found</div>";
+        }
+        ?>
         
         <div class="content">
-            <?php include __DIR__.'/../dashboard/navbar.php'; ?>
+            <?php 
+            echo "<script>console.log('Loading navbar...');</script>";
+            if (file_exists(__DIR__.'/../dashboard/navbar.php')) {
+                include __DIR__.'/../dashboard/navbar.php'; 
+                echo "<script>console.log('Navbar loaded successfully');</script>";
+            } else {
+                echo "<script>console.error('Navbar file not found');</script>";
+                echo "<div>Navbar not found</div>";
+            }
+            ?>
             
             <div class="container-fluid pt-4 px-4">
+                <script>console.log('Main content area started');</script>
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
@@ -92,6 +172,7 @@ function getUrlWithParams($params) {
 
                             <!-- Artist Table -->
                             <div class="table-responsive">
+                                <script>console.log('Rendering artist table...');</script>
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -103,11 +184,15 @@ function getUrlWithParams($params) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($currentPageArtists as $artist): ?>
+                                        <?php 
+                                        echo "<script>console.log('Rendering " . count($currentPageArtists) . " artists');</script>";
+                                        foreach ($currentPageArtists as $index => $artist): 
+                                            echo "<script>console.log('Rendering artist " . ($index + 1) . ": " . addslashes($artist['artist_name']) . "');</script>";
+                                        ?>
                                         <tr>
                                             <td><input type="checkbox" name="selected_artists[]" value="<?php echo $artist['artist_id']; ?>" /></td>
                                             <td class="artist-cell">
-                                                <img src="<?php echo $artist['image_url']; ?>" class="artist-img-thumb" alt="artist">
+                                                <img src="<?php echo $artist['image_url']; ?>" class="artist-img-thumb" alt="artist" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
                                                 <div class="artist-info">
                                                     <div style="font-weight:600; color:#222;"><?php echo htmlspecialchars($artist['artist_name']); ?></div>
                                                     <div style="font-size:0.9em;color:#888;"><?php echo substr(htmlspecialchars($artist['bio']), 0, 100) . '...'; ?></div>
@@ -123,14 +208,21 @@ function getUrlWithParams($params) {
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></button>
-                                                    <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                                    <a href="edit_artist.php?id=<?php echo $artist['artist_id']; ?>" class="btn btn-sm btn-primary" title="Edit"><i class="fas fa-edit"></i></a>
+                                                    <a href="?action=toggle_status&id=<?php echo $artist['artist_id']; ?>" 
+                                                       class="btn btn-sm <?php echo $artist['status'] == 'active' ? 'btn-warning' : 'btn-success'; ?>" 
+                                                       title="<?php echo $artist['status'] == 'active' ? 'Deactivate' : 'Activate'; ?>"
+                                                       onclick="return confirm('Bạn có chắc chắn muốn <?php echo $artist['status'] == 'active' ? 'vô hiệu hóa' : 'kích hoạt'; ?> nghệ sĩ này?')">
+                                                        <i class="fas <?php echo $artist['status'] == 'active' ? 'fa-pause' : 'fa-play'; ?>"></i>
+                                                    </a>
+                                                    <a href="delete_artist.php?id=<?php echo $artist['artist_id']; ?>" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Bạn có chắc chắn muốn xóa nghệ sĩ này?')"><i class="fas fa-trash"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+                                <script>console.log('Artist table rendered successfully');</script>
                             </div>
 
                             <!-- Pagination -->
@@ -168,12 +260,21 @@ function getUrlWithParams($params) {
                 </div>
             </div>
             
-            <?php include __DIR__.'/../dashboard/footer.php'; ?>
+            <?php 
+            echo "<script>console.log('Loading footer...');</script>";
+            if (file_exists(__DIR__.'/../dashboard/footer.php')) {
+                include __DIR__.'/../dashboard/footer.php'; 
+                echo "<script>console.log('Footer loaded successfully');</script>";
+            } else {
+                echo "<script>console.error('Footer file not found');</script>";
+            }
+            ?>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+    <script>console.log('All scripts loaded, artist page should be ready');</script>
 </body>
 </html> 

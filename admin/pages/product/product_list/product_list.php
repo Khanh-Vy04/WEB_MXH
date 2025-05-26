@@ -1,228 +1,113 @@
 <?php
+// Bật hiển thị lỗi để debug
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $currentPage = 'product';
-// Dữ liệu mẫu sản phẩm đĩa than
-$products = [
-    [
-        'name' => 'The Beatles - Abbey Road',
-        'desc' => 'Vinyl, 180g, 2019 Remaster',
-        'category' => 'Rock',
-        'artist' => 'The Beatles',
-        'stock' => true,
-        'sku' => 'VN-0001',
-        'price' => 650000,
-        'qty' => 12,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Pink Floyd - The Wall',
-        'desc' => 'Vinyl, 2LP, Gatefold',
-        'category' => 'Progressive Rock',
-        'artist' => 'Pink Floyd',
-        'stock' => false,
-        'sku' => 'VN-0002',
-        'price' => 800000,
-        'qty' => 5,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'Miles Davis - Kind of Blue',
-        'desc' => 'Vinyl, 180g, Jazz Classic',
-        'category' => 'Jazz',
-        'artist' => 'Miles Davis',
-        'stock' => true,
-        'sku' => 'VN-0003',
-        'price' => 720000,
-        'qty' => 8,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Nirvana - Nevermind',
-        'desc' => 'Vinyl, 180g, 2011 Remaster',
-        'category' => 'Grunge',
-        'artist' => 'Nirvana',
-        'stock' => true,
-        'sku' => 'VN-0004',
-        'price' => 690000,
-        'qty' => 3,
-        'status' => 'scheduled',
-    ],
-    [
-        'name' => 'Queen - Greatest Hits',
-        'desc' => 'Vinyl, 2LP, Compilation',
-        'category' => 'Rock',
-        'artist' => 'Queen',
-        'stock' => false,
-        'sku' => 'VN-0005',
-        'price' => 850000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'Led Zeppelin IV',
-        'desc' => 'Vinyl, 180g, Classic Rock',
-        'category' => 'Rock',
-        'artist' => 'Led Zeppelin',
-        'stock' => true,
-        'sku' => 'VN-0006',
-        'price' => 780000,
-        'qty' => 7,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'AC/DC - Back in Black',
-        'desc' => 'Vinyl, 180g, Remastered',
-        'category' => 'Rock',
-        'artist' => 'AC/DC',
-        'stock' => true,
-        'sku' => 'VN-0007',
-        'price' => 730000,
-        'qty' => 6,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Michael Jackson - Thriller',
-        'desc' => 'Vinyl, 180g, Pop Classic',
-        'category' => 'Pop',
-        'artist' => 'Michael Jackson',
-        'stock' => false,
-        'sku' => 'VN-0008',
-        'price' => 900000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'Eagles - Hotel California',
-        'desc' => 'Vinyl, 180g, Remastered',
-        'category' => 'Rock',
-        'artist' => 'Eagles',
-        'stock' => true,
-        'sku' => 'VN-0009',
-        'price' => 810000,
-        'qty' => 4,
-        'status' => 'scheduled',
-    ],
-    [
-        'name' => 'Fleetwood Mac - Rumours',
-        'desc' => 'Vinyl, 180g, Classic Album',
-        'category' => 'Rock',
-        'artist' => 'Fleetwood Mac',
-        'stock' => true,
-        'sku' => 'VN-0010',
-        'price' => 760000,
-        'qty' => 9,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'David Bowie - The Rise and Fall of Ziggy Stardust',
-        'desc' => 'Vinyl, 180g, Glam Rock',
-        'category' => 'Rock',
-        'artist' => 'David Bowie',
-        'stock' => false,
-        'sku' => 'VN-0011',
-        'price' => 820000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'The Rolling Stones - Let It Bleed',
-        'desc' => 'Vinyl, 180g, Remastered',
-        'category' => 'Rock',
-        'artist' => 'The Rolling Stones',
-        'stock' => true,
-        'sku' => 'VN-0012',
-        'price' => 770000,
-        'qty' => 2,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'The Doors - L.A. Woman',
-        'desc' => 'Vinyl, 180g, Classic Rock',
-        'category' => 'Rock',
-        'artist' => 'The Doors',
-        'stock' => true,
-        'sku' => 'VN-0013',
-        'price' => 740000,
-        'qty' => 5,
-        'status' => 'scheduled',
-    ],
-    [
-        'name' => 'U2 - The Joshua Tree',
-        'desc' => 'Vinyl, 180g, Remastered',
-        'category' => 'Rock',
-        'artist' => 'U2',
-        'stock' => false,
-        'sku' => 'VN-0014',
-        'price' => 830000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'Radiohead - OK Computer',
-        'desc' => 'Vinyl, 2LP, Alternative',
-        'category' => 'Alternative',
-        'artist' => 'Radiohead',
-        'stock' => true,
-        'sku' => 'VN-0015',
-        'price' => 950000,
-        'qty' => 6,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Daft Punk - Random Access Memories',
-        'desc' => 'Vinyl, 2LP, Electronic',
-        'category' => 'Electronic',
-        'artist' => 'Daft Punk',
-        'stock' => true,
-        'sku' => 'VN-0016',
-        'price' => 990000,
-        'qty' => 8,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Adele - 21',
-        'desc' => 'Vinyl, 180g, Pop',
-        'category' => 'Pop',
-        'artist' => 'Adele',
-        'stock' => false,
-        'sku' => 'VN-0017',
-        'price' => 870000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-    [
-        'name' => 'Taylor Swift - 1989',
-        'desc' => 'Vinyl, 2LP, Pop',
-        'category' => 'Pop',
-        'artist' => 'Taylor Swift',
-        'stock' => true,
-        'sku' => 'VN-0018',
-        'price' => 920000,
-        'qty' => 10,
-        'status' => 'scheduled',
-    ],
-    [
-        'name' => 'Norah Jones - Come Away With Me',
-        'desc' => 'Vinyl, 180g, Jazz',
-        'category' => 'Jazz',
-        'artist' => 'Norah Jones',
-        'stock' => true,
-        'sku' => 'VN-0019',
-        'price' => 710000,
-        'qty' => 4,
-        'status' => 'active',
-    ],
-    [
-        'name' => 'Amy Winehouse - Back to Black',
-        'desc' => 'Vinyl, 180g, Soul',
-        'category' => 'Soul',
-        'artist' => 'Amy Winehouse',
-        'stock' => false,
-        'sku' => 'VN-0020',
-        'price' => 880000,
-        'qty' => 0,
-        'status' => 'inactive',
-    ],
-];
+
+// Debug đường dẫn hiện tại
+echo "<script>console.log('Current directory: " . addslashes(__DIR__) . "');</script>";
+echo "<script>console.log('Looking for database config at: " . addslashes(__DIR__ . '/../../../../config/database.php') . "');</script>";
+
+// Kết nối database
+$config_path = '../../../../config/database.php';
+if (!file_exists($config_path)) {
+    echo "<script>console.error('Database config file not found at: " . addslashes($config_path) . "');</script>";
+    // Thử đường dẫn khác
+    $config_path = '../../../config/database.php';
+    if (!file_exists($config_path)) {
+        echo "<script>console.error('Database config file not found at: " . addslashes($config_path) . "');</script>";
+        die("Cannot find database config file");
+    }
+}
+
+try {
+    require_once $config_path;
+    echo "<script>console.log('Database connection successful');</script>";
+} catch (Exception $e) {
+    echo "<script>console.error('Database connection failed: " . addslashes($e->getMessage()) . "');</script>";
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// Lấy danh sách genres cho filter
+$genres_sql = "SELECT DISTINCT genre_name FROM genres ORDER BY genre_name";
+$genres_result = $conn->query($genres_sql);
+$available_genres = [];
+if ($genres_result->num_rows > 0) {
+    while($row = $genres_result->fetch_assoc()) {
+        $available_genres[] = $row['genre_name'];
+    }
+}
+
+// Lấy dữ liệu sản phẩm từ database với thông tin nghệ sĩ
+// Trước tiên kiểm tra cấu trúc bảng products
+$check_sql = "DESCRIBE products";
+$check_result = $conn->query($check_sql);
+$columns = [];
+if ($check_result) {
+    while($col = $check_result->fetch_assoc()) {
+        $columns[] = $col['Field'];
+    }
+}
+echo "<script>console.log('Available columns in products table: " . implode(', ', $columns) . "');</script>";
+
+// Xây dựng query dựa trên cột có sẵn
+$order_by = "p.product_id DESC"; // Mặc định sắp xếp theo ID
+if (in_array('created_at', $columns)) {
+    $order_by = "p.created_at DESC";
+} elseif (in_array('created_a', $columns)) {
+    $order_by = "p.created_a DESC";
+}
+
+$sql = "SELECT p.*, a.artist_name, g.genre_name 
+        FROM products p 
+        LEFT JOIN artist_products ap ON p.product_id = ap.product_id 
+        LEFT JOIN artists a ON ap.artist_id = a.artist_id 
+        LEFT JOIN genres g ON p.genre_id = g.genre_id
+        ORDER BY $order_by";
+
+echo "<script>console.log('SQL Query: " . addslashes($sql) . "');</script>";
+
+$result = $conn->query($sql);
+
+if (!$result) {
+    echo "<script>console.error('SQL Error: " . addslashes($conn->error) . "');</script>";
+    die("SQL Error: " . $conn->error);
+}
+
+echo "<script>console.log('Query executed successfully. Rows found: " . $result->num_rows . "');</script>";
+
+$products = [];
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        // Xử lý created_at dựa trên cột có sẵn
+        $created_at = '';
+        if (isset($row['created_at'])) {
+            $created_at = $row['created_at'];
+        } elseif (isset($row['created_a'])) {
+            $created_at = $row['created_a'];
+        } else {
+            $created_at = date('Y-m-d H:i:s'); // Giá trị mặc định
+        }
+        
+        $products[] = [
+            'product_id' => $row['product_id'],
+            'name' => $row['product_name'],
+            'desc' => $row['description'],
+            'category' => $row['genre_name'] ?? 'Chưa phân loại',
+            'artist' => $row['artist_name'] ?? 'Unknown Artist',
+            'stock' => $row['stock'] > 0,
+            'price' => $row['price'],
+            'qty' => $row['stock'],
+            'status' => $row['stock'] > 0 ? 'active' : 'inactive',
+            'image_url' => $row['image_url'],
+            'created_at' => $created_at
+        ];
+    }
+    echo "<script>console.log('Products loaded: " . count($products) . "');</script>";
+} else {
+    echo "<script>console.log('No products found in database');</script>";
+}
 
 // Xử lý filter
 $status = isset($_GET['status']) ? $_GET['status'] : '';
@@ -268,13 +153,37 @@ function getUrlWithParams($params) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="product_list.css" />
+    <script>
+        console.log('HTML head loaded');
+        console.log('Total products to display: <?php echo count($currentPageProducts); ?>');
+    </script>
 </head>
 <body>
+<script>console.log('Body started loading');</script>
 <div class="container-fluid position-relative d-flex p-0">
-    <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
+    <?php 
+    echo "<script>console.log('Loading sidebar...');</script>";
+    if (file_exists(__DIR__.'/../../dashboard/sidebar.php')) {
+        include __DIR__.'/../../dashboard/sidebar.php'; 
+        echo "<script>console.log('Sidebar loaded successfully');</script>";
+    } else {
+        echo "<script>console.error('Sidebar file not found');</script>";
+        echo "<div>Sidebar not found</div>";
+    }
+    ?>
     <div class="content">
-        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
+        <?php 
+        echo "<script>console.log('Loading navbar...');</script>";
+        if (file_exists(__DIR__.'/../../dashboard/navbar.php')) {
+            include __DIR__.'/../../dashboard/navbar.php'; 
+            echo "<script>console.log('Navbar loaded successfully');</script>";
+        } else {
+            echo "<script>console.error('Navbar file not found');</script>";
+            echo "<div>Navbar not found</div>";
+        }
+        ?>
         <div class="container-fluid pt-4 px-4">
+            <script>console.log('Main content area started');</script>
             <!-- Filter Bar -->
             <div class="filter-bar">
                 <div class="filter-label">Filter</div>
@@ -286,11 +195,13 @@ function getUrlWithParams($params) {
                         <option value="scheduled" <?php if($status=='scheduled') echo 'selected'; ?>>Scheduled</option>
                     </select>
                     <select name="category" class="form-select">
-                        <option value="">Category</option>
-                        <option value="Rock" <?php if($category=='Rock') echo 'selected'; ?>>Rock</option>
-                        <option value="Progressive Rock" <?php if($category=='Progressive Rock') echo 'selected'; ?>>Progressive Rock</option>
-                        <option value="Jazz" <?php if($category=='Jazz') echo 'selected'; ?>>Jazz</option>
-                        <option value="Grunge" <?php if($category=='Grunge') echo 'selected'; ?>>Grunge</option>
+                        <option value="">Genre</option>
+                        <?php foreach ($available_genres as $genre): ?>
+                        <option value="<?php echo htmlspecialchars($genre); ?>" <?php if($category == $genre) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($genre); ?>
+                        </option>
+                        <?php endforeach; ?>
+                        <option value="Chưa phân loại" <?php if($category == 'Chưa phân loại') echo 'selected'; ?>>Chưa phân loại</option>
                     </select>
                     <select name="stock" class="form-select">
                         <option value="">Stock</option>
@@ -314,23 +225,20 @@ function getUrlWithParams($params) {
                             <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
                         </select>
                     </form>
-                    <form method="POST" style="margin:0;">
-                        <button type="submit" class="export-btn"><i class="fas fa-file-export"></i> Export</button>
-                    </form>
                     <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn"><i class="fas fa-plus"></i> Add Product</a>
                 </div>
             </div>
             <!-- Product Table -->
             <div class="table-container">
+                <script>console.log('Rendering product table...');</script>
                 <table>
                     <thead>
                         <tr>
                             <th><input type="checkbox" class="select-all" /></th>
                             <th>PRODUCT</th>
                             <th>ARTIST</th>
-                            <th>CATEGORY</th>
+                            <th>GENRE</th>
                             <th>STOCK</th>
-                            <th>SKU</th>
                             <th>PRICE</th>
                             <th>QTY</th>
                             <th>STATUS</th>
@@ -338,14 +246,18 @@ function getUrlWithParams($params) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($currentPageProducts as $product): ?>
+                        <?php 
+                        echo "<script>console.log('Rendering " . count($currentPageProducts) . " products');</script>";
+                        foreach ($currentPageProducts as $index => $product): 
+                            echo "<script>console.log('Rendering product " . ($index + 1) . ": " . addslashes($product['name']) . "');</script>";
+                        ?>
                         <tr>
-                            <td><input type="checkbox" name="selected_products[]" value="<?php echo $product['sku']; ?>" /></td>
+                            <td><input type="checkbox" name="selected_products[]" value="<?php echo $product['product_id']; ?>" /></td>
                             <td class="product-cell">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png" class="product-img-thumb" alt="vinyl">
+                                <img src="<?php echo $product['image_url']; ?>" class="product-img-thumb" alt="product" style="width: 50px; height: 50px; object-fit: cover;">
                                 <div>
-                                    <div style="font-weight:600; color:#222;"><?php echo $product['name']; ?></div>
-                                    <div style="font-size:0.9em;color:#888;"><?php echo $product['desc']; ?></div>
+                                    <div style="font-weight:600; color:#222;"><?php echo htmlspecialchars($product['name']); ?></div>
+                                    <div style="font-size:0.9em;color:#888;"><?php echo htmlspecialchars(substr($product['desc'], 0, 50)) . '...'; ?></div>
                                 </div>
                             </td>
                             <td><?php echo htmlspecialchars($product['artist']); ?></td>
@@ -357,8 +269,7 @@ function getUrlWithParams($params) {
                                     <span class="badge-stock-out">Out</span>
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo $product['sku']; ?></td>
-                            <td><?php echo number_format($product['price'],0,',','.'); ?>₫</td>
+                            <td><?php echo number_format($product['price'],2); ?>$</td>
                             <td><?php echo $product['qty']; ?></td>
                             <td>
                                 <?php if($product['status']=='active'): ?>
@@ -373,8 +284,9 @@ function getUrlWithParams($params) {
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn"><i class="fas fa-ellipsis-v"></i></button>
                                     <div class="dropdown-menu">
-                                        <a href="#" class="dropdown-item"><i class="fas fa-eye"></i> View</a>
-                                        <a href="#" class="dropdown-item text-danger"><i class="fas fa-trash-alt"></i> Delete</a>
+                                        <a href="view_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-eye"></i> View</a>
+                                        <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
+                                        <a href="delete_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"><i class="fas fa-trash-alt"></i> Delete</a>
                                     </div>
                                 </div>
                             </td>
@@ -382,6 +294,7 @@ function getUrlWithParams($params) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <script>console.log('Product table rendered successfully');</script>
             </div>
             <!-- Pagination -->
             <div class="pagination-bar">
@@ -405,13 +318,22 @@ function getUrlWithParams($params) {
                 </div>
             </div>
         </div>
-        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
+        <?php 
+        echo "<script>console.log('Loading footer...');</script>";
+        if (file_exists(__DIR__.'/../../dashboard/footer.php')) {
+            include __DIR__.'/../../dashboard/footer.php'; 
+            echo "<script>console.log('Footer loaded successfully');</script>";
+        } else {
+            echo "<script>console.error('Footer file not found');</script>";
+        }
+        ?>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
 <script src="product_list.js"></script>
+<script>console.log('All scripts loaded, page should be ready');</script>
 </body>
 </html>
 

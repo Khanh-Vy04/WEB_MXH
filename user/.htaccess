@@ -1,0 +1,10 @@
+DirectoryIndex index.php index.html
+
+# Redirect index.html to index.php
+RewriteEngine On
+RewriteRule ^index\.html$ index.php [R=301,L]
+ 
+# Optional: Remove .php extension from URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L] 

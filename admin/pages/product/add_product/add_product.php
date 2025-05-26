@@ -1,273 +1,620 @@
+<?php
+// Bật hiển thị lỗi để debug
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+$currentPage = 'product';
+
+// Kết nối database
+$config_path = '../../../../config/database.php';
+if (!file_exists($config_path)) {
+    die("Cannot find database config file at: " . $config_path);
+}
+
+require_once $config_path;
+
+$message = '';
+$messageType = '';
+
+// Lấy danh sách artists từ database
+$artists_sql = "SELECT artist_id, artist_name FROM artists WHERE status = 1 ORDER BY artist_name";
+$artists_result = $conn->query($artists_sql);
+$artists = [];
+if ($artists_result->num_rows > 0) {
+    while($row = $artists_result->fetch_assoc()) {
+        $artists[] = $row;
+    }
+}
+
+// Lấy danh sách genres từ database
+$genres_sql = "SELECT genre_id, genre_name FROM genres ORDER BY genre_name";
+$genres_result = $conn->query($genres_sql);
+$genres = [];
+if ($genres_result->num_rows > 0) {
+    while($row = $genres_result->fetch_assoc()) {
+        $genres[] = $row;
+    }
+}
+
+// Xử lý form submit
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $product_name = trim($_POST['product_name']);
+    $description = trim($_POST['description']);
+    $price = floatval($_POST['price']);
+    $stock = intval($_POST['stock']);
+    $image_url = trim($_POST['image_url']);
+    $genre_id = !empty($_POST['genre_id']) ? intval($_POST['genre_id']) : null;
+    $artist_id = !empty($_POST['artist_id']) ? intval($_POST['artist_id']) : null;
+    
+    // Validate dữ liệu
+    $errors = [];
+    
+    if (empty($product_name)) {
+        $errors[] = "Tên sản phẩm không được để trống";
+    } elseif (strlen($product_name) > 255) {
+        $errors[] = "Tên sản phẩm không được vượt quá 255 ký tự";
+    }
+    
+    if (empty($description)) {
+        $errors[] = "Mô tả không được để trống";
+    }
+    
+    if ($price <= 0) {
+        $errors[] = "Giá sản phẩm phải lớn hơn 0";
+    }
+    
+    if ($stock < 0) {
+        $errors[] = "Số lượng tồn kho không được âm";
+    }
+    
+    if (empty($image_url)) {
+        $errors[] = "URL hình ảnh không được để trống";
+    }
+    
+    // Kiểm tra tên sản phẩm đã tồn tại chưa
+    if (empty($errors)) {
+        $check_sql = "SELECT product_id FROM products WHERE product_name = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("s", $product_name);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        
+        if ($check_result->num_rows > 0) {
+            $errors[] = "Tên sản phẩm đã tồn tại";
+        }
+    }
+    
+    // Nếu không có lỗi, thêm vào database
+    if (empty($errors)) {
+        $conn->begin_transaction();
+        
+        try {
+            // Thêm sản phẩm
+            $sql = "INSERT INTO products (product_name, description, price, stock, image_url, genre_id) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssdisi", $product_name, $description, $price, $stock, $image_url, $genre_id);
+            
+            if ($stmt->execute()) {
+                $product_id = $conn->insert_id;
+                
+                // Nếu có chọn artist, thêm vào bảng artist_products
+                if ($artist_id) {
+                    $artist_sql = "INSERT INTO artist_products (artist_id, product_id) VALUES (?, ?)";
+                    $artist_stmt = $conn->prepare($artist_sql);
+                    $artist_stmt->bind_param("ii", $artist_id, $product_id);
+                    $artist_stmt->execute();
+                }
+                
+                $conn->commit();
+                $message = "Thêm sản phẩm thành công!";
+                $messageType = "success";
+                
+                // Reset form
+                $product_name = '';
+                $description = '';
+                $price = '';
+                $stock = '';
+                $image_url = '';
+                $genre_id = '';
+                $artist_id = '';
+            } else {
+                throw new Exception("Lỗi khi thêm sản phẩm: " . $conn->error);
+            }
+        } catch (Exception $e) {
+            $conn->rollback();
+            $message = $e->getMessage();
+            $messageType = "error";
+        }
+    } else {
+        $message = implode("<br>", $errors);
+        $messageType = "error";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Product</title>
+    <meta charset="utf-8">
+    <title>Thêm Sản Phẩm Mới</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="add_product.css" />
+    <style>
+        .form-container {
+            background: #191C24;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1rem;
+        }
+        
+        .form-control {
+            background: #2C3E50;
+            border: 2px solid #34495E;
+            color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            background: #34495E;
+            border-color: #3498DB;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            outline: none;
+        }
+        
+        .form-control::placeholder {
+            color: #BDC3C7;
+        }
+        
+        .form-select {
+            background: #2C3E50;
+            border: 2px solid #34495E;
+            color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-select:focus {
+            background: #34495E;
+            border-color: #3498DB;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            outline: none;
+        }
+        
+        .form-select option {
+            background: #2C3E50;
+            color: #fff;
+        }
+        
+        .btn-primary {
+            background: #3498DB;
+            border-color: #3498DB;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #2980B9;
+            border-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6C757D;
+            border-color: #6C757D;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5A6268;
+            border-color: #5A6268;
+            transform: translateY(-2px);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: #D4EDDA;
+            border-color: #C3E6CB;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #F8D7DA;
+            border-color: #F5C6CB;
+            color: #721C24;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .page-title {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .btn-back {
+            background: #6C757D;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            background: #5A6268;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .required {
+            color: #E74C3C;
+        }
+        
+        .form-help {
+            color: #BDC3C7;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+        
+        .col-md-6 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 0 15px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
   </head>
+
   <body>
     <div class="container-fluid position-relative d-flex p-0">
       <?php
-        $currentPage = 'product';
+        if (file_exists(__DIR__.'/../../dashboard/sidebar.php')) {
         include __DIR__.'/../../dashboard/sidebar.php';
+        }
       ?>
+        
       <div class="content">
-        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
-        <div class="header">
-          <div class="header-left">
-            <h1>Add a new Product</h1>
-            <p>Orders placed across your store</p>
+            <?php 
+            if (file_exists(__DIR__.'/../../dashboard/navbar.php')) {
+                include __DIR__.'/../../dashboard/navbar.php'; 
+            }
+            ?>
+            
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="form-container">
+                            <!-- Header -->
+                            <div class="page-header">
+                                <h2 class="page-title">
+                                    <i class="fas fa-plus-circle me-3"></i>Thêm Sản Phẩm Mới
+                                </h2>
+                                <a href="../product_list/product_list.php" class="btn-back">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                </a>
           </div>
-          <div class="action-buttons">
-            <button class="btn-discard">Discard</button>
-            <button class="btn-draft">Save draft</button>
-            <button class="btn-publish">Publish product</button>
+                            
+                            <!-- Alert Messages -->
+                            <?php if (!empty($message)): ?>
+                                <div class="alert <?php echo $messageType == 'success' ? 'alert-success' : 'alert-danger'; ?>">
+                                    <?php echo $message; ?>
           </div>
-        </div>
-        <div class="content-wrapper">
-          <!-- Left Column -->
-          <div class="product-info">
-            <div class="card">
-              <h2>Product information</h2>
+                            <?php endif; ?>
+                            
+                            <!-- Form -->
+                            <form method="POST" id="addProductForm">
+                                <div class="row">
+                                    <div class="col-md-6">
               <div class="form-group">
-                <label>Name</label>
-                <input type="text" placeholder="Product title" />
-              </div>
-              <div class="form-group">
-                <label>SKU</label>
-                <input type="text" placeholder="SKU" />
-              </div>
-              <div class="form-group">
-                <label>Description (Optional)</label>
-                <div class="editor-toolbar">
-                  <button><i class="fas fa-bold"></i></button>
-                  <button><i class="fas fa-italic"></i></button>
-                  <button><i class="fas fa-underline"></i></button>
-                  <button><i class="fas fa-list-ul"></i></button>
-                  <button><i class="fas fa-list-ol"></i></button>
-                  <button><i class="fas fa-link"></i></button>
-                  <button><i class="fas fa-image"></i></button>
-                </div>
-                <textarea placeholder="Product Description"></textarea>
+                                            <label for="product_name" class="form-label">
+                                                <i class="fas fa-tag me-2"></i>Tên Sản Phẩm <span class="required">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   id="product_name" 
+                                                   name="product_name" 
+                                                   value="<?php echo isset($product_name) ? htmlspecialchars($product_name) : ''; ?>"
+                                                   placeholder="Nhập tên sản phẩm"
+                                                   maxlength="255"
+                                                   required>
+                                            <div class="form-help">Tối đa 255 ký tự</div>
               </div>
             </div>
-            <div class="card">
-              <h2>Product Image</h2>
-              <div class="image-upload">
-                <div class="upload-area">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                  <p>Drag and drop your image here</p>
-                  <span>or</span>
-                  <button class="btn-browse">Browse image</button>
-                </div>
-                <div class="media-url">
-                  <a href="#">Add media from URL</a>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="price" class="form-label">
+                                                <i class="fas fa-dollar-sign me-2"></i>Giá <span class="required">*</span>
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   id="price" 
+                                                   name="price" 
+                                                   value="<?php echo isset($price) ? $price : ''; ?>"
+                                                   placeholder="0.00"
+                                                   step="0.01"
+                                                   min="0"
+                                                   required>
+                                            <div class="form-help">Đơn vị: VNĐ</div>
                 </div>
               </div>
             </div>
-            <div class="card">
-              <h2>Variants</h2>
-              <div class="variants-section">
-                <label>Options</label>
-                <div class="option-row">
-                  <select>
-                    <option>Size</option>
-                  </select>
-                  <input type="text" placeholder="Enter size" />
-                </div>
-                <button class="btn-add-option">+ Add another option</button>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="stock" class="form-label">
+                                                <i class="fas fa-boxes me-2"></i>Số Lượng Tồn Kho <span class="required">*</span>
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   id="stock" 
+                                                   name="stock" 
+                                                   value="<?php echo isset($stock) ? $stock : ''; ?>"
+                                                   placeholder="0"
+                                                   min="0"
+                                                   required>
+                                            <div class="form-help">Số lượng sản phẩm có sẵn</div>
               </div>
             </div>
-            <div class="card">
-              <h2>Inventory</h2>
-              <div class="inventory-section">
-                <button class="btn-restock">
-                  <i class="fas fa-box"></i> Restock
-                </button>
-                <div class="inventory-options">
-                  <div class="option">
-                    <i class="fas fa-truck"></i> Shipping
-                  </div>
-                  <div class="option">
-                    <i class="fas fa-tags"></i> Attributes
-                  </div>
-                  <div class="option"><i class="fas fa-cog"></i> Advanced</div>
-                </div>
-                <div class="stock-info">
-                  <div class="stock-control">
-                    <label>Add to Stock</label>
-                    <div class="stock-input">
-                      <input type="number" placeholder="Quantity" />
-                      <button class="btn-confirm">Confirm</button>
-                    </div>
-                  </div>
-                  <div class="stock-stats">
-                    <p>Product in stock now: 54</p>
-                    <p>Product in transit: 390</p>
-                    <p>Last time restocked: 24th June, 2023</p>
-                    <p>Total stock over lifetime: 2430</p>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="genre_id" class="form-label">
+                                                <i class="fas fa-music me-2"></i>Dòng Nhạc
+                                            </label>
+                                            <select class="form-select" id="genre_id" name="genre_id">
+                                                <option value="">-- Chọn dòng nhạc --</option>
+                                                <?php foreach ($genres as $genre): ?>
+                                                <option value="<?php echo $genre['genre_id']; ?>" 
+                                                        <?php echo (isset($genre_id) && $genre_id == $genre['genre_id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($genre['genre_name']); ?>
+                                                </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div class="form-help">Chọn dòng nhạc phù hợp</div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <!-- Right Column -->
-          <div class="product-sidebar">
-            <div class="card">
-              <h2>Pricing</h2>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
               <div class="form-group">
-                <label>Base Price</label>
-                <input type="number" placeholder="Price" />
-              </div>
-              <div class="form-group">
-                <label>Discounted Price</label>
-                <input type="number" placeholder="Discounted Price" />
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="taxCheck" />
-                <label for="taxCheck">Charge tax on this product</label>
-              </div>
-              <div class="switch-container">
-                <label class="switch">
-                  <input type="checkbox" checked />
-                  <span class="slider round"></span>
+                                            <label for="artist_id" class="form-label">
+                                                <i class="fas fa-user-music me-2"></i>Nghệ Sĩ
                 </label>
-                <span class="switch-label">In stock</span>
+                                            <select class="form-select" id="artist_id" name="artist_id">
+                                                <option value="">-- Chọn nghệ sĩ --</option>
+                                                <?php foreach ($artists as $artist): ?>
+                                                <option value="<?php echo $artist['artist_id']; ?>" 
+                                                        <?php echo (isset($artist_id) && $artist_id == $artist['artist_id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($artist['artist_name']); ?>
+                                                </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div class="form-help">Chọn nghệ sĩ thực hiện</div>
               </div>
             </div>
-            <div class="card">
-              <h2>Organize</h2>
+                                    
+                                    <div class="col-md-6">
               <div class="form-group">
-                <label>Artist</label>
-                <div class="custom-select">
-                  <div class="select-selected">
-                    <span>Select Artist</span>
-                    <i class="fas fa-chevron-down"></i>
-                  </div>
-                  <div class="select-items">
-                    <div class="select-item">The Beatles</div>
-                    <div class="select-item">Adele</div>
-                    <div class="select-item">Pink Floyd</div>
-                    <div class="select-item">Queen</div>
-                    <div class="select-item">Led Zeppelin</div>
+                                            <label for="image_url" class="form-label">
+                                                <i class="fas fa-image me-2"></i>URL Hình Ảnh <span class="required">*</span>
+                                            </label>
+                                            <input type="url" 
+                                                   class="form-control" 
+                                                   id="image_url" 
+                                                   name="image_url" 
+                                                   value="<?php echo isset($image_url) ? htmlspecialchars($image_url) : ''; ?>"
+                                                   placeholder="https://example.com/image.jpg"
+                                                   required>
+                                            <div class="form-help">URL hình ảnh sản phẩm</div>
+                                            <img id="image_preview" class="image-preview" alt="Preview">
                   </div>
                 </div>
               </div>
+                                
               <div class="form-group">
-                <label>Vendor</label>
-                <div class="custom-select">
-                  <div class="select-selected">
-                    <span>Select Vendor</span>
-                    <i class="fas fa-chevron-down"></i>
+                                    <label for="description" class="form-label">
+                                        <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="description" 
+                                              name="description" 
+                                              rows="6"
+                                              placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                                              required><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
+                                    <div class="form-help">Mô tả đầy đủ về sản phẩm, bao gồm thông tin về album, ca khúc, v.v.</div>
                   </div>
-                  <div class="select-items">
-                    <div class="select-item">Vendor 1</div>
-                    <div class="select-item">Vendor 2</div>
-                    <div class="select-item">Vendor 3</div>
+                                
+                                <div class="form-buttons">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Thêm Sản Phẩm
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-undo me-2"></i>Đặt Lại
+                                    </button>
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Category</label>
-                <div class="category-input">
-                  <div class="custom-select">
-                    <div class="select-selected">
-                      <span>Select Category</span>
-                      <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="select-items">
-                      <div class="select-item">Category 1</div>
-                      <div class="select-item">Category 2</div>
-                      <div class="select-item">Category 3</div>
-                    </div>
-                  </div>
-                  <button class="btn-add"><i class="fas fa-plus"></i></button>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Collection</label>
-                <div class="custom-select">
-                  <div class="select-selected">
-                    <span>Collection</span>
-                    <i class="fas fa-chevron-down"></i>
-                  </div>
-                  <div class="select-items">
-                    <div class="select-item">Collection 1</div>
-                    <div class="select-item">Collection 2</div>
-                    <div class="select-item">Collection 3</div>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Status</label>
-                <div class="custom-select">
-                  <div class="select-selected">
-                    <span>Published</span>
-                    <i class="fas fa-chevron-down"></i>
-                  </div>
-                  <div class="select-items">
-                    <div class="select-item">Published</div>
-                    <div class="select-item">Draft</div>
+                            </form>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
+            
+            <?php 
+            if (file_exists(__DIR__.'/../../dashboard/footer.php')) {
+                include __DIR__.'/../../dashboard/footer.php'; 
+            }
+            ?>
       </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+    
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Get all custom select elements
-        const customSelects = document.querySelectorAll(".custom-select");
-
-        // Handle click outside to close dropdowns
-        document.addEventListener("click", function (e) {
-          if (!e.target.closest(".custom-select")) {
-            customSelects.forEach((select) => {
-              select.classList.remove("active");
-            });
-          }
+        // Validate form trước khi submit
+        $('#addProductForm').submit(function(e) {
+            const productName = $('#product_name').val().trim();
+            const description = $('#description').val().trim();
+            const price = parseFloat($('#price').val());
+            const stock = parseInt($('#stock').val());
+            const imageUrl = $('#image_url').val().trim();
+            
+            if (!productName) {
+                alert('Vui lòng nhập tên sản phẩm');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (productName.length > 255) {
+                alert('Tên sản phẩm không được vượt quá 255 ký tự');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (!description) {
+                alert('Vui lòng nhập mô tả');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (isNaN(price) || price <= 0) {
+                alert('Vui lòng nhập giá hợp lệ (lớn hơn 0)');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (isNaN(stock) || stock < 0) {
+                alert('Vui lòng nhập số lượng tồn kho hợp lệ (không âm)');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (!imageUrl) {
+                alert('Vui lòng nhập URL hình ảnh');
+                e.preventDefault();
+                return false;
+            }
+            
+            return true;
         });
-
-        // Setup each custom select
-        customSelects.forEach((select) => {
-          const selected = select.querySelector(".select-selected");
-          const items = select.querySelector(".select-items");
-          const selectedText = selected.querySelector("span");
-
-          // Toggle dropdown on click
-          selected.addEventListener("click", function (e) {
-            e.stopPropagation();
-            customSelects.forEach((otherSelect) => {
-              if (otherSelect !== select) {
-                otherSelect.classList.remove("active");
-              }
-            });
-            select.classList.toggle("active");
+        
+        // Auto-resize textarea
+        $('textarea').on('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
           });
 
-          // Handle item selection
-          const selectItems = items.querySelectorAll(".select-item");
-          selectItems.forEach((item) => {
-            item.addEventListener("click", function () {
-              selectedText.textContent = this.textContent;
-              selectItems.forEach((si) => si.classList.remove("selected"));
-              this.classList.add("selected");
-              select.classList.remove("active");
-            });
-          });
+        // Image preview
+        $('#image_url').on('input', function() {
+            const url = $(this).val().trim();
+            const preview = $('#image_preview');
+            
+            if (url) {
+                preview.attr('src', url).show();
+                preview.on('error', function() {
+                    $(this).hide();
+                });
+            } else {
+                preview.hide();
+            }
         });
+        
+        // Format price input
+        $('#price').on('input', function() {
+            let value = $(this).val();
+            if (value && !isNaN(value)) {
+                $(this).val(parseFloat(value).toFixed(2));
+            }
       });
     </script>
   </body>

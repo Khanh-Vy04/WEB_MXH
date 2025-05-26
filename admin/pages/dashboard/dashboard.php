@@ -1,3 +1,12 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Debug: In ra thông tin request
+echo "Debug: Dashboard page accessed<br>";
+echo "Request Method: " . $_SERVER['REQUEST_METHOD'] . "<br>";
+echo "Request URI: " . $_SERVER['REQUEST_URI'] . "<br>";
+?>
 <!DOCTYPE html>
 <html lang="vi">
 

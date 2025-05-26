@@ -75,16 +75,17 @@ CREATE TABLE `artists` (
   `artist_id` int(11) NOT NULL,
   `artist_name` varchar(255) NOT NULL,
   `bio` longtext NOT NULL,
-  `image_url` varchar(255) NOT NULL
+  `image_url` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `artists`
 --
 
-INSERT INTO `artists` (`artist_id`, `artist_name`, `bio`, `image_url`) VALUES
-(1, 'The Beatles', 'The Beatles là ban nhạc rock người Anh được thành lập tại Liverpool năm 1960. Gồm John Lennon, Paul McCartney, George Harrison và Ringo Starr, họ được coi là ban nhạc có ảnh hưởng nhất trong lịch sử âm nhạc đại chúng. Với những album kinh điển như "Abbey Road", "Sgt. Pepper\'s Lonely Hearts Club Band", The Beatles đã thay đổi hoàn toàn bộ mặt của âm nhạc rock và pop.', 'https://upload.wikimedia.org/wikipedia/commons/d/df/The_Fabs.JPG'),
-(2, 'Adele', 'Adele Laurie Blue Adkins MBE là một ca sĩ kiêm nhạc sĩ người Anh. Cô nổi tiếng với giọng hát nội lực đầy cảm xúc và khả năng sáng tác những bản ballad sâu sắc về tình yêu và cuộc sống. Với các album "19", "21", "25" và "30", Adele đã giành được nhiều giải Grammy và trở thành một trong những nghệ sĩ bán đĩa nhạc thành công nhất thế giới.', 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Adele_2016.jpg');
+INSERT INTO `artists` (`artist_id`, `artist_name`, `bio`, `image_url`, `status`) VALUES
+(1, 'The Beatles', 'The Beatles là ban nhạc rock người ANH được thành lập tại Liverpool năm 1960. Gồm John Lennon, Paul McCartney, George Harrison và Ringo Starr, họ được coi là ban nhạc có ảnh hưởng nhất trong lịch sử âm nhạc đại chúng. Với những album kinh điển như "Abbey Road", "Sgt. Pepper\'s Lonely Hearts Club Band", The Beatles đã thay đổi hoàn toàn bộ mặt của âm nhạc rock và pop.', 'https://upload.wikimedia.org/wikipedia/commons/d/df/The_Fabs.JPG', 1),
+(2, 'Adele', 'Adele Laurie Blue Adkins MBE là một ca sĩ kiêm nhạc sĩ người Anh. Cô nổi tiếng với giọng hát nội lực đầy cảm xúc và khả năng sáng tác những bản ballad sâu sắc về tình yêu và cuộc sống. Với các album "19", "21", "25" và "30", Adele đã giành được nhiều giải Grammy và trở thành một trong những nghệ sĩ bán đĩa nhạc thành công nhất thế giới.', 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Adele_2016.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -293,17 +294,22 @@ CREATE TABLE `payments` (
 
 CREATE TABLE `products` (
   `product_id` int(11) NOT NULL,
-  `genre_id` int(11) NOT NULL,
-  `accessory_id` int(11) NOT NULL,
   `product_name` varchar(255) NOT NULL,
-  `color` varchar(255) NOT NULL,
+  `description` longtext NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock` int(11) NOT NULL,
-  `description` longtext NOT NULL,
   `image_url` varchar(255) NOT NULL,
-  `created_a` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `stock`, `image_url`) VALUES
+(1, 'Abbey Road - The Beatles', 'Album huyền thoại của The Beatles được phát hành năm 1969. Bao gồm các ca khúc nổi tiếng như "Come Together", "Something", "Here Comes the Sun". Đây là album cuối cùng được thu âm bởi ban nhạc.', 29.99, 50, 'https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg'),
+(2, '21 - Adele', 'Album phòng thu thứ hai của Adele, phát hành năm 2011. Album bao gồm các hit như "Rolling in the Deep", "Someone Like You", "Set Fire to the Rain". Đã giành được nhiều giải thưởng Grammy.', 24.99, 45, 'https://upload.wikimedia.org/wikipedia/en/1/1b/Adele_-_21.png');
 
 -- --------------------------------------------------------
 
@@ -377,6 +383,14 @@ CREATE TABLE `roles` (
   `description` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`role_id`, `role_name`, `description`) VALUES
+(1, 'admin', 'Quản trị viên hệ thống'),
+(2, 'user', 'Người dùng thông thường');
+
 -- --------------------------------------------------------
 
 --
@@ -440,6 +454,14 @@ CREATE TABLE `users` (
   `phone` varchar(20) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `role_id`, `username`, `password`, `email`, `full_name`, `gender`, `phone`, `created_at`) VALUES
+(1, 1, 'admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@auradisc.com', 'Administrator', 'Nam', '0123456789', '2024-03-20 10:00:00'),
+(2, 2, 'user', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user@auradisc.com', 'Normal User', 'Nam', '0987654321', '2024-03-20 10:00:00');
 
 -- --------------------------------------------------------
 
@@ -590,9 +612,7 @@ ALTER TABLE `payments`
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`product_id`),
-  ADD KEY `products_genre_id` (`genre_id`),
-  ADD KEY `products_accessory_id` (`accessory_id`);
+  ADD PRIMARY KEY (`product_id`);
 
 --
 -- Indexes for table `product_variants`
@@ -937,9 +957,7 @@ ALTER TABLE `payments`
 --
 -- Constraints for table `products`
 --
-ALTER TABLE `products`
-  ADD CONSTRAINT `products_accessory_id` FOREIGN KEY (`accessory_id`) REFERENCES `accessories` (`accessorie_id`),
-  ADD CONSTRAINT `products_genre_id` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`genre_id`);
+-- (Không có ràng buộc khóa ngoại cho bảng products)
 
 --
 -- Constraints for table `product_variants`
