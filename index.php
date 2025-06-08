@@ -23,6 +23,7 @@ if (isset($_GET['clear_session'])) {
 
 // Kiểm tra kết nối database
 require_once 'config/database.php';
+require_once 'includes/session.php';
 
 if (!isset($conn) || $conn->connect_error) {
     die("Lỗi kết nối database: " . $conn->connect_error);
@@ -68,6 +69,12 @@ if (isset($_POST['login'])) {
             // Kiểm tra mật khẩu
             if (password_verify($password, $user['password'])) {
                 echo "Debug: Password verified successfully<br>";
+                
+                // Lưu session trước khi redirect
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['user_role'] = ($user['role_id'] == 1) ? 'admin' : 'user';
+                $_SESSION['login_time'] = time();
                 
                 // Chuyển hướng dựa vào role_id
                 if ($user['role_id'] == 1) {
@@ -337,5 +344,23 @@ if (isset($_POST['register'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        console.log("Debug: Trang đăng nhập đã load");
+        console.log("Session status: <?php echo session_status(); ?>");
+        console.log("Session ID: <?php echo session_id(); ?>");
+        
+        // Debug form submit
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            console.log("Debug: Form đăng nhập được submit");
+            var username = document.getElementById('login_username').value;
+            console.log("Debug: Username:", username);
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            console.log("Debug: Form đăng ký được submit");
+            var username = document.getElementById('reg_username').value;
+            console.log("Debug: Register username:", username);
+        });
+    </script>
 </body>
 </html> 

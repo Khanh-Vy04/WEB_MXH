@@ -1,8 +1,17 @@
 <?php
-// Kết nối database để lấy banner
+// Kết nối database và khởi tạo session
 require_once '../config/database.php';
+require_once '../includes/session.php';
 
-// Lấy danh sách banner active
+// Kiểm tra đăng nhập và hiển thị popup nếu chưa đăng nhập
+if (!requireLoginWithPopup()) {
+    exit();
+}
+
+// Lấy thông tin user nếu đã đăng nhập
+$current_user = getCurrentUser();
+
+// Kết nối database để lấy banner
 $banner_sql = "SELECT * FROM banners WHERE is_active = 1 ORDER BY display_order ASC, banner_id ASC";
 $banner_result = $conn->query($banner_sql);
 $banners = [];
@@ -39,6 +48,29 @@ $genres = [];
 if ($result_genres->num_rows > 0) {
     while($row = $result_genres->fetch_assoc()) {
         $genres[] = $row;
+    }
+}
+
+// Lấy voucher khả dụng (còn hiệu lực và đang active)
+$sql_vouchers = "SELECT v.*, 
+    CASE WHEN uv.user_voucher_id IS NOT NULL THEN 1 ELSE 0 END as user_owned
+    FROM vouchers v 
+    LEFT JOIN user_vouchers uv ON v.voucher_id = uv.voucher_id AND uv.user_id = ?
+    WHERE v.is_active = 1 
+    AND v.start_date <= CURDATE() 
+    AND v.end_date >= CURDATE()
+    AND (v.usage_limit IS NULL OR v.used_count < v.usage_limit)
+    ORDER BY v.created_at DESC";
+
+$user_id = $current_user ? $current_user['user_id'] : 0;
+$stmt_vouchers = $conn->prepare($sql_vouchers);
+$stmt_vouchers->bind_param("i", $user_id);
+$stmt_vouchers->execute();
+$result_vouchers = $stmt_vouchers->get_result();
+$vouchers = [];
+if ($result_vouchers->num_rows > 0) {
+    while($row = $result_vouchers->fetch_assoc()) {
+        $vouchers[] = $row;
     }
 }
 ?>
@@ -245,6 +277,357 @@ if ($result_genres->num_rows > 0) {
                 box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
                 color: white;
             }
+
+            .btn-view-product {
+                display: inline-block;
+                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 20px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                text-align: center;
+                margin-top: 15px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            
+            .btn-view-product:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+                color: white;
+                text-decoration: none;
+            }
+
+            /* Voucher Styles */
+            .vouchers {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .voucher-slider-wrapper {
+                position: relative;
+                margin: 0 50px;
+            }
+
+            .voucher-card {
+                background: white;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                margin: 10px;
+                transition: all 0.3s ease;
+                position: relative;
+                border: 3px solid transparent;
+                background-clip: padding-box;
+            }
+
+            .voucher-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            }
+
+            .voucher-card.owned {
+                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+                border-color: #ffd700;
+            }
+
+            .voucher-card.owned:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 237, 78, 0.1) 100%);
+                z-index: 1;
+            }
+
+            .voucher-header {
+                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                color: white;
+                padding: 20px;
+                text-align: center;
+                position: relative;
+            }
+
+            .voucher-card.owned .voucher-header {
+                background: linear-gradient(135deg, #ffa000 0%, #ff8f00 100%);
+            }
+
+            .voucher-type {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-bottom: 10px;
+                opacity: 0.9;
+            }
+
+            .voucher-value .value {
+                font-size: 2.2rem;
+                font-weight: 900;
+                display: block;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+
+            .voucher-value small {
+                font-size: 0.7rem;
+                opacity: 0.8;
+                display: block;
+                margin-top: 5px;
+            }
+
+            .voucher-body {
+                padding: 25px 20px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .voucher-name {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 8px;
+                line-height: 1.3;
+            }
+
+            .voucher-desc {
+                color: #666;
+                font-size: 0.9rem;
+                line-height: 1.4;
+                margin-bottom: 15px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .voucher-code {
+                background: #f8f9fa;
+                border: 2px dashed #ff6b35;
+                border-radius: 8px;
+                padding: 10px;
+                text-align: center;
+                margin-bottom: 15px;
+                font-family: 'Courier New', monospace;
+                font-weight: 600;
+                color: #ff6b35;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .voucher-conditions {
+                margin-bottom: 15px;
+            }
+
+            .condition {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 0.85rem;
+                color: #666;
+                margin-bottom: 5px;
+            }
+
+            .condition i {
+                color: #ff6b35;
+                width: 14px;
+            }
+
+            .voucher-footer {
+                padding: 0 20px 20px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .btn-claim-voucher, .btn-claimed {
+                width: 100%;
+                padding: 12px;
+                border: none;
+                border-radius: 25px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .btn-claim-voucher {
+                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                color: white;
+                box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            }
+
+            .btn-claim-voucher:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            }
+
+            .btn-claim-voucher:active {
+                transform: translateY(0);
+            }
+
+            .btn-claimed {
+                background: #28a745;
+                color: white;
+                cursor: default;
+                opacity: 0.8;
+            }
+
+            .owned-badge {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: #ffd700;
+                color: #333;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+                z-index: 3;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+
+            /* Voucher Navigation */
+            .voucher-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                pointer-events: none;
+                z-index: 4;
+            }
+
+            .voucher-prev, .voucher-next {
+                background: rgba(255, 107, 53, 0.9);
+                color: white;
+                border: none;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                transition: all 0.3s ease;
+                pointer-events: all;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+
+            .voucher-prev:hover, .voucher-next:hover {
+                background: rgba(255, 107, 53, 1);
+                transform: scale(1.1);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            }
+
+            .voucher-prev {
+                left: -25px;
+            }
+
+            .voucher-next {
+                right: -25px;
+            }
+
+            /* Owl Carousel Custom Styles for Vouchers */
+            #voucherSlider .owl-dots {
+                text-align: center;
+                margin-top: 30px;
+            }
+
+            #voucherSlider .owl-dot {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                background: rgba(255, 107, 53, 0.3);
+                border-radius: 50%;
+                margin: 0 5px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            #voucherSlider .owl-dot.active {
+                background: #ff6b35;
+                transform: scale(1.3);
+            }
+
+            /* Loading Animation */
+            .voucher-loading {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+            .voucher-loading .btn-claim-voucher {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+
+            /* Success Animation */
+            @keyframes claimSuccess {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); background: #28a745; }
+                100% { transform: scale(1); background: #28a745; }
+            }
+
+            .claim-success {
+                animation: claimSuccess 0.6s ease;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .voucher-slider-wrapper {
+                    margin: 0 20px;
+                }
+                
+                .voucher-prev {
+                    left: -10px;
+                }
+                
+                .voucher-next {
+                    right: -10px;
+                }
+                
+                .voucher-prev, .voucher-next {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1rem;
+                }
+                
+                .voucher-value .value {
+                    font-size: 1.8rem;
+                }
+                
+                .voucher-name {
+                    font-size: 1.1rem;
+                }
+            }
         </style>
 
     </head>
@@ -348,9 +731,9 @@ if ($result_genres->num_rows > 0) {
 							<div class="product-info">
 								<h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
 								<div class="product-price">$<?php echo number_format($product['price'], 2); ?></div>
-								<button class="btn-cart welcome-add-cart">
-									<span class="lnr lnr-cart"></span> Thêm vào giỏ
-								</button>
+								<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
+									<i class="fa fa-eye"></i> Xem sản phẩm
+								</a>
 									</div>
 									</div>
 								</div>
@@ -419,6 +802,99 @@ if ($result_genres->num_rows > 0) {
 								</div>
 		</section><!--/.genres-->
 		<!--genres end -->
+
+		<!--vouchers start -->
+		<?php if (!empty($vouchers)): ?>
+		<section id="vouchers" class="vouchers section-padding" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+			<div class="container">
+				<div class="section-title">
+					<h2>Voucher Khuyến Mãi</h2>
+					<p>Nhận ngay các voucher hấp dẫn để tiết kiệm chi phí mua sắm</p>
+				</div>
+				
+				<div class="voucher-slider-wrapper">
+					<div class="owl-carousel owl-theme" id="voucherSlider">
+						<?php foreach ($vouchers as $voucher): ?>
+						<div class="item">
+							<div class="voucher-card <?php echo $voucher['user_owned'] ? 'owned' : ''; ?>" data-voucher-id="<?php echo $voucher['voucher_id']; ?>">
+								<div class="voucher-header">
+									<div class="voucher-type">
+										<?php if ($voucher['discount_type'] == 'percentage'): ?>
+											<i class="fa fa-percentage"></i>
+											<span>PHẦN TRĂM</span>
+										<?php else: ?>
+											<i class="fa fa-dollar"></i>
+											<span>SỐ TIỀN</span>
+										<?php endif; ?>
+									</div>
+									<div class="voucher-value">
+										<?php if ($voucher['discount_type'] == 'percentage'): ?>
+											<span class="value"><?php echo $voucher['discount_value']; ?>%</span>
+											<?php if ($voucher['max_discount_amount']): ?>
+												<small>Tối đa <?php echo number_format($voucher['max_discount_amount']); ?>đ</small>
+											<?php endif; ?>
+										<?php else: ?>
+											<span class="value"><?php echo number_format($voucher['discount_value']); ?>đ</span>
+										<?php endif; ?>
+									</div>
+								</div>
+								
+								<div class="voucher-body">
+									<h4 class="voucher-name"><?php echo htmlspecialchars($voucher['voucher_name']); ?></h4>
+									<p class="voucher-desc"><?php echo htmlspecialchars($voucher['description']); ?></p>
+									
+									<div class="voucher-code">
+										<i class="fa fa-ticket"></i>
+										<span><?php echo $voucher['voucher_code']; ?></span>
+									</div>
+									
+									<div class="voucher-conditions">
+										<?php if ($voucher['min_order_amount'] > 0): ?>
+											<div class="condition">
+												<i class="fa fa-shopping-cart"></i>
+												<span>Đơn tối thiểu: <?php echo number_format($voucher['min_order_amount']); ?>đ</span>
+											</div>
+										<?php endif; ?>
+										
+										<div class="condition">
+											<i class="fa fa-calendar"></i>
+											<span>HSD: <?php echo date('d/m/Y', strtotime($voucher['end_date'])); ?></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="voucher-footer">
+									<?php if ($voucher['user_owned']): ?>
+										<button class="btn-claimed" disabled>
+											<i class="fa fa-check"></i> Đã sở hữu
+										</button>
+									<?php else: ?>
+										<button class="btn-claim-voucher" data-voucher-id="<?php echo $voucher['voucher_id']; ?>">
+											<i class="fa fa-gift"></i> Lấy voucher
+										</button>
+									<?php endif; ?>
+								</div>
+								
+								<?php if ($voucher['user_owned']): ?>
+									<div class="owned-badge">
+										<i class="fa fa-crown"></i>
+									</div>
+								<?php endif; ?>
+							</div>
+						</div>
+						<?php endforeach; ?>
+					</div>
+					
+					<!-- Custom Navigation -->
+					<div class="voucher-nav">
+						<button class="voucher-prev"><i class="fa fa-chevron-left"></i></button>
+						<button class="voucher-next"><i class="fa fa-chevron-right"></i></button>
+					</div>
+				</div>
+			</div>
+		</section>
+		<?php endif; ?>
+		<!--vouchers end -->
 
 		<!-- clients strat -->
 		<section id="clients"  class="clients">
@@ -563,6 +1039,9 @@ if ($result_genres->num_rows > 0) {
         </footer><!--/.footer-->
 		<!--footer end-->
 		
+		<!-- Include Chat Widget -->
+		<?php include 'includes/chat-widget.php'; ?>
+		
 		<!-- Include all js compiled plugins (below), or include individual files as needed -->
 
 		<script src="assets/js/jquery.js"></script>
@@ -585,6 +1064,12 @@ if ($result_genres->num_rows > 0) {
         
         <!--Custom JS-->
         <script src="assets/js/custom.js"></script>
+        
+        <!-- Chat Widget CSS -->
+        <link rel="stylesheet" href="includes/chat-widget.css">
+        
+        <!-- Chat Widget JS -->
+        <script src="includes/chat-widget.js"></script>
         
         <!-- Banner Slider CSS -->
         <style>
@@ -979,6 +1464,158 @@ if ($result_genres->num_rows > 0) {
             }
         }
         </style>
+        
+        <script>
+            console.log("Debug: Trang user/index.php đã load");
+            console.log("User đã đăng nhập:", <?php echo isLoggedIn() ? 'true' : 'false'; ?>);
+            <?php if ($current_user): ?>
+            console.log("Thông tin user:", {
+                user_id: "<?php echo $current_user['user_id']; ?>",
+                username: "<?php echo $current_user['username']; ?>",
+                full_name: "<?php echo $current_user['full_name']; ?>"
+            });
+            <?php else: ?>
+            console.log("Không có thông tin user");
+            <?php endif; ?>
+            console.log("Session ID:", "<?php echo session_id(); ?>");
+            console.log("Session status:", <?php echo session_status(); ?>);
+            
+            // Voucher Slider và Claim Functions
+            $(document).ready(function() {
+                // Initialize Voucher Slider
+                if ($('#voucherSlider').length) {
+                    var voucherSlider = $('#voucherSlider').owlCarousel({
+                        items: 3,
+                        loop: true,
+                        margin: 20,
+                        nav: false,
+                        dots: true,
+                        autoplay: true,
+                        autoplayTimeout: 5000,
+                        autoplayHoverPause: true,
+                        responsive: {
+                            0: {
+                                items: 1
+                            },
+                            768: {
+                                items: 2
+                            },
+                            992: {
+                                items: 3
+                            }
+                        }
+                    });
+                    
+                    // Custom Navigation
+                    $('.voucher-prev').click(function() {
+                        voucherSlider.trigger('prev.owl.carousel');
+                    });
+                    
+                    $('.voucher-next').click(function() {
+                        voucherSlider.trigger('next.owl.carousel');
+                    });
+                }
+                
+                // Claim Voucher Function
+                $('.btn-claim-voucher').click(function() {
+                    var button = $(this);
+                    var voucherId = button.data('voucher-id');
+                    var voucherCard = button.closest('.voucher-card');
+                    
+                    // Disable button and show loading
+                    button.prop('disabled', true);
+                    button.html('<i class="fa fa-spinner fa-spin"></i> Đang lấy...');
+                    voucherCard.addClass('voucher-loading');
+                    
+                    $.ajax({
+                        url: 'ajax/claim_voucher.php',
+                        type: 'POST',
+                        data: {
+                            voucher_id: voucherId
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                // Success animation
+                                button.removeClass('btn-claim-voucher').addClass('btn-claimed claim-success');
+                                button.html('<i class="fa fa-check"></i> Đã sở hữu');
+                                
+                                // Add owned class to card
+                                voucherCard.addClass('owned');
+                                
+                                // Add owned badge
+                                if (!voucherCard.find('.owned-badge').length) {
+                                    voucherCard.append('<div class="owned-badge"><i class="fa fa-crown"></i></div>');
+                                }
+                                
+                                // Show success message
+                                showNotification('success', response.message);
+                                
+                                // Optional: Show voucher code
+                                if (response.voucher_code) {
+                                    setTimeout(function() {
+                                        showNotification('info', 'Mã voucher của bạn: ' + response.voucher_code);
+                                    }, 1500);
+                                }
+                            } else {
+                                // Error handling
+                                button.prop('disabled', false);
+                                button.html('<i class="fa fa-gift"></i> Lấy voucher');
+                                showNotification('error', response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            // Network error handling
+                            button.prop('disabled', false);
+                            button.html('<i class="fa fa-gift"></i> Lấy voucher');
+                            showNotification('error', 'Lỗi kết nối. Vui lòng thử lại sau.');
+                            console.error('AJAX Error:', error);
+                        },
+                        complete: function() {
+                            voucherCard.removeClass('voucher-loading');
+                        }
+                    });
+                });
+                
+                // Notification Function
+                function showNotification(type, message) {
+                    var notificationClass = 'alert-success';
+                    var icon = 'fa-check-circle';
+                    
+                    if (type === 'error') {
+                        notificationClass = 'alert-danger';
+                        icon = 'fa-exclamation-circle';
+                    } else if (type === 'info') {
+                        notificationClass = 'alert-info';
+                        icon = 'fa-info-circle';
+                    }
+                    
+                    var notification = $('<div class="voucher-notification alert ' + notificationClass + ' alert-dismissible fade show" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">' +
+                        '<i class="fa ' + icon + ' me-2"></i>' + message +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                        '</div>');
+                    
+                    $('body').append(notification);
+                    
+                    // Auto remove after 5 seconds
+                    setTimeout(function() {
+                        notification.fadeOut(function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+                }
+                
+                // Voucher card hover effects
+                $('.voucher-card').hover(
+                    function() {
+                        $(this).find('.voucher-header').css('transform', 'scale(1.02)');
+                    },
+                    function() {
+                        $(this).find('.voucher-header').css('transform', 'scale(1)');
+                    }
+                );
+            });
+        </script>
         
     </body>
 	

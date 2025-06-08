@@ -141,6 +141,27 @@ if ($result->num_rows > 0) {
             box-shadow: none;
         }
         
+        .btn-view-product {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn-view-product:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
         .accessory-card.hidden {
             display: none;
         }
@@ -248,14 +269,15 @@ if ($result->num_rows > 0) {
                             <?php echo htmlspecialchars($accessory['description']); ?>
                         </p>
                         
-                        <button class="btn btn-add-to-cart" 
-                                <?php echo $stock <= 0 ? 'disabled' : ''; ?>>
-                            <?php if ($stock <= 0): ?>
+                        <?php if ($stock <= 0): ?>
+                            <button class="btn btn-add-to-cart" disabled>
                                 <i class="fa fa-times"></i> Hết Hàng
-                            <?php else: ?>
-                                <i class="fa fa-shopping-cart"></i> Thêm Vào Giỏ
-                            <?php endif; ?>
-                        </button>
+                            </button>
+                        <?php else: ?>
+                            <a href="product-detail.php?type=accessory&id=<?php echo $accessory['accessory_id']; ?>" class="btn btn-view-product">
+                                <i class="fa fa-eye"></i> Xem sản phẩm
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endforeach; ?>

@@ -259,6 +259,37 @@ if ($artist_id > 0) {
             opacity: 0.8;
         }
         
+        .product-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-view-product {
+            display: block;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .btn-view-product:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-view-product i {
+            margin-right: 8px;
+        }
+
         @media (max-width: 768px) {
             .artist-name {
                 font-size: 2rem;
@@ -365,6 +396,12 @@ if ($artist_id > 0) {
                                     <i class="fa fa-times-circle"></i> Hết hàng
                                 <?php endif; ?>
                             </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
+                                <i class="fa fa-eye"></i> Xem sản phẩm
+                            </a>
                         </div>
                     </div>
                 </div>

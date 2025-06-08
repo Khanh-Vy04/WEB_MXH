@@ -242,6 +242,30 @@ $total_count = $week_count + $month_count;
             box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
         }
         
+        .btn-view-product {
+            display: block;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-view-product:hover {
+            background: linear-gradient(135deg, #e55a2b, #e08420);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
         .no-products {
             text-align: center;
             padding: 60px 20px;
@@ -382,9 +406,9 @@ $total_count = $week_count + $month_count;
                             <i class="fa fa-calendar"></i> <?php echo $created_date->format('d/m/Y H:i'); ?>
                         </div>
                         
-                        <button class="btn-add-cart">
-                            <i class="fa fa-cart-plus"></i> Thêm vào giỏ
-                        </button>
+                        <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
+                            <i class="fa fa-eye"></i> Xem sản phẩm
+                        </a>
                     </div>
                 </div>
             </div>
@@ -439,9 +463,9 @@ $total_count = $week_count + $month_count;
                             <i class="fa fa-calendar"></i> <?php echo $created_date->format('d/m/Y H:i'); ?>
                         </div>
                         
-                        <button class="btn-add-cart">
-                            <i class="fa fa-cart-plus"></i> Thêm vào giỏ
-                        </button>
+                        <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
+                            <i class="fa fa-eye"></i> Xem sản phẩm
+                        </a>
                     </div>
                 </div>
             </div>

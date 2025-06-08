@@ -1,0 +1,865 @@
+<?php
+// Kết nối database và khởi tạo session
+require_once '../config/database.php';
+require_once '../includes/session.php';
+
+// Lấy thông tin user nếu đã đăng nhập
+$current_user = getCurrentUser();
+
+// Lấy tham số từ URL
+$type = isset($_GET['type']) ? $_GET['type'] : 'product'; // product hoặc accessory
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if ($id <= 0) {
+    header("Location: index.php");
+    exit();
+}
+
+$product_data = null;
+$artist_info = null;
+$reviews = [];
+$related_products = [];
+
+if ($type === 'product') {
+    // Lấy thông tin sản phẩm
+    $sql = "SELECT p.*, g.genre_name 
+            FROM products p 
+            LEFT JOIN genres g ON p.genre_id = g.genre_id 
+            WHERE p.product_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $product_data = $result->fetch_assoc();
+        
+        // Lấy thông tin nghệ sĩ
+        $artist_sql = "SELECT a.* FROM artists a 
+                       JOIN artist_products ap ON a.artist_id = ap.artist_id 
+                       WHERE ap.product_id = ?";
+        $artist_stmt = $conn->prepare($artist_sql);
+        $artist_stmt->bind_param("i", $id);
+        $artist_stmt->execute();
+        $artist_result = $artist_stmt->get_result();
+        if ($artist_result->num_rows > 0) {
+            $artist_info = $artist_result->fetch_assoc();
+        }
+        
+        // Lấy đánh giá
+        $review_sql = "SELECT r.*, u.username, u.full_name 
+                       FROM reviews r 
+                       JOIN users u ON r.buyer_id = u.user_id 
+                       WHERE r.product_id = ? 
+                       ORDER BY r.created_at DESC LIMIT 5";
+        $review_stmt = $conn->prepare($review_sql);
+        $review_stmt->bind_param("i", $id);
+        $review_stmt->execute();
+        $review_result = $review_stmt->get_result();
+        while ($row = $review_result->fetch_assoc()) {
+            $reviews[] = $row;
+        }
+        
+        // Lấy sản phẩm liên quan
+        $related_sql = "SELECT p.* FROM products p 
+                        LEFT JOIN artist_products ap ON p.product_id = ap.product_id 
+                        WHERE p.product_id != ? 
+                        AND (ap.artist_id IN (
+                            SELECT artist_id FROM artist_products WHERE product_id = ?
+                        ) OR p.genre_id = ?) 
+                        LIMIT 4";
+        $related_stmt = $conn->prepare($related_sql);
+        $related_stmt->bind_param("iii", $id, $id, $product_data['genre_id']);
+        $related_stmt->execute();
+        $related_result = $related_stmt->get_result();
+        while ($row = $related_result->fetch_assoc()) {
+            $related_products[] = $row;
+        }
+    }
+} else {
+    // Lấy thông tin accessory
+    $sql = "SELECT * FROM accessories WHERE accessory_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $product_data = $result->fetch_assoc();
+        // Chuyển đổi tên trường để thống nhất
+        $product_data['product_name'] = $product_data['accessory_name'];
+        $product_data['product_id'] = $product_data['accessory_id'];
+        
+        // Lấy accessories liên quan
+        $related_sql = "SELECT * FROM accessories WHERE accessory_id != ? LIMIT 4";
+        $related_stmt = $conn->prepare($related_sql);
+        $related_stmt->bind_param("i", $id);
+        $related_stmt->execute();
+        $related_result = $related_stmt->get_result();
+        while ($row = $related_result->fetch_assoc()) {
+            $row['product_name'] = $row['accessory_name'];
+            $row['product_id'] = $row['accessory_id'];
+            $related_products[] = $row;
+        }
+    }
+}
+
+if (!$product_data) {
+    header("Location: index.php");
+    exit();
+}
+
+// Tính trung bình rating
+$avg_rating = 0;
+$total_reviews = 0;
+if (!empty($reviews)) {
+    $total_rating = array_sum(array_column($reviews, 'rating'));
+    $total_reviews = count($reviews);
+    $avg_rating = $total_rating / $total_reviews;
+}
+?>
+
+<!doctype html>
+<html class="no-js" lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title><?php echo htmlspecialchars($product_data['product_name']); ?> - AuraDisc</title>
+    
+    <!-- For favicon png -->
+    <link rel="shortcut icon" type="image/icon" href="assets/logo/favicon.png"/>
+    
+    <!--font-awesome.min.css-->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <!--linear icon css-->
+    <link rel="stylesheet" href="assets/css/linearicons.css">
+    <!--animate.css-->
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <!--owl.carousel.css-->
+    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+    <!--bootstrap.min.css-->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- bootsnav -->
+    <link rel="stylesheet" href="assets/css/bootsnav.css">
+    <!--style.css-->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!--responsive.css-->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Product Detail Styles */
+        .product-detail-section {
+            padding: 50px 0;
+            background: #f8f9fa;
+        }
+        
+        .product-image-container {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .product-main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-main-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .product-info-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .product-artist {
+            color: #ff6b35;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-artist i {
+            color: #ff6b35;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+        
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        
+        .rating-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .product-stock {
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .in-stock {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .out-of-stock {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .product-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-add-cart {
+            flex: 1;
+            min-width: 200px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-add-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-wishlist {
+            background: white;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+        
+        .btn-wishlist:hover {
+            background: #ff6b35;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .product-meta {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .meta-label {
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .meta-value {
+            color: #333;
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            margin-top: 50px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .review-user {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .review-date {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .review-rating {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        
+        .review-comment {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* Related Products */
+        .related-section {
+            margin-top: 50px;
+        }
+        
+        .related-product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .related-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .related-product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .related-product-info {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .related-product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .related-product-price {
+            color: #ff6b35;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 1.8rem;
+            }
+            
+            .product-price {
+                font-size: 1.6rem;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+            
+            .btn-add-cart,
+            .btn-wishlist {
+                min-width: 100%;
+            }
+            
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+        
+        /* Artist Info Box */
+        .artist-info-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #dee2e6;
+        }
+        
+        .artist-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        
+        .artist-details h4 {
+            margin: 0;
+            color: #333;
+            font-weight: 700;
+        }
+        
+        .artist-bio {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0 0 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Quantity Selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .quantity-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .quantity-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .quantity-input {
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            width: 60px;
+            font-weight: 600;
+            background: white;
+        }
+        
+        .quantity-input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Start -->
+    <div class="top-area">
+        <div class="header-area">
+            <?php include 'includes/navigation.php'; ?>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <!-- Navigation End -->
+
+    <!-- Product Detail Section Start -->
+    <section class="product-detail-section">
+        <div class="container">
+            <div class="row">
+                <!-- Product Image -->
+                <div class="col-md-6">
+                    <div class="product-image-container">
+                        <img src="<?php echo htmlspecialchars($product_data['image_url']); ?>" 
+                             alt="<?php echo htmlspecialchars($product_data['product_name']); ?>"
+                             class="product-main-image"
+                             onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="col-md-6">
+                    <div class="product-info-container">
+                        <h1 class="product-title"><?php echo htmlspecialchars($product_data['product_name']); ?></h1>
+                        
+                        <?php if ($artist_info && $type === 'product'): ?>
+                        <div class="artist-info-box d-flex align-items-center">
+                            <img src="<?php echo htmlspecialchars($artist_info['image_url']); ?>" 
+                                 alt="<?php echo htmlspecialchars($artist_info['artist_name']); ?>"
+                                 class="artist-avatar"
+                                 onerror="this.src='https://via.placeholder.com/60x60?text=Artist'">
+                            <div class="artist-details">
+                                <h4><?php echo htmlspecialchars($artist_info['artist_name']); ?></h4>
+                                <p class="artist-bio"><?php echo htmlspecialchars($artist_info['bio']); ?></p>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (isset($product_data['price']) && $type === 'product'): ?>
+                        <div class="product-price">
+                            $<?php echo number_format($product_data['price'], 2); ?>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($reviews)): ?>
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <?php 
+                                for ($i = 1; $i <= 5; $i++) {
+                                    echo $i <= round($avg_rating) ? '<i class="fa fa-star"></i>' : '<i class="fa fa-star-o"></i>';
+                                }
+                                ?>
+                            </div>
+                            <span class="rating-text">
+                                <?php echo number_format($avg_rating, 1); ?>/5 (<?php echo $total_reviews; ?> đánh giá)
+                            </span>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (isset($product_data['stock']) && $type === 'product'): ?>
+                        <div class="product-stock <?php echo $product_data['stock'] > 0 ? 'in-stock' : 'out-of-stock'; ?>">
+                            <i class="fa <?php echo $product_data['stock'] > 0 ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                            <?php if ($product_data['stock'] > 0): ?>
+                                Còn hàng (<?php echo $product_data['stock']; ?> sản phẩm)
+                            <?php else: ?>
+                                Hết hàng
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <div class="product-description">
+                            <?php echo nl2br(htmlspecialchars($product_data['description'])); ?>
+                        </div>
+                        
+                        <?php if ($type === 'product' && isset($product_data['stock']) && $product_data['stock'] > 0): ?>
+                        <div class="quantity-selector">
+                            <span class="quantity-label">Số lượng:</span>
+                            <div class="quantity-controls">
+                                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                                <input type="number" class="quantity-input" id="quantity" value="1" min="1" max="<?php echo $product_data['stock']; ?>">
+                                <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <div class="product-actions">
+                            <?php if ($type === 'product' && isset($product_data['stock']) && $product_data['stock'] > 0): ?>
+                            <button class="btn-add-cart" onclick="addToCart(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
+                                <i class="fa fa-shopping-cart"></i>
+                                Thêm vào giỏ hàng
+                            </button>
+                            <?php elseif ($type === 'accessory'): ?>
+                            <button class="btn-add-cart" onclick="addToCart(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
+                                <i class="fa fa-shopping-cart"></i>
+                                Thêm vào giỏ hàng
+                            </button>
+                            <?php endif; ?>
+                            
+                            <button class="btn-wishlist" onclick="addToWishlist(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
+                                <i class="fa fa-heart"></i>
+                                Yêu thích
+                            </button>
+                        </div>
+                        
+                        <div class="product-meta">
+                            <?php if ($type === 'product' && isset($product_data['genre_name'])): ?>
+                            <div class="meta-item">
+                                <span class="meta-label">Thể loại:</span>
+                                <span class="meta-value"><?php echo htmlspecialchars($product_data['genre_name']); ?></span>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <div class="meta-item">
+                                <span class="meta-label">Loại sản phẩm:</span>
+                                <span class="meta-value"><?php echo $type === 'product' ? 'Album nhạc' : 'Phụ kiện'; ?></span>
+                            </div>
+                            
+                            <?php if (isset($product_data['created_at'])): ?>
+                            <div class="meta-item">
+                                <span class="meta-label">Ngày thêm:</span>
+                                <span class="meta-value"><?php echo date('d/m/Y', strtotime($product_data['created_at'])); ?></span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <?php if (!empty($reviews)): ?>
+            <div class="reviews-section">
+                <h3 class="section-title">
+                    <i class="fa fa-star"></i>
+                    Đánh giá từ khách hàng
+                </h3>
+                
+                <?php foreach ($reviews as $review): ?>
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-user"><?php echo htmlspecialchars($review['full_name']); ?></span>
+                        <span class="review-date"><?php echo date('d/m/Y', strtotime($review['created_at'])); ?></span>
+                    </div>
+                    
+                    <div class="review-rating">
+                        <?php 
+                        for ($i = 1; $i <= 5; $i++) {
+                            echo $i <= $review['rating'] ? '<i class="fa fa-star"></i>' : '<i class="fa fa-star-o"></i>';
+                        }
+                        ?>
+                    </div>
+                    
+                    <div class="review-comment">
+                        <?php echo nl2br(htmlspecialchars($review['comment'])); ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Related Products -->
+            <?php if (!empty($related_products)): ?>
+            <div class="related-section">
+                <h3 class="section-title">
+                    <i class="fa fa-music"></i>
+                    Sản phẩm liên quan
+                </h3>
+                
+                <div class="row">
+                    <?php foreach ($related_products as $related): ?>
+                    <div class="col-md-3 col-sm-6">
+                        <a href="product-detail.php?type=<?php echo $type; ?>&id=<?php echo $related['product_id']; ?>" class="text-decoration-none">
+                            <div class="related-product-card">
+                                <img src="<?php echo htmlspecialchars($related['image_url']); ?>" 
+                                     alt="<?php echo htmlspecialchars($related['product_name']); ?>"
+                                     class="related-product-image"
+                                     onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+                                <div class="related-product-info">
+                                    <h4 class="related-product-name"><?php echo htmlspecialchars($related['product_name']); ?></h4>
+                                    <?php if (isset($related['price'])): ?>
+                                    <div class="related-product-price">$<?php echo number_format($related['price'], 2); ?></div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+    </section>
+    <!-- Product Detail Section End -->
+
+    <!--footer start-->
+    <footer id="footer" class="footer">
+        <div class="container">
+            <div class="hm-footer-copyright text-center">
+                <div class="footer-social">
+                    <a href="#"><i class="fa fa-facebook"></i></a>	
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                    <a href="#"><i class="fa fa-behance"></i></a>	
+                </div>
+                <p>&copy;copyright. designed and developed by <a href="#">AuraDisc</a></p>
+            </div>
+        </div>
+        
+        <div id="scroll-Top">
+            <div class="return-to-top">
+                <i class="fa fa-angle-up" id="scroll-top" data-toggle="tooltip" data-placement="top" title="" data-original-title="Back to Top" aria-hidden="true"></i>
+            </div>
+        </div>
+    </footer>
+    <!--footer end-->
+
+    <!-- Include all js compiled plugins -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/bootsnav.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="assets/js/custom.js"></script>
+    
+    <script>
+        // Quantity Controls
+        function increaseQuantity() {
+            var quantityInput = document.getElementById('quantity');
+            var currentValue = parseInt(quantityInput.value);
+            var maxValue = parseInt(quantityInput.max);
+            
+            if (currentValue < maxValue) {
+                quantityInput.value = currentValue + 1;
+            }
+        }
+        
+        function decreaseQuantity() {
+            var quantityInput = document.getElementById('quantity');
+            var currentValue = parseInt(quantityInput.value);
+            var minValue = parseInt(quantityInput.min);
+            
+            if (currentValue > minValue) {
+                quantityInput.value = currentValue - 1;
+            }
+        }
+        
+        // Add to Cart Function (Placeholder)
+        function addToCart(productId, type) {
+            var quantity = 1;
+            if (document.getElementById('quantity')) {
+                quantity = parseInt(document.getElementById('quantity').value);
+            }
+            
+            // Placeholder cho chức năng thêm vào giỏ hàng
+            alert('Thêm vào giỏ hàng: ' + type + ' ID ' + productId + ', số lượng: ' + quantity);
+            
+            // TODO: Implement AJAX call to add to cart
+            /*
+            $.ajax({
+                url: 'ajax/add_to_cart.php',
+                type: 'POST',
+                data: {
+                    product_id: productId,
+                    type: type,
+                    quantity: quantity
+                },
+                success: function(response) {
+                    // Handle success
+                },
+                error: function() {
+                    // Handle error
+                }
+            });
+            */
+        }
+        
+        // Add to Wishlist Function (Placeholder)
+        function addToWishlist(productId, type) {
+            // Placeholder cho chức năng thêm vào wishlist
+            alert('Thêm vào wishlist: ' + type + ' ID ' + productId);
+            
+            // TODO: Implement AJAX call to add to wishlist
+            /*
+            $.ajax({
+                url: 'ajax/add_to_wishlist.php',
+                type: 'POST',
+                data: {
+                    product_id: productId,
+                    type: type
+                },
+                success: function(response) {
+                    // Handle success
+                },
+                error: function() {
+                    // Handle error
+                }
+            });
+            */
+        }
+        
+        // Image Error Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('img');
+            images.forEach(function(img) {
+                img.addEventListener('error', function() {
+                    this.src = 'https://via.placeholder.com/400x400?text=No+Image';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

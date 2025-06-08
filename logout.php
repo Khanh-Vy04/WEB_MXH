@@ -1,17 +1,10 @@
 <?php
-session_start();
+require_once 'includes/session.php';
 
-// Xóa tất cả các biến session
-$_SESSION = array();
-
-// Xóa session cookie
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-42000, '/');
-}
-
-// Hủy session
-session_destroy();
+// Đăng xuất
+logoutUser();
 
 // Chuyển hướng về trang đăng nhập
 header("Location: index.php");
-exit(); 
+exit();
+?> 

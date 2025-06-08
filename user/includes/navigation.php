@@ -36,12 +36,31 @@ if ($current_dir == 'user') {
                 <li class="search">
                     <a href="#"><span class="lnr lnr-magnifier"></span></a>
                 </li><!--/.search-->
-                <li class="nav-setting">
-                    <a href="#"><span class="lnr lnr-cog"></span></a>
-                </li><!--/.search-->
-                <li class="nav-setting">
-                    <a href="#"><span class="lnr lnr-user"></span></a>
-                </li><!--/.user-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="lnr lnr-user"></span>
+                    </a>
+                    <ul class="dropdown-menu user-menu s-cate">
+                        <li class="user-menu-item">
+                            <a href="#" class="user-menu-link">
+                                <i class="fa fa-ticket"></i>
+                                <span>Xem voucher</span>
+                            </a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="#" class="user-menu-link">
+                                <i class="fa fa-file-text"></i>
+                                <span>Xem hóa đơn đã mua</span>
+                            </a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="/WEB_MXH/logout.php" class="user-menu-link logout-link">
+                                <i class="fa fa-sign-out"></i>
+                                <span>Đăng xuất</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!--/.user dropdown-->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="lnr lnr-cart"></span>
@@ -123,4 +142,54 @@ if ($current_dir == 'user') {
         </div><!-- /.navbar-collapse -->
     </div><!--/.container-->
 </nav><!--/nav-->
-<!-- End Navigation --> 
+<!-- End Navigation -->
+
+<!-- CSS cho user dropdown menu -->
+<style>
+.user-menu {
+    min-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: none;
+    padding: 10px 0;
+}
+
+.user-menu-item {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-menu-item:last-child {
+    border-bottom: none;
+}
+
+.user-menu-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.user-menu-link:hover {
+    background: #f8f9fa;
+    color: #ff6b35;
+    text-decoration: none;
+}
+
+.user-menu-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.logout-link:hover {
+    background: #ffe6e1;
+    color: #dc3545;
+}
+
+.logout-link:hover i {
+    color: #dc3545;
+}
+</style> 
