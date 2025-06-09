@@ -1,114 +1,84 @@
 <?php
+session_start();
+require_once __DIR__ . '/../../../../config/database.php';
+
 $currentPage = 'order';
 
 // Get order ID from URL
 $order_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// TODO: Replace with actual database query
-// For now using mock data
-$orderDetails = [
-    [
-        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
-        'name' => 'The Beatles - Abbey Road',
-        'description' => 'Vinyl, 180g, 2019 Remaster',
-        'price' => 650000,
-        'quantity' => 1,
-        'total' => 650000
-    ],
-    [
-        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
-        'name' => 'Miles Davis - Kind of Blue',
-        'description' => 'Vinyl, 180g, Jazz Classic',
-        'price' => 720000,
-        'quantity' => 2,
-        'total' => 1440000
-    ],
-    [
-        'image_url' => 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vinyl_record_icon.png',
-        'name' => 'Pink Floyd - The Wall',
-        'description' => 'Vinyl, 2LP, Gatefold',
-        'price' => 800000,
-        'quantity' => 1,
-        'total' => 800000
-    ],
-];
+if ($order_id === 0) {
+    header('Location: /WEB_MXH/admin/pages/order/order_list/order_list.php');
+    exit;
+}
 
-// Data giả cho tổng tiền
-$orderSummary = [
-    'subtotal' => 2890000,
-    'discount' => 0,
-    'tax' => 20000,
-    'total' => 2910000
-];
+// Lấy thông tin đơn hàng từ database
+$order_query = "
+    SELECT 
+        o.order_id,
+        o.order_date,
+        o.total_amount,
+        o.final_amount,
+        o.voucher_discount,
+        u.user_id,
+        u.username,
+        u.full_name,
+        u.email,
+        u.phone,
+        u.address,
+        os.stage_name,
+        os.color_code
+    FROM orders o
+    JOIN users u ON o.buyer_id = u.user_id
+    JOIN order_stages os ON o.stage_id = os.stage_id
+    WHERE o.order_id = ?
+";
 
-// Data giả cho khách hàng
-$customer = [
-    'avatar' => 'https://randomuser.me/api/portraits/men/32.jpg',
-    'name' => 'Nguyen Van A',
-    'customer_id' => '20001',
-    'orders_count' => 5,
-    'email' => 'nguyenvana@gmail.com',
-    'phone' => '+84 901 234 567'
-];
+$order_stmt = $conn->prepare($order_query);
+$order_stmt->bind_param("i", $order_id);
+$order_stmt->execute();
+$order_result = $order_stmt->get_result();
 
-// Data giả cho địa chỉ
-$shipping_address = "123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam";
-$billing_address = "123 Le Loi, District 1<br>Ho Chi Minh City<br>Vietnam";
-$payment = [
-    'method' => 'Visa',
-    'card_number' => '******1234'
-];
+if ($order_result->num_rows === 0) {
+    header('Location: /WEB_MXH/admin/pages/order/order_list/order_list.php');
+    exit;
+}
 
-// Data giả cho shipping activity
-$orderTracking = [
-    [
-        'status' => 'Order was placed (Order ID: #' . $order_id . ')',
-        'desc' => 'Your order for vinyl records has been placed successfully',
-        'time' => 'Monday 09:00 AM',
-        'active' => true
-    ],
-    [
-        'status' => 'Pick-up',
-        'desc' => 'Pick-up scheduled with courier',
-        'time' => 'Monday 15:00 PM',
-        'active' => true
-    ],
-    [
-        'status' => 'Dispatched',
-        'desc' => 'Records picked up by courier',
-        'time' => 'Tuesday 10:00 AM',
-        'active' => true
-    ],
-    [
-        'status' => 'Package arrived',
-        'desc' => 'Arrived at Ho Chi Minh City sorting center',
-        'time' => 'Tuesday 18:00 PM',
-        'active' => true
-    ],
-    [
-        'status' => 'Dispatched for delivery',
-        'desc' => 'Out for delivery to customer',
-        'time' => 'Wednesday 08:00 AM',
-        'active' => true
-    ],
-    [
-        'status' => 'Delivery',
-        'desc' => 'Expected delivery by today',
-        'time' => '',
-        'active' => false
-    ],
-];
+$order = $order_result->fetch_assoc();
 
-// Add back button to return to order list
-$backButton = '<a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary mb-3">
-    <i class="fas fa-arrow-left"></i> Back to Order List
-</a>';
+// Lấy chi tiết các sản phẩm trong đơn hàng
+$order_items_query = "
+    SELECT 
+        oi.quantity,
+        oi.unit_price,
+        oi.total_price,
+        oi.item_type,
+        oi.item_name,
+        p.description as product_description,
+        a.description as accessory_description
+    FROM order_items oi
+    LEFT JOIN products p ON oi.item_id = p.product_id AND oi.item_type = 'product'
+    LEFT JOIN accessories a ON oi.item_id = a.accessory_id AND oi.item_type = 'accessory'
+    WHERE oi.order_id = ?
+    ORDER BY oi.order_item_id
+";
+
+$items_stmt = $conn->prepare($order_items_query);
+$items_stmt->bind_param("i", $order_id);
+$items_stmt->execute();
+$items_result = $items_stmt->get_result();
+
+$order_items = [];
+while ($item = $items_result->fetch_assoc()) {
+    $order_items[] = $item;
+}
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-<meta charset="utf-8">
-    <title>Order Detail</title>
+    <meta charset="utf-8">
+    <title>Chi tiết đơn hàng #<?php echo $order_id; ?> - Admin</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -125,135 +95,343 @@ $backButton = '<a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" cl
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="/WEB_MXH/admin/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="/WEB_MXH/admin/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="/WEB_MXH/admin/pages/order/order_detail/order_detail.css" />
+    
+    <style>
+        .order-detail-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .order-status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+        }
+        
+        .customer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e3e6f0;
+        }
+        
+        .info-card h5 {
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+            border-bottom: 2px solid #f8f9fa;
+            padding-bottom: 10px;
+        }
+        
+        .product-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .product-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .product-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .price-text {
+            color: #e74a3b;
+            font-weight: 700;
+        }
+        
+        .total-summary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .contact-info i {
+            color: #667eea;
+            width: 20px;
+            margin-right: 10px;
+        }
+    </style>
 </head>
+
 <body>
-<div class="container-fluid position-relative d-flex p-0">
-    <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
-    <div class="content">
-        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
-        <div class="container-fluid pt-4 px-4">
-            <?php echo $backButton; ?>
-            <div class="row g-4">
-                <!-- Order Details -->
-                <div class="col-lg-8">
-                    <div class="bg-white-box rounded p-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 section-title">Order details</h5>
-                            <a href="#" class="text-primary">Edit</a>
+    <div class="container-fluid position-relative d-flex p-0">
+        <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
+        
+        <div class="content">
+            <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
+            
+            <div class="container-fluid pt-4 px-4">
+                <!-- Back Button -->
+                <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary mb-3">
+                    <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách đơn hàng
+                </a>
+                
+                <!-- Order Header -->
+                <div class="order-detail-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3 class="mb-2">
+                                <i class="fas fa-receipt me-2"></i>
+                                Đơn hàng #<?php echo $order['order_id']; ?>
+                            </h3>
+                            <p class="mb-0 opacity-75">
+                                Ngày đặt: <?php echo date('d/m/Y H:i', strtotime($order['order_date'])); ?>
+                            </p>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0 order-table-bg">
-                                <thead>
-                                    <tr class="order-table-header">
-                                        <th scope="col" class="text-center" style="width:40px;"><input type="checkbox"></th>
-                                        <th scope="col">PRODUCTS</th>
-                                        <th scope="col" class="text-center">PRICE</th>
-                                        <th scope="col" class="text-center">QTY</th>
-                                        <th scope="col" class="text-center">TOTAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($orderDetails as $item): ?>
-                                        <tr>
-                                            <td class="text-center"><input type="checkbox"></td>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <img src="<?= htmlspecialchars($item['image_url']) ?>" alt="<?= htmlspecialchars($item['name']) ?>" width="40" class="rounded me-2">
-                                                    <div>
-                                                        <div class="product-name-bold"><?= htmlspecialchars($item['name']) ?></div>
-                                                        <small class="text-muted"><?= htmlspecialchars($item['description']) ?></small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-center"><?= number_format($item['price']) ?>₫</td>
-                                            <td class="text-center"><?= $item['quantity'] ?></td>
-                                            <td class="text-center"><?= number_format($item['total']) ?>₫</td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="d-flex flex-column align-items-end mt-4">
-                            <div>Subtotal: <b>2,890,000₫</b></div>
-                            <div>Discount: <b>0₫</b></div>
-                            <div>Tax: <b>20,000₫</b></div>
-                            <div>Total: <b>2,910,000₫</b></div>
-                        </div>
-                    </div>
-                    <!-- Shipping Activity -->
-                    <div class="bg-white-box rounded p-4">
-                        <h5 class="mb-3 section-title">Order Tracking</h5>
-                        <ul class="timeline">
-                            <?php foreach ($orderTracking as $item): ?>
-                                <li class="timeline-item <?= $item['active'] ? 'active' : '' ?>">
-                                    <span class="timeline-point"></span>
-                                    <div class="timeline-content">
-                                        <b><?= htmlspecialchars($item['status']) ?></b>
-                                        <div><?= htmlspecialchars($item['desc']) ?></div>
-                                        <small class="text-muted"><?= htmlspecialchars($item['time']) ?></small>
-                                    </div>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Customer & Address Details -->
-                <div class="col-lg-4">
-                    <div class="bg-white-box rounded p-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 section-title">Customer details</h5>
-                            <a href="#" class="text-primary">Edit</a>
-                        </div>
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="<?= htmlspecialchars($customer['avatar']) ?>" alt="avatar" class="rounded-circle me-2" width="40">
-                            <div>
-                                <div><b><?= htmlspecialchars($customer['name']) ?></b></div>
-                                <div class="text-muted small">Customer ID: #<?= htmlspecialchars($customer['customer_id']) ?></div>
-                                <div class="text-success small"><i class="fa fa-check-circle"></i> <?= htmlspecialchars($customer['orders_count']) ?> Orders</div>
+                        <div class="col-md-6 text-end">
+                            <div class="order-status-badge" style="background-color: <?php echo $order['color_code']; ?>">
+                                <?php echo htmlspecialchars($order['stage_name']); ?>
+                            </div>
+                            <div class="h4 mt-2 mb-0">
+                                <?php echo number_format($order['final_amount'], 0, '.', ','); ?>đ
                             </div>
                         </div>
-                        <div class="mb-2">
-                            <div class="fw-bold">Contact info</div>
-                            <div>Email: <a href="mailto:<?= htmlspecialchars($customer['email']) ?>"><?= htmlspecialchars($customer['email']) ?></a></div>
-                            <div>Mobile: <a href="tel:<?= htmlspecialchars($customer['phone']) ?>"><?= htmlspecialchars($customer['phone']) ?></a></div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Order Details -->
+                    <div class="col-lg-8">
+                        <!-- Products List -->
+                        <div class="info-card">
+                            <h5>
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                Chi tiết sản phẩm
+                            </h5>
+                            
+                            <?php if (empty($order_items)): ?>
+                                <div class="text-center py-4">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">Không có sản phẩm nào trong đơn hàng này</h6>
+                                </div>
+                            <?php else: ?>
+                                <?php foreach ($order_items as $item): ?>
+                                    <div class="product-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="product-icon">
+                                                    <?php if ($item['item_type'] === 'product'): ?>
+                                                        <i class="fas fa-compact-disc"></i>
+                                                    <?php else: ?>
+                                                        <i class="fas fa-headphones"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="mb-1">
+                                                    <?php echo htmlspecialchars($item['item_name']); ?>
+                                                </h6>
+                                                <p class="text-muted mb-0 small">
+                                                    <?php 
+                                                        if ($item['item_type'] === 'product') {
+                                                            echo htmlspecialchars($item['product_description']);
+                                                        } else {
+                                                            echo htmlspecialchars($item['accessory_description']);
+                                                        }
+                                                    ?>
+                                                </p>
+                                                <span class="badge bg-info">
+                                                    <?php echo $item['item_type'] === 'product' ? 'Album nhạc' : 'Phụ kiện'; ?>
+                                                </span>
+                                            </div>
+                                            <div class="col-auto text-end">
+                                                <div class="price-text">
+                                                    <?php echo number_format($item['unit_price'], 0, '.', ','); ?>đ
+                                                </div>
+                                                <div class="text-muted small">
+                                                    Số lượng: <?php echo $item['quantity']; ?>
+                                                </div>
+                                                <div class="fw-bold">
+                                                    Tổng: <?php echo number_format($item['total_price'], 0, '.', ','); ?>đ
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            
+                            <!-- Order Summary -->
+                            <div class="total-summary">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div>Tổng tiền gốc:</div>
+                                        <?php if ($order['voucher_discount'] > 0): ?>
+                                            <div>Giảm giá:</div>
+                                        <?php endif; ?>
+                                        <div class="h5 mb-0 mt-2">Thành tiền:</div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <div><?php echo number_format($order['total_amount'], 0, '.', ','); ?>đ</div>
+                                        <?php if ($order['voucher_discount'] > 0): ?>
+                                            <div>-<?php echo number_format($order['voucher_discount'], 0, '.', ','); ?>đ</div>
+                                        <?php endif; ?>
+                                        <div class="h5 mb-0 mt-2"><?php echo number_format($order['final_amount'], 0, '.', ','); ?>đ</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="bg-white-box rounded p-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 section-title">Shipping address</h5>
-                            <a href="#" class="text-primary">Edit</a>
+                    
+                    <!-- Customer Details -->
+                    <div class="col-lg-4">
+                        <!-- Customer Info -->
+                        <div class="info-card">
+                            <h5>
+                                <i class="fas fa-user me-2"></i>
+                                Thông tin khách hàng
+                            </h5>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="customer-avatar me-3">
+                                    <?php 
+                                        $name_parts = explode(' ', trim($order['full_name']));
+                                        echo strtoupper(substr($name_parts[0], 0, 1));
+                                        if (count($name_parts) > 1) {
+                                            echo strtoupper(substr(end($name_parts), 0, 1));
+                                        }
+                                    ?>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1"><?php echo htmlspecialchars($order['full_name']); ?></h6>
+                                    <div class="text-muted small">@<?php echo htmlspecialchars($order['username']); ?></div>
+                                    <div class="text-muted small">ID: #<?php echo $order['user_id']; ?></div>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <div class="small text-muted">Email</div>
+                                    <a href="mailto:<?php echo htmlspecialchars($order['email']); ?>" class="text-decoration-none">
+                                        <?php echo htmlspecialchars($order['email']); ?>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <?php if (!empty($order['phone'])): ?>
+                                <div class="contact-info">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <div class="small text-muted">Số điện thoại</div>
+                                        <a href="tel:<?php echo htmlspecialchars($order['phone']); ?>" class="text-decoration-none">
+                                            <?php echo htmlspecialchars($order['phone']); ?>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <div><?= htmlspecialchars($shipping_address) ?></div>
-                    </div>
-                    <div class="bg-white-box rounded p-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0 section-title">Billing address</h5>
-                            <a href="#" class="text-primary">Edit</a>
-                        </div>
-                        <div><?= htmlspecialchars($billing_address) ?></div>
-                        <div class="mt-2">
-                            <div class="fw-bold">Visa</div>
-                            <div>Card Number: <?= htmlspecialchars($payment['card_number']) ?></div>
+                        
+                        <!-- Shipping Address -->
+                        <?php if (!empty($order['address'])): ?>
+                            <div class="info-card">
+                                <h5>
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    Địa chỉ giao hàng
+                                </h5>
+                                <div class="p-3 bg-light rounded">
+                                    <?php echo nl2br(htmlspecialchars($order['address'])); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Order Statistics -->
+                        <div class="info-card">
+                            <h5>
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Thống kê đơn hàng
+                            </h5>
+                            
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="p-3 bg-primary bg-opacity-10 rounded">
+                                        <div class="h4 text-primary mb-1"><?php echo count($order_items); ?></div>
+                                        <div class="small text-muted">Sản phẩm</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-success bg-opacity-10 rounded">
+                                        <div class="h4 text-success mb-1">
+                                            <?php echo array_sum(array_column($order_items, 'quantity')); ?>
+                                        </div>
+                                        <div class="small text-muted">Số lượng</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <?php include __DIR__.'/../../dashboard/footer.php'; ?>
         </div>
-        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
+    
+    <script>
+        // Print function
+        function printOrder() {
+            window.print();
+        }
+        
+        // Add print button if needed
+        document.addEventListener('DOMContentLoaded', function() {
+            // You can add additional JavaScript functionality here
+            console.log('Order Detail Page Loaded - Order ID: <?php echo $order_id; ?>');
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
-// Kết nối database
+// Kết nối database và session
 require_once '../../config/database.php';
+require_once '../../includes/session.php';
 
 // Lấy danh sách genres từ database
 $sql = "SELECT g.*, COUNT(p.product_id) as product_count 

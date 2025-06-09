@@ -1,4 +1,7 @@
 <?php
+// Set timezone for PHP
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 $host = 'localhost';
 $dbname = 'web_project';
 $username = 'root';
@@ -12,7 +15,11 @@ try {
     }
     
     $conn->set_charset("utf8mb4");
+    
+    // Set timezone for MySQL
+    $conn->query("SET time_zone = '+07:00'");
 } catch (Exception $e) {
-    die("Lỗi kết nối database: " . $e->getMessage());
+    // Don't die, let the calling script handle the error
+    throw new Exception("Lỗi kết nối database: " . $e->getMessage());
 }
 ?> 

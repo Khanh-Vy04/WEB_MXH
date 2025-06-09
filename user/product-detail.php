@@ -543,6 +543,62 @@ if (!empty($reviews)) {
         .quantity-input:focus {
             outline: none;
         }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .toast-error {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast-content i {
+            font-size: 1.2rem;
+        }
+        
+        .toast-message {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .toast {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                transform: translateY(-100px);
+            }
+            
+            .toast.show {
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -588,9 +644,9 @@ if (!empty($reviews)) {
                         </div>
                         <?php endif; ?>
                         
-                        <?php if (isset($product_data['price']) && $type === 'product'): ?>
+                        <?php if (isset($product_data['price'])): ?>
                         <div class="product-price">
-                            $<?php echo number_format($product_data['price'], 2); ?>
+                            <?php echo number_format($product_data['price']); ?>₫
                         </div>
                         <?php endif; ?>
                         
@@ -609,11 +665,11 @@ if (!empty($reviews)) {
                         </div>
                         <?php endif; ?>
                         
-                        <?php if (isset($product_data['stock']) && $type === 'product'): ?>
+                        <?php if (isset($product_data['stock'])): ?>
                         <div class="product-stock <?php echo $product_data['stock'] > 0 ? 'in-stock' : 'out-of-stock'; ?>">
                             <i class="fa <?php echo $product_data['stock'] > 0 ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
                             <?php if ($product_data['stock'] > 0): ?>
-                                Còn hàng (<?php echo $product_data['stock']; ?> sản phẩm)
+                                Còn hàng (<?php echo $product_data['stock']; ?> <?php echo $type === 'product' ? 'sản phẩm' : 'phụ kiện'; ?>)
                             <?php else: ?>
                                 Hết hàng
                             <?php endif; ?>
@@ -624,7 +680,7 @@ if (!empty($reviews)) {
                             <?php echo nl2br(htmlspecialchars($product_data['description'])); ?>
                         </div>
                         
-                        <?php if ($type === 'product' && isset($product_data['stock']) && $product_data['stock'] > 0): ?>
+                        <?php if (isset($product_data['stock']) && $product_data['stock'] > 0): ?>
                         <div class="quantity-selector">
                             <span class="quantity-label">Số lượng:</span>
                             <div class="quantity-controls">
@@ -637,19 +693,19 @@ if (!empty($reviews)) {
                         
                         <div class="product-actions">
                             <?php if ($type === 'product' && isset($product_data['stock']) && $product_data['stock'] > 0): ?>
-                            <button class="btn-add-cart" onclick="addToCart(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
+                            <button class="btn-add-cart" onclick="addToCart(<?php echo $id; ?>, 'product')">
                                 <i class="fa fa-shopping-cart"></i>
                                 Thêm vào giỏ hàng
                             </button>
-                            <?php elseif ($type === 'accessory'): ?>
-                            <button class="btn-add-cart" onclick="addToCart(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
+                            <?php elseif ($type === 'accessory' && isset($product_data['stock']) && $product_data['stock'] > 0): ?>
+                            <button class="btn-add-cart" onclick="addToCart(<?php echo $id; ?>, 'accessory')">
                                 <i class="fa fa-shopping-cart"></i>
                                 Thêm vào giỏ hàng
                             </button>
                             <?php endif; ?>
                             
-                            <button class="btn-wishlist" onclick="addToWishlist(<?php echo $product_data['product_id']; ?>, '<?php echo $type; ?>')">
-                                <i class="fa fa-heart"></i>
+                            <button class="btn-wishlist" onclick="addToWishlist(<?php echo $id; ?>, '<?php echo $type; ?>')">
+                                <i class="fa fa-heart-o"></i>
                                 Yêu thích
                             </button>
                         </div>
@@ -729,7 +785,7 @@ if (!empty($reviews)) {
                                 <div class="related-product-info">
                                     <h4 class="related-product-name"><?php echo htmlspecialchars($related['product_name']); ?></h4>
                                     <?php if (isset($related['price'])): ?>
-                                    <div class="related-product-price">$<?php echo number_format($related['price'], 2); ?></div>
+                                    <div class="related-product-price"><?php echo number_format($related['price']); ?>₫</div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -797,61 +853,279 @@ if (!empty($reviews)) {
             }
         }
         
-        // Add to Cart Function (Placeholder)
+        // Add to Cart Function
         function addToCart(productId, type) {
+            // Kiểm tra đăng nhập
+            <?php if (!isLoggedIn()): ?>
+            alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
+            return;
+            <?php endif; ?>
+            
             var quantity = 1;
             if (document.getElementById('quantity')) {
                 quantity = parseInt(document.getElementById('quantity').value);
             }
             
-            // Placeholder cho chức năng thêm vào giỏ hàng
-            alert('Thêm vào giỏ hàng: ' + type + ' ID ' + productId + ', số lượng: ' + quantity);
+            // Validate quantity
+            if (quantity <= 0) {
+                alert('Số lượng phải lớn hơn 0!');
+                return;
+            }
             
-            // TODO: Implement AJAX call to add to cart
-            /*
+            // Get the add to cart button and show loading state
+            var addBtn = document.querySelector('.btn-add-cart');
+            var originalText = addBtn.innerHTML;
+            addBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang thêm...';
+            addBtn.disabled = true;
+            
             $.ajax({
-                url: 'ajax/add_to_cart.php',
+                url: 'ajax/cart_handler.php',
                 type: 'POST',
                 data: {
-                    product_id: productId,
-                    type: type,
+                    action: 'add_to_cart',
+                    item_type: type,
+                    item_id: productId,
                     quantity: quantity
                 },
+                dataType: 'json',
                 success: function(response) {
-                    // Handle success
+                    if (response.success) {
+                        // Update cart badge if it exists
+                        if (typeof updateCartBadge === 'function') {
+                            updateCartBadge(response.total_items);
+                        } else if (document.getElementById('cart-badge')) {
+                            document.getElementById('cart-badge').textContent = response.total_items;
+                        }
+                        
+                        // Show success message
+                        showSuccessMessage(response.message);
+                        
+                        // Reset quantity to 1
+                        if (document.getElementById('quantity')) {
+                            document.getElementById('quantity').value = 1;
+                        }
+                    } else {
+                        showErrorMessage(response.message);
+                    }
                 },
-                error: function() {
-                    // Handle error
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    showErrorMessage('Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại!');
+                },
+                complete: function() {
+                    // Reset button state
+                    addBtn.innerHTML = originalText;
+                    addBtn.disabled = false;
                 }
             });
-            */
         }
         
-        // Add to Wishlist Function (Placeholder)
+        // Add to Wishlist Function
         function addToWishlist(productId, type) {
-            // Placeholder cho chức năng thêm vào wishlist
-            alert('Thêm vào wishlist: ' + type + ' ID ' + productId);
+            // Kiểm tra đăng nhập
+            <?php if (!isLoggedIn()): ?>
+            alert('Vui lòng đăng nhập để sử dụng chức năng yêu thích!');
+            return;
+            <?php endif; ?>
             
-            // TODO: Implement AJAX call to add to wishlist
-            /*
+            // Get the wishlist button and show loading state
+            var wishlistBtn = document.querySelector('.btn-wishlist');
+            var originalText = wishlistBtn.innerHTML;
+            wishlistBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang xử lý...';
+            wishlistBtn.disabled = true;
+            
             $.ajax({
-                url: 'ajax/add_to_wishlist.php',
+                url: 'ajax/wishlist_handler.php',
                 type: 'POST',
                 data: {
-                    product_id: productId,
-                    type: type
+                    action: 'add_to_wishlist',
+                    item_type: type,
+                    item_id: productId
                 },
+                dataType: 'json',
                 success: function(response) {
-                    // Handle success
+                    if (response.success) {
+                        // Update button state to "added"
+                        wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
+                        wishlistBtn.style.background = '#28a745';
+                        wishlistBtn.style.borderColor = '#28a745';
+                        wishlistBtn.style.color = 'white';
+                        wishlistBtn.onclick = function() { removeFromWishlist(productId, type); };
+                        
+                        // Update wishlist badge if it exists
+                        if (typeof updateWishlistBadge === 'function') {
+                            updateWishlistBadge(response.total_items);
+                        } else if (document.getElementById('wishlist-badge')) {
+                            document.getElementById('wishlist-badge').textContent = response.total_items;
+                        }
+                        
+                        // Show success message
+                        showSuccessMessage(response.message);
+                    } else {
+                        if (response.already_exists) {
+                            // Already in wishlist - change button state
+                            wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
+                            wishlistBtn.style.background = '#28a745';
+                            wishlistBtn.style.borderColor = '#28a745';
+                            wishlistBtn.style.color = 'white';
+                            wishlistBtn.onclick = function() { removeFromWishlist(productId, type); };
+                        }
+                        showErrorMessage(response.message);
+                    }
                 },
-                error: function() {
-                    // Handle error
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    showErrorMessage('Có lỗi xảy ra khi thêm vào danh sách yêu thích. Vui lòng thử lại!');
+                },
+                complete: function() {
+                    // Reset button if not successfully added
+                    if (wishlistBtn.innerHTML.includes('fa-spinner')) {
+                        wishlistBtn.innerHTML = originalText;
+                    }
+                    wishlistBtn.disabled = false;
                 }
             });
-            */
         }
         
-        // Image Error Handling
+        // Remove from Wishlist Function
+        function removeFromWishlist(productId, type) {
+            var wishlistBtn = document.querySelector('.btn-wishlist');
+            var originalText = wishlistBtn.innerHTML;
+            wishlistBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang xử lý...';
+            wishlistBtn.disabled = true;
+            
+            $.ajax({
+                url: 'ajax/wishlist_handler.php',
+                type: 'POST',
+                data: {
+                    action: 'remove_from_wishlist',
+                    item_type: type,
+                    item_id: productId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Reset button to "add" state
+                        wishlistBtn.innerHTML = '<i class="fa fa-heart-o"></i> Yêu thích';
+                        wishlistBtn.style.background = 'white';
+                        wishlistBtn.style.borderColor = '#ff6b35';
+                        wishlistBtn.style.color = '#ff6b35';
+                        wishlistBtn.onclick = function() { addToWishlist(productId, type); };
+                        
+                        // Update wishlist badge if it exists
+                        if (typeof updateWishlistBadge === 'function') {
+                            updateWishlistBadge(response.total_items);
+                        } else if (document.getElementById('wishlist-badge')) {
+                            document.getElementById('wishlist-badge').textContent = response.total_items;
+                        }
+                        
+                        // Show success message
+                        showSuccessMessage(response.message);
+                    } else {
+                        showErrorMessage(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    showErrorMessage('Có lỗi xảy ra khi xóa khỏi danh sách yêu thích. Vui lòng thử lại!');
+                },
+                complete: function() {
+                    // Reset button if not successfully removed
+                    if (wishlistBtn.innerHTML.includes('fa-spinner')) {
+                        wishlistBtn.innerHTML = originalText;
+                    }
+                    wishlistBtn.disabled = false;
+                }
+            });
+        }
+        
+        // Check if item is already in wishlist when page loads
+        function checkWishlistStatus() {
+            <?php if (isLoggedIn()): ?>
+            $.ajax({
+                url: 'ajax/wishlist_handler.php',
+                type: 'POST',
+                data: {
+                    action: 'check_wishlist_status',
+                    item_type: '<?php echo $type; ?>',
+                    item_id: <?php echo $id; ?>
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success && response.in_wishlist) {
+                        var wishlistBtn = document.querySelector('.btn-wishlist');
+                        if (wishlistBtn) {
+                            wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
+                            wishlistBtn.style.background = '#28a745';
+                            wishlistBtn.style.borderColor = '#28a745';
+                            wishlistBtn.style.color = 'white';
+                            wishlistBtn.onclick = function() { removeFromWishlist(<?php echo $id; ?>, '<?php echo $type; ?>'); };
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('Could not check wishlist status:', error);
+                }
+            });
+            <?php endif; ?>
+        }
+        
+        // Success and Error Message Functions
+        function showSuccessMessage(message) {
+            // Create and show success toast
+            var toast = createToast(message, 'success');
+            document.body.appendChild(toast);
+            
+            // Show toast
+            setTimeout(function() {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Remove toast after 3 seconds
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        function showErrorMessage(message) {
+            // Create and show error toast
+            var toast = createToast(message, 'error');
+            document.body.appendChild(toast);
+            
+            // Show toast
+            setTimeout(function() {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Remove toast after 4 seconds
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        function createToast(message, type) {
+            var toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fa ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span class="toast-message">${message}</span>
+                </div>
+            `;
+            return toast;
+        }
+        
+        // Image Error Handling và Initialize
         document.addEventListener('DOMContentLoaded', function() {
             const images = document.querySelectorAll('img');
             images.forEach(function(img) {
@@ -859,6 +1133,9 @@ if (!empty($reviews)) {
                     this.src = 'https://via.placeholder.com/400x400?text=No+Image';
                 });
             });
+            
+            // Check wishlist status when page loads
+            checkWishlistStatus();
         });
     </script>
 </body>

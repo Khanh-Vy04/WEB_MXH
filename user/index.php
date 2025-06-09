@@ -730,7 +730,7 @@ if ($result_vouchers->num_rows > 0) {
 								 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
 							<div class="product-info">
 								<h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
-								<div class="product-price">$<?php echo number_format($product['price'], 2); ?></div>
+								<div class="product-price"><?php echo number_format($product['price']); ?>₫</div>
 								<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
 									<i class="fa fa-eye"></i> Xem sản phẩm
 								</a>
@@ -831,10 +831,10 @@ if ($result_vouchers->num_rows > 0) {
 										<?php if ($voucher['discount_type'] == 'percentage'): ?>
 											<span class="value"><?php echo $voucher['discount_value']; ?>%</span>
 											<?php if ($voucher['max_discount_amount']): ?>
-												<small>Tối đa <?php echo number_format($voucher['max_discount_amount']); ?>đ</small>
+												<small>Tối đa <?php echo number_format($voucher['max_discount_amount']); ?>₫</small>
 											<?php endif; ?>
 										<?php else: ?>
-											<span class="value"><?php echo number_format($voucher['discount_value']); ?>đ</span>
+											<span class="value"><?php echo number_format($voucher['discount_value']); ?>₫</span>
 										<?php endif; ?>
 									</div>
 								</div>
@@ -852,7 +852,7 @@ if ($result_vouchers->num_rows > 0) {
 										<?php if ($voucher['min_order_amount'] > 0): ?>
 											<div class="condition">
 												<i class="fa fa-shopping-cart"></i>
-												<span>Đơn tối thiểu: <?php echo number_format($voucher['min_order_amount']); ?>đ</span>
+												<span>Đơn tối thiểu: <?php echo number_format($voucher['min_order_amount']); ?>₫</span>
 											</div>
 										<?php endif; ?>
 										

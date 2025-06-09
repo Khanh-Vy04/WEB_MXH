@@ -6,11 +6,26 @@ $current_dir = basename(dirname($_SERVER['PHP_SELF']));
 // Xác định base path cho assets và links
 $base_path = '';
 if ($current_dir == 'user') {
-    $base_path = '';
+    $base_path = ''; // Từ thư mục user thì không cần ../
 } elseif ($current_dir == 'Artists' || $current_dir == 'genre') {
-    $base_path = '../';
+    $base_path = '../'; // Từ Artists hoặc genre thì cần ../
 } else {
-    $base_path = '';
+    $base_path = ''; // Default
+}
+
+// Debug base path
+error_log("Current dir: $current_dir, Base path: '$base_path'");
+
+// Lấy số lượng items trong giỏ hàng nếu user đã login
+$cart_count = 0;
+if (isLoggedIn()) {
+    $user = getCurrentUser();
+    $cart_sql = "SELECT SUM(quantity) as total_items FROM shopping_cart WHERE user_id = ?";
+    $cart_stmt = $conn->prepare($cart_sql);
+    $cart_stmt->bind_param("i", $user['user_id']);
+    $cart_stmt->execute();
+    $cart_result = $cart_stmt->get_result();
+    $cart_count = $cart_result->fetch_assoc()['total_items'] ?? 0;
 }
 ?>
 
@@ -42,15 +57,9 @@ if ($current_dir == 'user') {
                     </a>
                     <ul class="dropdown-menu user-menu s-cate">
                         <li class="user-menu-item">
-                            <a href="#" class="user-menu-link">
-                                <i class="fa fa-ticket"></i>
-                                <span>Xem voucher</span>
-                            </a>
-                        </li>
-                        <li class="user-menu-item">
-                            <a href="#" class="user-menu-link">
-                                <i class="fa fa-file-text"></i>
-                                <span>Xem hóa đơn đã mua</span>
+                            <a href="<?php echo $base_path; ?>profile.php" class="user-menu-link">
+                                <i class="fa fa-user"></i>
+                                <span>Xem thông tin cá nhân</span>
                             </a>
                         </li>
                         <li class="user-menu-item">
@@ -61,45 +70,35 @@ if ($current_dir == 'user') {
                         </li>
                     </ul>
                 </li><!--/.user dropdown-->
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <li class="dropdown cart-dropdown">
+                    <a href="<?php echo $base_path; ?>cart.php" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="lnr lnr-cart"></span>
-                        <span class="badge badge-bg-1">2</span>
+                        <span class="badge badge-bg-1" id="cart-badge"><?php echo $cart_count; ?></span>
                     </a>
-                    <ul class="dropdown-menu cart-list s-cate">
-                        <li class="single-cart-list">
-                            <a href="#" class="photo"><img src="<?php echo $base_path; ?>assets/images/collection/arrivals1.png" class="cart-thumb" alt="image" /></a>
-                            <div class="cart-list-txt">
-                                <h6><a href="#">arm <br> chair</a></h6>
-                                <p>1 x - <span class="price">$180.00</span></p>
-                            </div><!--/.cart-list-txt-->
-                            <div class="cart-close">
-                                <span class="lnr lnr-cross"></span>
-                            </div><!--/.cart-close-->
-                        </li><!--/.single-cart-list -->
-                        <li class="single-cart-list">
-                            <a href="#" class="photo"><img src="<?php echo $base_path; ?>assets/images/collection/arrivals2.png" class="cart-thumb" alt="image" /></a>
-                            <div class="cart-list-txt">
-                                <h6><a href="#">single <br> armchair</a></h6>
-                                <p>1 x - <span class="price">$180.00</span></p>
-                            </div><!--/.cart-list-txt-->
-                            <div class="cart-close">
-                                <span class="lnr lnr-cross"></span>
-                            </div><!--/.cart-close-->
-                        </li><!--/.single-cart-list -->
-                        <li class="single-cart-list">
-                            <a href="#" class="photo"><img src="<?php echo $base_path; ?>assets/images/collection/arrivals3.png" class="cart-thumb" alt="image" /></a>
-                            <div class="cart-list-txt">
-                                <h6><a href="#">wooden arn <br> chair</a></h6>
-                                <p>1 x - <span class="price">$180.00</span></p>
-                            </div><!--/.cart-list-txt-->
-                            <div class="cart-close">
-                                <span class="lnr lnr-cross"></span>
-                            </div><!--/.cart-close-->
-                        </li><!--/.single-cart-list -->
-                        <li class="total">
-                            <span>Total: $0.00</span>
-                            <button class="btn-cart pull-right" onclick="window.location.href='#'">view cart</button>
+                    <ul class="dropdown-menu cart-list s-cate" id="cart-dropdown-menu">
+                        <li class="cart-header">
+                            <h6>Giỏ hàng của bạn</h6>
+                        </li>
+                        <li id="cart-loading" class="cart-loading" style="display: none;">
+                            <div class="loading-spinner">
+                                <i class="fa fa-spinner fa-spin"></i>
+                                <span>Đang tải...</span>
+                            </div>
+                        </li>
+                        <li id="cart-empty" class="cart-empty" style="display: none;">
+                            <div class="empty-cart">
+                                <i class="lnr lnr-cart"></i>
+                                <p>Giỏ hàng trống</p>
+                            </div>
+                        </li>
+                        <div id="cart-items">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+                        <li class="cart-total" id="cart-total" style="display: none;">
+                            <div class="total-info">
+                                <span class="total-text">Tổng cộng: <span id="total-amount">$0.00</span></span>
+                                <button class="btn-cart" onclick="window.location.href='<?php echo $base_path; ?>cart.php'">Xem giỏ hàng</button>
+                            </div>
                         </li>
                     </ul>
                 </li><!--/.dropdown-->
@@ -189,7 +188,415 @@ if ($current_dir == 'user') {
     color: #dc3545;
 }
 
-.logout-link:hover i {
-    color: #dc3545;
-}
-</style> 
+        .logout-link:hover i {
+            color: #dc3545;
+        }
+
+        /* Cart Dropdown Styles - Force Override */
+        .cart-dropdown {
+            position: relative !important;
+        }
+        
+        .cart-dropdown .dropdown-menu {
+            min-width: 350px !important;
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            display: none !important;
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 9999 !important;
+            background: white !important;
+            border: 1px solid #ddd !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+            margin-top: 5px !important;
+        }
+        
+        /* Force show on hover */
+        .cart-dropdown:hover .dropdown-menu {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Also force show with class */
+        .cart-dropdown.show .dropdown-menu,
+        .cart-dropdown .dropdown-menu.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .cart-header {
+            background: #ff6b35;
+            color: white;
+            padding: 15px 20px;
+            margin: 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-header h6 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .cart-loading, .cart-empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+        }
+
+        .loading-spinner i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .empty-cart i {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .cart-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-item-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .cart-item-qty {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .cart-item-details {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .cart-item-remove:hover {
+            background: #f8f9fa;
+            color: #dc3545;
+        }
+
+        .cart-total {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 2px solid #ff6b35;
+        }
+
+        .total-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-text {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-cart {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s ease;
+        }
+
+        .btn-cart:hover {
+            background: #e55a2b;
+            color: white;
+            text-decoration: none;
+        }
+
+        #cart-badge {
+            background: #ff6b35;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+
+    <!-- Cart JavaScript -->
+    <script>
+        // Check jQuery availability
+        function initCartDropdown() {
+            console.log('🎯 Navigation: Initializing cart dropdown');
+            console.log('🔍 jQuery available:', typeof $ !== 'undefined');
+            
+            if (typeof $ === 'undefined') {
+                console.error('❌ jQuery not available! Using vanilla JS');
+                initCartDropdownVanilla();
+                return;
+            }
+            
+            console.log('🔍 Found cart dropdown elements:', $('.cart-dropdown').length);
+            console.log('🔍 Found dropdown menu:', $('#cart-dropdown-menu').length);
+            
+            // Simple hover with forced display
+            $('.cart-dropdown').hover(
+                function() {
+                    console.log('🖱️ HOVER ENTER detected!');
+                    
+                    // Force show dropdown with multiple methods
+                    $(this).addClass('show');
+                    $('#cart-dropdown-menu').addClass('show').css('display', 'block');
+                    
+                    // Load cart items
+                    loadCartItems();
+                }, 
+                function() {
+                    console.log('🖱️ HOVER LEAVE detected!');
+                    
+                    // Hide with delay
+                    setTimeout(() => {
+                        if (!$('.cart-dropdown:hover').length && !$('#cart-dropdown-menu:hover').length) {
+                            $('.cart-dropdown').removeClass('show');
+                            $('#cart-dropdown-menu').removeClass('show').css('display', 'none');
+                        }
+                    }, 300);
+                }
+            );
+            
+            // Handle cart link click
+            $('.cart-dropdown .dropdown-toggle').on('click', function(e) {
+                console.log('🖱️ Cart icon clicked');
+                window.location.href = $(this).attr('href');
+            });
+        }
+        
+        // Vanilla JavaScript fallback
+        function initCartDropdownVanilla() {
+            console.log('🎯 Using vanilla JavaScript for cart dropdown');
+            
+            const cartDropdown = document.querySelector('.cart-dropdown');
+            const dropdownMenu = document.querySelector('#cart-dropdown-menu');
+            
+            if (!cartDropdown || !dropdownMenu) {
+                console.error('❌ Cart elements not found');
+                return;
+            }
+            
+            cartDropdown.addEventListener('mouseenter', function() {
+                console.log('🖱️ Vanilla: HOVER ENTER');
+                this.classList.add('show');
+                dropdownMenu.classList.add('show');
+                dropdownMenu.style.display = 'block';
+                loadCartItems();
+            });
+            
+            cartDropdown.addEventListener('mouseleave', function() {
+                console.log('🖱️ Vanilla: HOVER LEAVE');
+                setTimeout(() => {
+                    if (!cartDropdown.matches(':hover') && !dropdownMenu.matches(':hover')) {
+                        cartDropdown.classList.remove('show');
+                        dropdownMenu.classList.remove('show');
+                        dropdownMenu.style.display = 'none';
+                    }
+                }, 300);
+            });
+        }
+        
+        // Initialize when ready
+        if (typeof $ !== 'undefined') {
+            $(document).ready(initCartDropdown);
+        } else {
+            document.addEventListener('DOMContentLoaded', initCartDropdown);
+        }
+
+        function loadCartItems() {
+            console.log('🔄 Navigation: Loading cart items...');
+            $('#cart-loading').show();
+            $('#cart-empty').hide();
+            $('#cart-items').empty();
+            $('#cart-total').hide();
+
+            $.ajax({
+                url: '<?php echo $base_path; ?>ajax/cart_handler.php',
+                type: 'POST',
+                data: { action: 'get_cart' },
+                dataType: 'json',
+                beforeSend: function() {
+                    console.log('📤 Navigation: Sending cart request...');
+                },
+                success: function(response) {
+                    console.log('✅ Navigation: Cart response received:', response);
+                    $('#cart-loading').hide();
+                    
+                    if (response.success) {
+                        if (response.cart_items && response.cart_items.length === 0) {
+                            console.log('📭 Navigation: Cart is empty');
+                            $('#cart-empty').show();
+                        } else {
+                            console.log('📦 Navigation: Displaying', response.cart_items.length, 'items');
+                            displayCartItems(response.cart_items, response.total_amount);
+                        }
+                        updateCartBadge(response.total_items);
+                    } else {
+                        console.error('❌ Navigation: Cart error:', response.message);
+                        $('#cart-empty').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('🚨 Navigation: AJAX error:', {
+                        status: status,
+                        error: error,
+                        responseText: xhr.responseText,
+                        statusCode: xhr.status
+                    });
+                    $('#cart-loading').hide();
+                    $('#cart-empty').show();
+                }
+            });
+        }
+
+        function displayCartItems(items, totalAmount) {
+            console.log('🎨 Navigation: Displaying cart items:', items);
+            let cartHTML = '';
+            
+            items.forEach(function(item) {
+                const imageUrl = item.image_url || '<?php echo $base_path; ?>assets/images/default-product.jpg';
+                cartHTML += `
+                    <li class="cart-item">
+                        <div class="cart-item-content">
+                            <img src="${imageUrl}" 
+                                 alt="${item.item_name}" class="cart-item-image"
+                                 onerror="this.src='<?php echo $base_path; ?>assets/images/default-product.jpg'">
+                            <div class="cart-item-details">
+                                <div class="cart-item-name">${item.item_name}</div>
+                                <div class="cart-item-qty">Số lượng: ${item.quantity}</div>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            });
+
+            $('#cart-items').html(cartHTML);
+            $('#total-amount').text('$' + parseFloat(totalAmount).toFixed(2));
+            $('#cart-total').show();
+            console.log('✨ Navigation: Cart display completed');
+        }
+
+        function updateCartBadge(count) {
+            $('#cart-badge').text(count || 0);
+        }
+
+        function removeCartItem(cartId) {
+            $.ajax({
+                url: '<?php echo $base_path; ?>ajax/cart_handler.php',
+                type: 'POST',
+                data: { 
+                    action: 'remove_item',
+                    cart_id: cartId
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        loadCartItems(); // Reload cart
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra khi xóa sản phẩm');
+                }
+            });
+        }
+
+        // Global function to add to cart (can be called from product pages)
+        function addToCart(itemType, itemId, quantity = 1) {
+            $.ajax({
+                url: '<?php echo $base_path; ?>ajax/cart_handler.php',
+                type: 'POST',
+                data: {
+                    action: 'add_to_cart',
+                    item_type: itemType,
+                    item_id: itemId,
+                    quantity: quantity
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        updateCartBadge(response.total_items);
+                        alert(response.message);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra khi thêm vào giỏ hàng');
+                }
+            });
+        }
+    </script> 

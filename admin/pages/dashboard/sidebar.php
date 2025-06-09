@@ -62,20 +62,7 @@
                         <i class="fa fa-comments me-2"></i>Chat Support
                     </a>
                     
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle <?php if(isset($currentPage) && (in_array($currentPage, ['notification', 'settings']) || strpos($currentPage, 'setting') === 0)) echo 'active'; ?>" data-bs-toggle="dropdown">
-                            <i class="fa fa-cog me-2"></i>Cài đặt
-                        </a>
-                        <div class="dropdown-menu bg-transparent border-0 <?php if(isset($currentPage) && (in_array($currentPage, ['notification', 'settings']) || strpos($currentPage, 'setting') === 0)) echo 'show'; ?>">
-                            <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'notification') echo 'active'; ?>">
-                                <i class="fa fa-bell me-2"></i>Thông báo
-                            </a>
-                            <a href="#" class="dropdown-item <?php if(isset($currentPage) && $currentPage == 'settings') echo 'active'; ?>">
-                                <i class="fa fa-sliders-h me-2"></i>Cấu hình
-                            </a>
-                        </div>
-                    </div>
-                    
+
                     <a href="/WEB_MXH/logout.php" class="nav-item nav-link">
                         <i class="fa fa-sign-out-alt me-2"></i>Đăng xuất
                     </a>

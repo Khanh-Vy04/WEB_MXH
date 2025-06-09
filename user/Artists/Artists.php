@@ -1,6 +1,7 @@
 <?php
-// Kết nối database
+// Kết nối database và session
 require_once '../../config/database.php';
+require_once '../../includes/session.php';
 
 // Lấy danh sách nghệ sĩ từ database với số lượng sản phẩm
 $sql = "SELECT a.*, COUNT(ap.product_id) as product_count 

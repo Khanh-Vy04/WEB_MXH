@@ -1,6 +1,7 @@
 <?php
-// Kết nối database
+// Kết nối database và session
 require_once '../config/database.php';
+require_once '../includes/session.php';
 
 // Tính toán ngày để xác định sản phẩm mới
 $current_date = new DateTime();
