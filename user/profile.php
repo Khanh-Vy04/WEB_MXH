@@ -1,37 +1,40 @@
 <?php
 // Kết nối database và khởi tạo session
 require_once '../config/database.php';
-require_once '../includes/session.php';
+require_once 'includes/session.php';
 
-// Kiểm tra đăng nhập
-if (!requireLoginWithPopup()) {
-    exit();
-}
-
-// Lấy thông tin user
+// Kiểm tra đăng nhập cho trang profile
+$is_logged_in = isLoggedIn();
 $current_user = getCurrentUser();
-$user_id = $current_user['user_id'];
 
-// Lấy voucher đã sở hữu của user
-$sql_user_vouchers = "SELECT v.*, uv.assigned_date, uv.used_date, uv.is_used,
-                             CASE 
-                                 WHEN v.is_active = 0 THEN 'inactive'
-                                 WHEN v.end_date < CURDATE() THEN 'expired'
-                                 WHEN uv.is_used = 1 THEN 'used'
-                                 ELSE 'available'
-                             END as voucher_status
-                      FROM user_vouchers uv 
-                      JOIN vouchers v ON uv.voucher_id = v.voucher_id 
-                      WHERE uv.user_id = ? 
-                      ORDER BY uv.assigned_date DESC";
+// Profile cần đăng nhập, nếu chưa đăng nhập thì hiển thị thông báo
+if ($is_logged_in) {
+    $user_id = $current_user['user_id'];
 
-$stmt_vouchers = $conn->prepare($sql_user_vouchers);
-$stmt_vouchers->bind_param("i", $user_id);
-$stmt_vouchers->execute();
-$result_vouchers = $stmt_vouchers->get_result();
-$user_vouchers = [];
-while ($row = $result_vouchers->fetch_assoc()) {
-    $user_vouchers[] = $row;
+    // Lấy voucher đã sở hữu của user
+    $sql_user_vouchers = "SELECT v.*, uv.assigned_date, uv.used_date, uv.is_used,
+                                 CASE 
+                                     WHEN v.is_active = 0 THEN 'inactive'
+                                     WHEN v.end_date < CURDATE() THEN 'expired'
+                                     WHEN uv.is_used = 1 THEN 'used'
+                                     ELSE 'available'
+                                 END as voucher_status
+                          FROM user_vouchers uv 
+                          JOIN vouchers v ON uv.voucher_id = v.voucher_id 
+                          WHERE uv.user_id = ? 
+                          ORDER BY uv.assigned_date DESC";
+
+    $stmt_vouchers = $conn->prepare($sql_user_vouchers);
+    $stmt_vouchers->bind_param("i", $user_id);
+    $stmt_vouchers->execute();
+    $result_vouchers = $stmt_vouchers->get_result();
+    $user_vouchers = [];
+    while ($row = $result_vouchers->fetch_assoc()) {
+        $user_vouchers[] = $row;
+    }
+} else {
+    // Nếu chưa đăng nhập
+    $user_vouchers = [];
 }
 ?>
 
@@ -73,6 +76,25 @@ while ($row = $result_vouchers->fetch_assoc()) {
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="text-center" style="margin-bottom: 40px;">Thông tin cá nhân</h2>
+                    
+                    <?php if (!$is_logged_in): ?>
+                    <!-- Yêu cầu đăng nhập -->
+                    <div class="login-required" style="text-align: center; padding: 80px 30px; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        <i class="fa fa-lock" style="font-size: 120px; color: #dee2e6; margin-bottom: 30px; display: block;"></i>
+                        <h3 style="color: #666; margin-bottom: 15px; font-size: 1.8rem;">Cần đăng nhập</h3>
+                        <p style="color: #999; margin-bottom: 40px; font-size: 1.1rem;">Vui lòng đăng nhập để xem thông tin cá nhân và quản lý tài khoản</p>
+                        <div style="display: flex; gap: 20px; justify-content: center;">
+                            <a href="/WEB_MXH/index.php" class="btn" style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                                <i class="fa fa-sign-in"></i>
+                                Đăng nhập
+                            </a>
+                            <a href="index.php" class="btn" style="background: #6c757d; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                                <i class="fa fa-arrow-left"></i>
+                                Về trang chủ
+                            </a>
+                        </div>
+                    </div>
+                    <?php else: ?>
                     
                     <!-- Profile Navigation Tabs -->
                     <div class="profile-nav-wrapper">
@@ -2936,4 +2958,5 @@ while ($row = $result_vouchers->fetch_assoc()) {
         });
     </script>
 </body>
-</html> 
+</html>
+<?php endif; ?> 

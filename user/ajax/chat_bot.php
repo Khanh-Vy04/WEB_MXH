@@ -1,6 +1,7 @@
 <?php
 require_once '../../config/database.php';
-require_once '../../includes/session.php';
+require_once '../includes/session.php';
+
 
 // Sử dụng biến môi trường hoặc file config để lưu API key
 define('OPENAI_API_KEY', $_ENV['OPENAI_API_KEY'] ?? 'your-openai-api-key-here');

@@ -1,30 +1,28 @@
 <?php
 // Kết nối database và khởi tạo session
 require_once '../config/database.php';
-require_once '../includes/session.php';
+require_once 'includes/session.php';
 
-// Kiểm tra đăng nhập
-if (!requireLoginWithPopup()) {
-    exit();
-}
-
-// Lấy thông tin user
+// Kiểm tra đăng nhập cho giỏ hàng
+$is_logged_in = isLoggedIn();
 $current_user = getCurrentUser();
-$user_id = $current_user['user_id'];
+$user_id = $current_user['user_id'] ?? 0;
+$cart_count = 0;
 
-// Lấy cart count
-function getCartItemCount() {
-    global $conn, $user_id;
-    $sql = "SELECT SUM(quantity) as total FROM shopping_cart WHERE user_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    return $row['total'] ?? 0;
+// Lấy cart count nếu đã đăng nhập
+if ($is_logged_in) {
+    function getCartItemCount() {
+        global $conn, $user_id;
+        $sql = "SELECT SUM(quantity) as total FROM shopping_cart WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['total'] ?? 0;
+    }
+    $cart_count = getCartItemCount();
 }
-
-$cart_count = getCartItemCount();
 ?>
 
 <!DOCTYPE html>
@@ -796,6 +794,120 @@ $cart_count = getCartItemCount();
             font-size: 12px;
             margin-top: 8px;
         }
+
+        /* Payment Method Selection Styles */
+        .payment-method-options {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-method-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            background: white;
+        }
+
+        .payment-method-card:hover {
+            border-color: #ff6b35;
+            background: #fff8f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.1);
+        }
+
+        .payment-method-card.selected {
+            border-color: #ff6b35;
+            background: #fff8f6;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+        }
+
+        .payment-method-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f8f9fa;
+        }
+
+        .payment-method-card.disabled:hover {
+            border-color: #e9ecef;
+            background: #f8f9fa;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .payment-method-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .payment-method-card[data-method="vnpay"] .payment-method-icon {
+            background: linear-gradient(135deg, #1e88e5, #1976d2);
+        }
+
+        .payment-method-card[data-method="cash"] .payment-method-icon {
+            background: linear-gradient(135deg, #43a047, #388e3c);
+        }
+
+        .payment-method-info {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .payment-method-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+
+        .payment-method-balance {
+            color: #ff6b35;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .payment-method-check {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #ff6b35;
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-method-card.selected .payment-method-check {
+            opacity: 1;
+        }
+
+        .wallet-insufficient {
+            color: #dc3545 !important;
+        }
+
+        .wallet-sufficient {
+            color: #28a745 !important;
+        }
     </style>
 </head>
 <body>
@@ -824,9 +936,27 @@ $cart_count = getCartItemCount();
                         </div>
                     </div>
 
+                    <?php if (!$is_logged_in): ?>
+                    <div class="empty-cart">
+                        <i class="fa fa-lock"></i>
+                        <h3>Cần đăng nhập</h3>
+                        <p>Vui lòng đăng nhập để xem và quản lý giỏ hàng của bạn</p>
+                        <div style="display: flex; gap: 20px; justify-content: center;">
+                            <a href="/WEB_MXH/index.php" class="btn-continue">
+                                <i class="fa fa-sign-in"></i>
+                                Đăng nhập
+                            </a>
+                            <a href="index.php" class="btn-checkout">
+                                <i class="fa fa-arrow-left"></i>
+                                Về trang chủ
+                            </a>
+                        </div>
+                    </div>
+                    <?php else: ?>
                     <div id="cart-items-container">
                         <!-- Cart items will be loaded here -->
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -938,7 +1068,10 @@ $cart_count = getCartItemCount();
                 );
             }
             
+            // Chỉ load cart nếu đã đăng nhập
+            <?php if ($is_logged_in): ?>
             loadCartItems();
+            <?php endif; ?>
         });
 
         function loadCartItems() {
@@ -1350,8 +1483,10 @@ Bạn có muốn tiếp tục thanh toán?
         // Voucher functions
         let selectedVoucher = null;
         
-        // Current payment data
-        let currentPaymentData = null;
+            // Current payment data
+    let currentPaymentData = null;
+    let selectedPaymentMethod = null;
+    let userBalance = 0;
 
         function showVoucherModal() {
             console.log('🎫 Opening voucher modal');
@@ -1586,7 +1721,7 @@ Bạn có muốn tiếp tục thanh toán?
                 }
             }
             
-            const finalTotal = selectedTotal - discount;
+            const finalAmount = selectedTotal - discount;
             
             // Update display
             if (selectedVoucher && discount > 0) {
@@ -1599,7 +1734,7 @@ Bạn có muốn tiếp tục thanh toán?
                 $('#discount-row').hide();
             }
             
-            $('#final-total-display').text(formatVND(finalTotal));
+            $('#final-total-display').text(formatVND(finalAmount));
             
             // Update checkout button state
             const checkoutBtn = $('.btn-checkout');
@@ -1702,13 +1837,65 @@ Bạn có muốn tiếp tục thanh toán?
             </div>
         `;
         
+        // Add payment method selection
+        checkoutHTML += `
+            <div class="checkout-section">
+                <div class="checkout-section-title">
+                    <i class="fa fa-credit-card"></i> Chọn phương thức thanh toán
+                </div>
+                <div class="payment-method-options">
+                    <div class="payment-method-card" data-method="wallet" onclick="selectPaymentMethod('wallet')">
+                        <div class="payment-method-icon">
+                            <i class="fa fa-wallet"></i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Ví AuraDisc</div>
+                            <div class="payment-method-desc">Thanh toán bằng số dư trong tài khoản</div>
+                            <div class="payment-method-balance" id="current-balance">Số dư: Đang tải...</div>
+                        </div>
+                        <div class="payment-method-check">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method-card" data-method="vnpay" onclick="selectPaymentMethod('vnpay')">
+                        <div class="payment-method-icon">
+                            <i class="fa fa-university"></i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">VNPay</div>
+                            <div class="payment-method-desc">Thanh toán qua ngân hàng/ví điện tử</div>
+                            <div class="payment-method-desc">Hỗ trợ tất cả ngân hàng Việt Nam</div>
+                        </div>
+                        <div class="payment-method-check">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-method-card" data-method="cash" onclick="selectPaymentMethod('cash')">
+                        <div class="payment-method-icon">
+                            <i class="fa fa-money"></i>
+                        </div>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Tiền mặt</div>
+                            <div class="payment-method-desc">Thanh toán khi nhận hàng (COD)</div>
+                            <div class="payment-method-desc">Miễn phí giao hàng tại TPHCM</div>
+                        </div>
+                        <div class="payment-method-check">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
         // Add action buttons
         checkoutHTML += `
             <div class="checkout-actions">
                 <button type="button" class="checkout-btn btn-cancel-payment" onclick="hideCheckoutPopup()">
                     <i class="fa fa-times"></i> Hủy
                 </button>
-                <button type="button" class="checkout-btn btn-confirm-payment" onclick="processCurrentPayment()">
+                <button type="button" class="checkout-btn btn-confirm-payment" id="confirm-payment-btn" onclick="processCurrentPayment()" disabled>
                     <i class="fa fa-credit-card"></i> Xác nhận thanh toán
                 </button>
             </div>
@@ -1717,6 +1904,9 @@ Bạn có muốn tiếp tục thanh toán?
         // Update popup content and show
         document.getElementById('checkoutBody').innerHTML = checkoutHTML;
         document.getElementById('checkoutPopup').classList.add('show');
+        
+        // Load user balance for wallet option
+        loadUserBalanceForCheckout();
         
         // Prevent background scrolling
         document.body.style.overflow = 'hidden';
@@ -1842,6 +2032,570 @@ Bạn có muốn tiếp tục thanh toán?
         location.reload(); // Refresh page to show updated cart
     }
     
+    // Payment method selection functions
+    function selectPaymentMethod(method) {
+        console.log('💳 Selected payment method:', method);
+        
+        // Remove selected class from all cards
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected class to chosen card
+        const selectedCard = document.querySelector(`[data-method="${method}"]`);
+        if (selectedCard && !selectedCard.classList.contains('disabled')) {
+            selectedCard.classList.add('selected');
+            selectedPaymentMethod = method;
+            
+            // Enable confirm button
+            const confirmBtn = document.getElementById('confirm-payment-btn');
+            confirmBtn.disabled = false;
+            
+            // Update button text based on method
+            const btnIcon = confirmBtn.querySelector('i');
+            const btnText = confirmBtn.childNodes[1];
+            
+            switch(method) {
+                case 'wallet':
+                    btnIcon.className = 'fa fa-wallet';
+                    btnText.textContent = ' Thanh toán bằng ví';
+                    break;
+                case 'vnpay':
+                    btnIcon.className = 'fa fa-university';
+                    btnText.textContent = ' Thanh toán VNPay';
+                    break;
+                case 'cash':
+                    btnIcon.className = 'fa fa-money';
+                    btnText.textContent = ' Đặt hàng COD';
+                    break;
+            }
+        }
+    }
+    
+    function loadUserBalanceForCheckout() {
+        console.log('💰 Loading user balance for checkout...');
+        
+        $.ajax({
+            url: 'ajax/wallet_handler.php',
+            method: 'POST',
+            data: { action: 'get_balance' },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    userBalance = parseFloat(data.balance) || 0;
+                    const balanceDisplay = document.getElementById('current-balance');
+                    
+                    if (balanceDisplay) {
+                        balanceDisplay.textContent = `Số dư: ${data.formatted_balance}`;
+                        
+                        // Check if balance is sufficient for current order
+                        const finalAmount = currentPaymentData ? currentPaymentData.finalAmount : 0;
+                        const walletCard = document.querySelector('[data-method="wallet"]');
+                        
+                        if (userBalance >= finalAmount) {
+                            balanceDisplay.classList.add('wallet-sufficient');
+                            balanceDisplay.classList.remove('wallet-insufficient');
+                            walletCard.classList.remove('disabled');
+                        } else {
+                            balanceDisplay.classList.add('wallet-insufficient');
+                            balanceDisplay.classList.remove('wallet-sufficient');
+                            balanceDisplay.textContent += ' (Không đủ)';
+                            walletCard.classList.add('disabled');
+                        }
+                    }
+                } else {
+                    console.error('❌ Failed to load balance:', data.message);
+                    const balanceDisplay = document.getElementById('current-balance');
+                    if (balanceDisplay) {
+                        balanceDisplay.textContent = 'Lỗi tải số dư';
+                        balanceDisplay.classList.add('wallet-insufficient');
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('❌ AJAX error loading balance:', error);
+                const balanceDisplay = document.getElementById('current-balance');
+                if (balanceDisplay) {
+                    balanceDisplay.textContent = 'Lỗi kết nối';
+                    balanceDisplay.classList.add('wallet-insufficient');
+                }
+            }
+        });
+    }
+    
+    function processCurrentPayment() {
+        if (!currentPaymentData) {
+            alert('Không có dữ liệu thanh toán');
+            return;
+        }
+        
+        if (!selectedPaymentMethod) {
+            alert('Vui lòng chọn phương thức thanh toán');
+            return;
+        }
+        
+        const { selectedItems, selectedVoucher, selectedTotal, discount, finalAmount } = currentPaymentData;
+        
+        console.log('🚀 Processing payment with method:', selectedPaymentMethod);
+        
+        switch(selectedPaymentMethod) {
+            case 'wallet':
+                processWalletPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount);
+                break;
+            case 'vnpay':
+                processVNPayPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount);
+                break;
+            case 'cash':
+                processCashPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount);
+                break;
+            default:
+                alert('Phương thức thanh toán không hợp lệ');
+        }
+    }
+    
+    function processWalletPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount) {
+        console.log('💳 Processing wallet payment...');
+        
+        if (userBalance < finalAmount) {
+            alert(`Số dư không đủ!\nCần: ${formatVND(finalAmount)}\nCó: ${formatVND(userBalance)}`);
+            return;
+        }
+        
+        showPaymentProcessing('Đang xử lý thanh toán qua ví...');
+        
+        const paymentData = {
+            action: 'process_payment',
+            payment_method: 'wallet',
+            selected_items: JSON.stringify(selectedItems),
+            selected_voucher: selectedVoucher ? JSON.stringify(selectedVoucher) : null,
+            selected_total: selectedTotal,
+            discount: discount,
+            final_amount: finalAmount
+        };
+        
+        $.ajax({
+            url: 'ajax/payment_handler.php',
+            type: 'POST',
+            data: paymentData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('✅ Wallet payment response:', response);
+                hidePaymentProcessing();
+                
+                if (response.success) {
+                    showPaymentSuccess(response);
+                } else {
+                    showPaymentError(response.message || 'Thanh toán thất bại');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('🚨 Wallet payment error:', error);
+                hidePaymentProcessing();
+                showPaymentError('Lỗi kết nối. Vui lòng thử lại.');
+            }
+        });
+    }
+    
+    function processVNPayPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount) {
+        console.log('🏦 Processing VNPay payment...');
+        
+        showPaymentProcessing('Đang tạo đơn thanh toán VNPay...');
+        
+        // Create VNPay order first
+        createVNPayOrder(finalAmount, selectedItems, selectedVoucher, selectedTotal, discount);
+    }
+    
+    function createVNPayOrder(amount, selectedItems, selectedVoucher, selectedTotal, discount) {
+        // Try multiple methods like in profile.php
+        testAPIConnection()
+            .then(() => {
+                console.log('✅ API connection test successful');
+                return createPaymentOrderFetch(amount, selectedItems, selectedVoucher, selectedTotal, discount);
+            })
+            .catch(error => {
+                console.warn('🔄 Fetch failed, trying XMLHttpRequest...', error);
+                updatePaymentProcessing('Đang thử phương pháp khác...');
+                
+                setTimeout(() => {
+                    createPaymentOrderXHR(amount, selectedItems, selectedVoucher, selectedTotal, discount)
+                        .catch(xhrError => {
+                            console.warn('🔄 XHR also failed, trying PHP proxy...', xhrError);
+                            updatePaymentProcessing('Đang thử proxy...');
+                            
+                            setTimeout(() => {
+                                createPaymentOrderProxy(amount, selectedItems, selectedVoucher, selectedTotal, discount);
+                            }, 1000);
+                        });
+                }, 1000);
+            });
+    }
+    
+    function processCashPayment(selectedItems, selectedVoucher, selectedTotal, discount, finalAmount) {
+        console.log('💵 Processing cash payment (COD)...');
+        
+        showPaymentProcessing('Đang tạo đơn hàng COD...');
+        
+        const paymentData = {
+            action: 'process_payment',
+            payment_method: 'cash',
+            selected_items: JSON.stringify(selectedItems),
+            selected_voucher: selectedVoucher ? JSON.stringify(selectedVoucher) : null,
+            selected_total: selectedTotal,
+            discount: discount,
+            final_amount: finalAmount
+        };
+        
+        $.ajax({
+            url: 'ajax/payment_handler.php',
+            type: 'POST',
+            data: paymentData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('✅ Cash payment response:', response);
+                hidePaymentProcessing();
+                
+                if (response.success) {
+                    showPaymentSuccess(response);
+                } else {
+                    showPaymentError(response.message || 'Tạo đơn hàng thất bại');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('🚨 Cash payment error:', error);
+                hidePaymentProcessing();
+                showPaymentError('Lỗi kết nối. Vui lòng thử lại.');
+            }
+        });
+    }
+    
+    // VNPay helper functions (copied from profile.php)
+    function testAPIConnection() {
+        return new Promise((resolve, reject) => {
+            console.log('🌐 Skipping health check, testing direct API...');
+            resolve(); // Always continue without health check
+        });
+    }
+    
+    function createPaymentOrderFetch(amount, selectedItems, selectedVoucher, selectedTotal, discount) {
+        return new Promise((resolve, reject) => {
+            fetch('https://duc-spring.ngodat0103.live/demo/api/app/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                    'Origin': window.location.origin,
+                    'Referer': window.location.href,
+                },
+                mode: 'cors',
+                credentials: 'omit',
+                body: JSON.stringify({
+                    amount: amount,
+                    orderInfo: 'Thanh toán đơn hàng AuraDisc'
+                })
+            })
+            .then(response => {
+                console.log('📡 Fetch Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Fetch VNPay order created:', data);
+                
+                if (data.orderId && data.paymentUrl) {
+                    updatePaymentProcessing('Đang chờ thanh toán VNPay...');
+                    const paymentWindow = window.open(data.paymentUrl, '_blank');
+                    checkVNPayStatus(data.orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount, paymentWindow);
+                    resolve(data);
+                } else {
+                    throw new Error('Không nhận được thông tin thanh toán từ server. Response: ' + JSON.stringify(data));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fetch VNPay order error:', error);
+                reject(error);
+            });
+        });
+    }
+    
+    function createPaymentOrderXHR(amount, selectedItems, selectedVoucher, selectedTotal, discount) {
+        return new Promise((resolve, reject) => {
+            console.log('🔄 Trying XMLHttpRequest method...');
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://duc-spring.ngodat0103.live/demo/api/app/order', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
+            xhr.setRequestHeader('Origin', window.location.origin);
+            xhr.setRequestHeader('Referer', window.location.href);
+            xhr.withCredentials = false;
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    console.log('📡 XHR Response status:', xhr.status);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            console.log('✅ XHR VNPay order created:', data);
+                            
+                            if (data.orderId && data.paymentUrl) {
+                                updatePaymentProcessing('Đang chờ thanh toán VNPay...');
+                                const paymentWindow = window.open(data.paymentUrl, '_blank');
+                                checkVNPayStatus(data.orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount, paymentWindow);
+                                resolve(data);
+                            } else {
+                                reject(new Error('Không nhận được thông tin thanh toán từ server'));
+                            }
+                        } catch (parseError) {
+                            reject(parseError);
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Lỗi mạng'));
+            xhr.ontimeout = () => reject(new Error('Hết thời gian chờ'));
+            xhr.timeout = 30000;
+            
+            const requestData = JSON.stringify({
+                amount: amount,
+                orderInfo: 'Thanh toán đơn hàng AuraDisc'
+            });
+            
+            xhr.send(requestData);
+        });
+    }
+    
+    function createPaymentOrderProxy(amount, selectedItems, selectedVoucher, selectedTotal, discount) {
+        console.log('🔄 Trying PHP proxy method...');
+        
+        fetch('ajax/payment_proxy.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'create_order',
+                amount: amount,
+                orderInfo: 'Thanh toán đơn hàng AuraDisc'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('✅ Proxy VNPay order created:', data);
+            
+            if (data.error) {
+                throw new Error('Proxy Error: ' + data.error);
+            }
+            
+            if (data.orderId && data.paymentUrl) {
+                updatePaymentProcessing('Đang chờ thanh toán VNPay...');
+                const paymentWindow = window.open(data.paymentUrl, '_blank');
+                checkVNPayStatusProxy(data.orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount, paymentWindow);
+            } else {
+                throw new Error('Không nhận được thông tin thanh toán từ proxy');
+            }
+        })
+        .catch(error => {
+            console.error('❌ All VNPay methods failed:', error);
+            hidePaymentProcessing();
+            showPaymentError('Không thể tạo đơn thanh toán VNPay. Vui lòng thử lại sau.');
+        });
+    }
+    
+    function checkVNPayStatus(orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount, paymentWindow) {
+        console.log('🔍 Checking VNPay status for order:', orderId);
+        
+        const maxAttempts = 60;
+        let attempts = 0;
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            updatePaymentProcessing(`Kiểm tra thanh toán VNPay... (${Math.max(0, maxAttempts - attempts)}s)`);
+            
+            fetch(`https://duc-spring.ngodat0103.live/demo/api/app/order/${orderId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Origin': window.location.origin,
+                },
+                mode: 'cors',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('💳 VNPay status:', data);
+                
+                if (data.status === 'PAID') {
+                    clearInterval(checkInterval);
+                    
+                    if (paymentWindow && !paymentWindow.closed) {
+                        paymentWindow.close();
+                    }
+                    
+                    updatePaymentProcessing('Đang tạo đơn hàng...');
+                    
+                    // Create order in database
+                    createOrderAfterVNPay(orderId, selectedItems, selectedVoucher, selectedTotal, discount, amount);
+                    
+                } else if (data.status === 'UNPAID') {
+                    if (paymentWindow && paymentWindow.closed) {
+                        clearInterval(checkInterval);
+                        hidePaymentProcessing();
+                        showPaymentError('Thanh toán bị hủy');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('❌ VNPay status check error:', error);
+                // Try proxy fallback
+                checkVNPayStatusProxyFallback(orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount);
+            });
+            
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                if (paymentWindow && !paymentWindow.closed) {
+                    paymentWindow.close();
+                }
+                hidePaymentProcessing();
+                showPaymentError('Hết thời gian chờ thanh toán');
+            }
+        }, 5000);
+    }
+    
+    function checkVNPayStatusProxy(orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount, paymentWindow) {
+        console.log('🔍 Checking VNPay status via proxy for order:', orderId);
+        
+        const maxAttempts = 60;
+        let attempts = 0;
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            updatePaymentProcessing(`Kiểm tra thanh toán VNPay... (${Math.max(0, maxAttempts - attempts)}s)`);
+            
+            fetch('ajax/payment_proxy.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'check_status',
+                    orderId: orderId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('💳 VNPay status via proxy:', data);
+                
+                if (data.status === 'PAID') {
+                    clearInterval(checkInterval);
+                    
+                    if (paymentWindow && !paymentWindow.closed) {
+                        paymentWindow.close();
+                    }
+                    
+                    updatePaymentProcessing('Đang tạo đơn hàng...');
+                    createOrderAfterVNPay(orderId, selectedItems, selectedVoucher, selectedTotal, discount, amount);
+                } else if (data.status === 'UNPAID') {
+                    if (paymentWindow && paymentWindow.closed) {
+                        clearInterval(checkInterval);
+                        hidePaymentProcessing();
+                        showPaymentError('Thanh toán bị hủy');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('❌ Proxy VNPay status check error:', error);
+            });
+            
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                if (paymentWindow && !paymentWindow.closed) {
+                    paymentWindow.close();
+                }
+                hidePaymentProcessing();
+                showPaymentError('Hết thời gian chờ thanh toán');
+            }
+        }, 5000);
+    }
+    
+    function checkVNPayStatusProxyFallback(orderId, amount, selectedItems, selectedVoucher, selectedTotal, discount) {
+        fetch('ajax/payment_proxy.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'check_status',
+                orderId: orderId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.error && data.status === 'PAID') {
+                updatePaymentProcessing('Đang tạo đơn hàng...');
+                createOrderAfterVNPay(orderId, selectedItems, selectedVoucher, selectedTotal, discount, amount);
+            }
+        })
+        .catch(error => {
+            console.error('❌ Proxy fallback failed:', error);
+        });
+    }
+    
+    function createOrderAfterVNPay(vnpayOrderId, selectedItems, selectedVoucher, selectedTotal, discount, finalAmount) {
+        const paymentData = {
+            action: 'process_payment',
+            payment_method: 'vnpay',
+            vnpay_order_id: vnpayOrderId,
+            selected_items: JSON.stringify(selectedItems),
+            selected_voucher: selectedVoucher ? JSON.stringify(selectedVoucher) : null,
+            selected_total: selectedTotal,
+            discount: discount,
+            final_amount: finalAmount
+        };
+        
+        $.ajax({
+            url: 'ajax/payment_handler.php',
+            type: 'POST',
+            data: paymentData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('✅ VNPay order creation response:', response);
+                hidePaymentProcessing();
+                
+                if (response.success) {
+                    showPaymentSuccess(response);
+                } else {
+                    showPaymentError(response.message || 'Lỗi tạo đơn hàng sau thanh toán');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('🚨 VNPay order creation error:', error);
+                hidePaymentProcessing();
+                showPaymentError('Lỗi tạo đơn hàng. Vui lòng liên hệ hỗ trợ.');
+            }
+        });
+    }
+    
+    function updatePaymentProcessing(message) {
+        const processingHTML = `
+            <div class="payment-processing">
+                <div class="spinner"></div>
+                <h4 style="margin: 0; color: #333;">${message}</h4>
+                <p style="margin: 10px 0 0 0; color: #666;">Vui lòng không tắt trang</p>
+            </div>
+        `;
+        document.getElementById('checkoutBody').innerHTML = processingHTML;
+    }
+
     // Close popup when clicking outside
     document.addEventListener('click', function(e) {
         if (e.target.id === 'checkoutPopup') {

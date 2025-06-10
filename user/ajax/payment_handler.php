@@ -1,7 +1,7 @@
 <?php
 // Kết nối database và khởi tạo session
 require_once '../../config/database.php';
-require_once '../../includes/session.php';
+require_once '../includes/session.php';
 
 // Kiểm tra phương thức POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -36,46 +36,64 @@ function processPayment() {
         // Bắt đầu transaction
         $conn->begin_transaction();
         
-                 // Lấy và validate data
+        // Lấy và validate data
         $selectedItems = json_decode($_POST['selected_items'] ?? '[]', true);
         $selectedVoucher = $_POST['selected_voucher'] !== 'null' ? json_decode($_POST['selected_voucher'] ?? 'null', true) : null;
         $selectedTotal = floatval($_POST['selected_total'] ?? 0);
         $discount = floatval($_POST['discount'] ?? 0);
         $finalAmount = floatval($_POST['final_amount'] ?? 0);
+        $paymentMethod = $_POST['payment_method'] ?? 'wallet';
+        $vnpayOrderId = $_POST['vnpay_order_id'] ?? null;
         
         // Debug log
         error_log("Payment Debug - Selected Items: " . print_r($selectedItems, true));
         error_log("Payment Debug - Voucher: " . print_r($selectedVoucher, true));
         error_log("Payment Debug - Amounts: Total={$selectedTotal}, Discount={$discount}, Final={$finalAmount}");
+        error_log("Payment Debug - Payment Method: {$paymentMethod}");
+        error_log("Payment Debug - User ID: {$user_id}");
         
         // Validate input
         if (empty($selectedItems) || $finalAmount <= 0) {
             throw new Exception('Dữ liệu thanh toán không hợp lệ');
         }
         
-        // 1. Kiểm tra số dư người dùng
-        $user_query = "SELECT balance FROM users WHERE user_id = ?";
-        $user_stmt = $conn->prepare($user_query);
-        $user_stmt->bind_param("i", $user_id);
-        $user_stmt->execute();
-        $user_result = $user_stmt->get_result();
-        $user_data = $user_result->fetch_assoc();
-        
-        if (!$user_data) {
-            throw new Exception('Không tìm thấy thông tin người dùng');
+        // 1. Xử lý theo phương thức thanh toán
+        $user_data = null;
+        if ($paymentMethod === 'wallet') {
+            // Kiểm tra số dư người dùng cho thanh toán ví
+            $user_query = "SELECT balance FROM users WHERE user_id = ?";
+            $user_stmt = $conn->prepare($user_query);
+            $user_stmt->bind_param("i", $user_id);
+            $user_stmt->execute();
+            $user_result = $user_stmt->get_result();
+            $user_data = $user_result->fetch_assoc();
+            
+            if (!$user_data) {
+                throw new Exception('Không tìm thấy thông tin người dùng');
+            }
+            
+            if ($user_data['balance'] < $finalAmount) {
+                throw new Exception('Số dư không đủ để thanh toán. Số dư hiện tại: ' . number_format($user_data['balance']) . '₫');
+            }
         }
         
-        if ($user_data['balance'] < $finalAmount) {
-            throw new Exception('Số dư không đủ để thanh toán. Số dư hiện tại: ' . number_format($user_data['balance']) . '₫');
-        }
+        // 2. Tạo order trong bảng orders với payment_method
+        $stage_id = ($paymentMethod === 'cash') ? 0 : 1; // COD = 0 (chờ xác nhận), khác = 1 (đã thanh toán)
         
-        // 2. Tạo order trong bảng orders
-        $order_query = "INSERT INTO orders (buyer_id, total_amount, voucher_discount, final_amount, stage_id) VALUES (?, ?, ?, ?, 1)";
+        // Debug log for order creation
+        error_log("Order Debug - UserID: {$user_id}, Total: {$selectedTotal}, Discount: {$discount}, Final: {$finalAmount}, Method: {$paymentMethod}, Stage: {$stage_id}");
+        
+        $order_query = "INSERT INTO orders (buyer_id, total_amount, payment_method, stage_id, voucher_discount, final_amount) VALUES (?, ?, ?, ?, ?, ?)";
         $order_stmt = $conn->prepare($order_query);
-        $order_stmt->bind_param("iddd", $user_id, $selectedTotal, $discount, $finalAmount);
+        
+        if (!$order_stmt) {
+            throw new Exception('Không thể prepare order query: ' . $conn->error);
+        }
+        
+        $order_stmt->bind_param("idsidd", $user_id, $selectedTotal, $paymentMethod, $stage_id, $discount, $finalAmount);
         
         if (!$order_stmt->execute()) {
-            throw new Exception('Không thể tạo đơn hàng');
+            throw new Exception('Không thể tạo đơn hàng: ' . $order_stmt->error);
         }
         
         $order_id = $conn->insert_id;
@@ -199,26 +217,55 @@ function processPayment() {
             }
         }
         
-        // 5. Trừ tiền trong tài khoản user
-        $update_balance_query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
-        $update_balance_stmt = $conn->prepare($update_balance_query);
-        $update_balance_stmt->bind_param("di", $finalAmount, $user_id);
+        // 5. Lưu thông tin VNPay order ID nếu có
+        if ($paymentMethod === 'vnpay' && $vnpayOrderId) {
+            $update_payment_query = "UPDATE orders SET payment_id = ? WHERE order_id = ?";
+            $update_payment_stmt = $conn->prepare($update_payment_query);
+            $update_payment_stmt->bind_param("si", $vnpayOrderId, $order_id);
+            $update_payment_stmt->execute();
+        }
         
-        if (!$update_balance_stmt->execute()) {
-            throw new Exception('Không thể trừ tiền từ tài khoản');
+        // 6. Trừ tiền trong tài khoản user chỉ cho phương thức ví
+        if ($paymentMethod === 'wallet') {
+            $update_balance_query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
+            $update_balance_stmt = $conn->prepare($update_balance_query);
+            $update_balance_stmt->bind_param("di", $finalAmount, $user_id);
+            
+            if (!$update_balance_stmt->execute()) {
+                throw new Exception('Không thể trừ tiền từ tài khoản');
+            }
         }
         
         // Commit transaction
         $conn->commit();
         
         // Trả về kết quả thành công
-        echo json_encode([
+        $success_message = '';
+        $response_data = [
             'success' => true,
-            'message' => 'Thanh toán thành công',
             'order_id' => $order_id,
             'final_amount' => $finalAmount,
-            'remaining_balance' => $user_data['balance'] - $finalAmount
-        ]);
+            'payment_method' => $paymentMethod
+        ];
+        
+        switch($paymentMethod) {
+            case 'wallet':
+                $success_message = 'Thanh toán bằng ví thành công!';
+                $response_data['remaining_balance'] = $user_data['balance'] - $finalAmount;
+                break;
+            case 'vnpay':
+                $success_message = 'Thanh toán VNPay thành công!';
+                if ($vnpayOrderId) {
+                    $response_data['vnpay_order_id'] = $vnpayOrderId;
+                }
+                break;
+            case 'cash':
+                $success_message = 'Đặt hàng COD thành công! Bạn sẽ thanh toán khi nhận hàng.';
+                break;
+        }
+        
+        $response_data['message'] = $success_message;
+        echo json_encode($response_data);
         
     } catch (Exception $e) {
         // Rollback transaction nếu có lỗi

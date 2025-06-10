@@ -1,7 +1,7 @@
 <?php
 // Voucher AJAX Handler
 require_once '../../config/database.php';
-require_once '../../includes/session.php';
+require_once '../includes/session.php';
 
 // Check login
 if (!isset($_SESSION['user_id'])) {

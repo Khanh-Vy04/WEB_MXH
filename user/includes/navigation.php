@@ -56,18 +56,33 @@ if (isLoggedIn()) {
                         <span class="lnr lnr-user"></span>
                     </a>
                     <ul class="dropdown-menu user-menu s-cate">
-                        <li class="user-menu-item">
-                            <a href="<?php echo $base_path; ?>profile.php" class="user-menu-link">
-                                <i class="fa fa-user"></i>
-                                <span>Xem thông tin cá nhân</span>
-                            </a>
-                        </li>
-                        <li class="user-menu-item">
-                            <a href="/WEB_MXH/logout.php" class="user-menu-link logout-link">
-                                <i class="fa fa-sign-out"></i>
-                                <span>Đăng xuất</span>
-                            </a>
-                        </li>
+                        <?php if (isLoggedIn()): ?>
+                            <li class="user-menu-item">
+                                <a href="<?php echo $base_path; ?>profile.php" class="user-menu-link">
+                                    <i class="fa fa-user"></i>
+                                    <span>Xem thông tin cá nhân</span>
+                                </a>
+                            </li>
+                            <li class="user-menu-item">
+                                <a href="/WEB_MXH/logout.php" class="user-menu-link logout-link">
+                                    <i class="fa fa-sign-out"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="user-menu-item">
+                                <a href="/WEB_MXH/index.php" class="user-menu-link">
+                                    <i class="fa fa-sign-in"></i>
+                                    <span>Đăng nhập</span>
+                                </a>
+                            </li>
+                            <li class="user-menu-item">
+                                <a href="/WEB_MXH/index.php#register" class="user-menu-link">
+                                    <i class="fa fa-user-plus"></i>
+                                    <span>Đăng ký</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </li><!--/.user dropdown-->
                 <li class="dropdown cart-dropdown">
@@ -475,6 +490,82 @@ if (isLoggedIn()) {
             document.addEventListener('DOMContentLoaded', initCartDropdown);
         }
 
+        // Hàm hiển thị modal đăng nhập
+        function showLoginModal(message = 'Vui lòng đăng nhập để sử dụng tính năng này') {
+            const modalHTML = `
+            <div id="loginRequiredModal" class="login-required-modal" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <div class="login-modal-content" style="
+                    background: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    max-width: 400px;
+                    width: 90%;
+                    text-align: center;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                ">
+                    <h3 style="margin-bottom: 20px; color: #333;">Cần Đăng Nhập</h3>
+                    <p style="margin-bottom: 25px; color: #666;">${message}</p>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <a href="/WEB_MXH/index.php" class="btn" style="
+                            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                            color: white;
+                            padding: 12px 20px;
+                            border-radius: 25px;
+                            text-decoration: none;
+                            font-weight: 600;
+                            transition: all 0.3s ease;
+                        ">Đăng Nhập</a>
+                        <button onclick="closeLoginModal()" style="
+                            background: #6c757d;
+                            color: white;
+                            padding: 12px 20px;
+                            border: none;
+                            border-radius: 25px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                        ">Đóng</button>
+                    </div>
+                </div>
+            </div>`;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Đóng modal khi click outside
+            document.addEventListener('click', function(e) {
+                if (e.target.id === 'loginRequiredModal') {
+                    closeLoginModal();
+                }
+            });
+        }
+        
+        function closeLoginModal() {
+            const modal = document.getElementById('loginRequiredModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // Hàm kiểm tra response có yêu cầu đăng nhập không
+        function handleLoginRequired(response) {
+            if (response && response.require_login) {
+                showLoginModal(response.message);
+                return true;
+            }
+            return false;
+        }
+
         function loadCartItems() {
             console.log('🔄 Navigation: Loading cart items...');
             $('#cart-loading').show();
@@ -497,6 +588,12 @@ if (isLoggedIn()) {
                     if (response.success) {
                         if (response.cart_items && response.cart_items.length === 0) {
                             console.log('📭 Navigation: Cart is empty');
+                            // Hiển thị thông báo phù hợp dựa vào trạng thái đăng nhập
+                            if (response.message === 'Chưa đăng nhập') {
+                                $('#cart-empty .empty-cart p').text('Vui lòng đăng nhập để xem giỏ hàng');
+                            } else {
+                                $('#cart-empty .empty-cart p').text('Giỏ hàng trống');
+                            }
                             $('#cart-empty').show();
                         } else {
                             console.log('📦 Navigation: Displaying', response.cart_items.length, 'items');

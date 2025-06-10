@@ -1,10 +1,11 @@
 <?php
 // Kết nối database và khởi tạo session
 require_once '../config/database.php';
-require_once '../includes/session.php';
+require_once 'includes/session.php';
 
 // Lấy thông tin user nếu đã đăng nhập
 $current_user = getCurrentUser();
+$is_logged_in = isLoggedIn();
 
 // Lấy tham số từ URL
 $type = isset($_GET['type']) ? $_GET['type'] : 'product'; // product hoặc accessory

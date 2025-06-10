@@ -1,15 +1,11 @@
 <?php
 // Kết nối database và khởi tạo session
 require_once '../config/database.php';
-require_once '../includes/session.php';
+require_once 'includes/session.php';
 
-// Kiểm tra đăng nhập và hiển thị popup nếu chưa đăng nhập
-if (!requireLoginWithPopup()) {
-    exit();
-}
-
-// Lấy thông tin user nếu đã đăng nhập
+// Lấy thông tin user nếu đã đăng nhập (không bắt buộc)
 $current_user = getCurrentUser();
+$is_logged_in = isLoggedIn();
 
 // Kết nối database để lấy banner
 $banner_sql = "SELECT * FROM banners WHERE is_active = 1 ORDER BY display_order ASC, banner_id ASC";
@@ -52,23 +48,36 @@ if ($result_genres->num_rows > 0) {
 }
 
 // Lấy voucher khả dụng (còn hiệu lực và đang active)
-$sql_vouchers = "SELECT v.*, 
-    CASE WHEN uv.user_voucher_id IS NOT NULL THEN 1 ELSE 0 END as user_owned
-    FROM vouchers v 
-    LEFT JOIN user_vouchers uv ON v.voucher_id = uv.voucher_id AND uv.user_id = ?
-    WHERE v.is_active = 1 
-    AND v.start_date <= CURDATE() 
-    AND v.end_date >= CURDATE()
-    AND (v.usage_limit IS NULL OR v.used_count < v.usage_limit)
-    ORDER BY v.created_at DESC";
+if ($is_logged_in) {
+    $sql_vouchers = "SELECT v.*, 
+        CASE WHEN uv.user_voucher_id IS NOT NULL THEN 1 ELSE 0 END as user_owned
+        FROM vouchers v 
+        LEFT JOIN user_vouchers uv ON v.voucher_id = uv.voucher_id AND uv.user_id = ?
+        WHERE v.is_active = 1 
+        AND v.start_date <= CURDATE() 
+        AND v.end_date >= CURDATE()
+        AND (v.usage_limit IS NULL OR v.used_count < v.usage_limit)
+        ORDER BY v.created_at DESC";
 
-$user_id = $current_user ? $current_user['user_id'] : 0;
-$stmt_vouchers = $conn->prepare($sql_vouchers);
-$stmt_vouchers->bind_param("i", $user_id);
-$stmt_vouchers->execute();
-$result_vouchers = $stmt_vouchers->get_result();
+    $user_id = $current_user['user_id'];
+    $stmt_vouchers = $conn->prepare($sql_vouchers);
+    $stmt_vouchers->bind_param("i", $user_id);
+    $stmt_vouchers->execute();
+    $result_vouchers = $stmt_vouchers->get_result();
+} else {
+    // Nếu chưa đăng nhập, chỉ hiển thị voucher không có thông tin sở hữu
+    $sql_vouchers = "SELECT *, 0 as user_owned
+        FROM vouchers 
+        WHERE is_active = 1 
+        AND start_date <= CURDATE() 
+        AND end_date >= CURDATE()
+        AND (usage_limit IS NULL OR used_count < usage_limit)
+        ORDER BY created_at DESC";
+    $result_vouchers = $conn->query($sql_vouchers);
+}
+
 $vouchers = [];
-if ($result_vouchers->num_rows > 0) {
+if ($result_vouchers && $result_vouchers->num_rows > 0) {
     while($row = $result_vouchers->fetch_assoc()) {
         $vouchers[] = $row;
     }

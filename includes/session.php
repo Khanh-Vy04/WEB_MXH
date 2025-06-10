@@ -91,12 +91,36 @@ function logoutUser() {
     session_destroy();
 }
 
-// Hàm kiểm tra quyền admin
-function isAdmin() {
+// Hàm kiểm tra quyền admin (dựa trên session)
+function isAdminBySession() {
     if (isLoggedIn() && isset($_SESSION['user_role'])) {
         return $_SESSION['user_role'] === 'admin';
     }
     return false;
+}
+
+// Hàm kiểm tra quyền admin (dựa trên user data)
+function isAdmin($user = null) {
+    if ($user) {
+        // Kiểm tra từ dữ liệu user được truyền vào
+        return $user['role_id'] == 1 || $user['user_id'] == 1 || stripos($user['username'], 'admin') !== false;
+    } else {
+        // Kiểm tra từ session hoặc database
+        if (isLoggedIn()) {
+            global $conn;
+            $user_id = $_SESSION['user_id'];
+            $sql = "SELECT user_id, username, role_id FROM users WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $userData = $result->fetch_assoc();
+                return $userData['role_id'] == 1 || $userData['user_id'] == 1 || stripos($userData['username'], 'admin') !== false;
+            }
+        }
+        return false;
+    }
 }
 
 // Hàm bảo vệ trang yêu cầu đăng nhập
@@ -109,6 +133,7 @@ function requireLogin() {
 
 // Hàm bảo vệ trang admin
 function requireAdmin() {
+    // Sử dụng isAdmin() mới có thể nhận parameter hoặc kiểm tra từ session
     if (!isAdmin()) {
         header("Location: index.php");
         exit();

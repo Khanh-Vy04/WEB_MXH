@@ -1,16 +1,9 @@
 <?php
 require_once '../../config/database.php';
-require_once '../../includes/session.php';
+require_once '../includes/session.php';
 
 // Set content type to JSON
 header('Content-Type: application/json');
-
-// Kiểm tra đăng nhập
-if (!isLoggedIn()) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'Bạn cần đăng nhập để thực hiện hành động này']);
-    exit();
-}
 
 // Kiểm tra method POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -20,8 +13,32 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $action = $_POST['action'] ?? '';
+
+// Xử lý action không cần đăng nhập
+if ($action === 'get_cart' && !isLoggedIn()) {
+    echo json_encode([
+        'success' => true,
+        'cart_items' => [],
+        'total_amount' => 0,
+        'total_items' => 0,
+        'message' => 'Chưa đăng nhập'
+    ]);
+    exit();
+}
+
+// Các action cần đăng nhập
+$login_required_actions = ['add_to_cart', 'update_quantity', 'remove_item'];
+if (in_array($action, $login_required_actions) && !isLoggedIn()) {
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+        'require_login' => true
+    ]);
+    exit();
+}
+
 $current_user = getCurrentUser();
-$user_id = $current_user['user_id'];
+$user_id = $current_user['user_id'] ?? 0;
 
 try {
     switch ($action) {

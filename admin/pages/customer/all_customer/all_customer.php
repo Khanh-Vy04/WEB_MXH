@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../../../../config/database.php';
+require_once __DIR__ . '/../../../../includes/session.php';
 
 $currentPage = 'customer';
 
@@ -57,6 +58,7 @@ $users_query = "
         u.address,
         u.created_at,
         u.balance,
+        u.role_id,
         COUNT(o.order_id) as total_orders,
         COALESCE(SUM(o.final_amount), 0) as total_spent
     FROM users u
@@ -104,11 +106,8 @@ function generateAvatar($name) {
     }
 }
 
-// Function để phân biệt admin/user dựa trên user_id hoặc username
-function isAdmin($user) {
-    // Admin có thể là user_id = 1 hoặc username chứa 'admin'
-    return $user['user_id'] == 1 || stripos($user['username'], 'admin') !== false;
-}
+// Lấy ID admin hiện tại
+$current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -185,6 +184,27 @@ function isAdmin($user) {
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .toggle-role-btn {
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .toggle-role-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .toggle-role-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
     </style>
   </head>
@@ -288,15 +308,28 @@ function isAdmin($user) {
                                     </td>
                                     <td>
                                         <div class="fw-bold">#<?php echo $user['user_id']; ?></div>
-                                        <?php if (isAdmin($user)): ?>
-                                            <span class="admin-badge">
-                                                <i class="fas fa-crown me-1"></i>ADMIN
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="user-badge">
-                                                <i class="fas fa-user me-1"></i>USER
-                                            </span>
-                                        <?php endif; ?>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <?php if (isAdmin($user)): ?>
+                                                <span class="admin-badge">
+                                                    <i class="fas fa-crown me-1"></i>ADMIN
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="user-badge">
+                                                    <i class="fas fa-user me-1"></i>USER
+                                                </span>
+                                            <?php endif; ?>
+                                            
+                                            <?php if ($user['user_id'] != $current_admin_id): ?>
+                                                <button type="button" 
+                                                        class="btn btn-sm ms-2 toggle-role-btn" 
+                                                        data-user-id="<?php echo $user['user_id']; ?>"
+                                                        data-current-role="<?php echo isAdmin($user) ? 'admin' : 'user'; ?>"
+                                                        title="<?php echo isAdmin($user) ? 'Chuyển thành User' : 'Chuyển thành Admin'; ?>"
+                                                        style="padding: 2px 6px; font-size: 11px; <?php echo isAdmin($user) ? 'background: #ffa502; border-color: #ffa502; color: white;' : 'background: #5f27cd; border-color: #5f27cd; color: white;'; ?>">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="mb-1">
@@ -400,6 +433,63 @@ function isAdmin($user) {
                 }
             });
         }
+        
+        // Toggle role functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.toggle-role-btn');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    const currentRole = this.getAttribute('data-current-role');
+                    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+                    
+                    // Xác nhận trước khi thay đổi
+                    const confirmMessage = `Bạn có chắc chắn muốn chuyển tài khoản này thành ${newRole.toUpperCase()}?`;
+                    if (!confirm(confirmMessage)) {
+                        return;
+                    }
+                    
+                    // Disable button và hiển thị loading
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    
+                    // Gửi AJAX request
+                    fetch('/WEB_MXH/admin/pages/customer/toggle_role.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `user_id=${userId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Hiển thị thông báo thành công
+                            alert(data.message);
+                            
+                            // Reload trang để cập nhật giao diện
+                            window.location.reload();
+                        } else {
+                            // Hiển thị lỗi
+                            alert('Lỗi: ' + data.message);
+                            
+                            // Khôi phục button
+                            this.disabled = false;
+                            this.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Đã xảy ra lỗi khi thực hiện thao tác');
+                        
+                        // Khôi phục button
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+                    });
+                });
+            });
+        });
     </script>
   </body>
 </html>

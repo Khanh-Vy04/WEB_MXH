@@ -1,7 +1,7 @@
 <?php
 // Kết nối database và session
 require_once '../config/database.php';
-require_once '../includes/session.php';
+require_once 'includes/session.php';
 
 // Lấy danh sách accessories từ database
 $sql = "SELECT * FROM accessories WHERE stock > 0 ORDER BY created_at DESC";

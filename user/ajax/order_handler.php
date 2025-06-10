@@ -1,6 +1,6 @@
 <?php
-require_once '../../includes/database.php';
-require_once '../../includes/session.php';
+require_once '../../config/database.php';
+require_once '../includes/session.php';
 
 // Kiểm tra người dùng đã đăng nhập
 if (!isset($_SESSION['user_id'])) {

@@ -54,9 +54,9 @@ try {
                         o.final_amount,
                         o.stage_id as status,
                         o.voucher_discount as discount_amount,
+                        o.payment_method,
                         1 as total_items,
-                        'Sản phẩm...' as items_preview,
-                        'wallet' as payment_method
+                        'Sản phẩm...' as items_preview
                     FROM orders o 
                     WHERE " . $where_clause . "
                     ORDER BY o.order_date DESC 
@@ -107,7 +107,22 @@ try {
             // Format data
             foreach ($invoices as &$invoice) {
                 $invoice['created_at'] = date('d/m/Y H:i', strtotime($invoice['created_at']));
-                $invoice['payment_method'] = 'Ví điện tử';
+                
+                // Format payment method display name
+                switch($invoice['payment_method']) {
+                    case 'wallet':
+                        $invoice['payment_method'] = 'Ví AuraDisc';
+                        break;
+                    case 'vnpay':
+                        $invoice['payment_method'] = 'VNPay';
+                        break;
+                    case 'cash':
+                        $invoice['payment_method'] = 'Tiền mặt (COD)';
+                        break;
+                    default:
+                        $invoice['payment_method'] = 'Không xác định';
+                }
+                
                 $invoice['subtotal'] = $invoice['total_amount'];
                 $invoice['total_amount'] = $invoice['final_amount'];
             }
@@ -196,8 +211,25 @@ try {
             
             // Format dữ liệu
             $order['total_amount_formatted'] = number_format($order['total_amount'], 0, ',', '.') . '₫';
+            $order['final_amount_formatted'] = number_format($order['final_amount'], 0, ',', '.') . '₫';
+            $order['voucher_discount_formatted'] = number_format($order['voucher_discount'], 0, ',', '.') . '₫';
             $date = new DateTime($order['order_date']);
             $order['order_date_formatted'] = $date->format('d/m/Y H:i');
+            
+            // Format payment method display name
+            switch($order['payment_method']) {
+                case 'wallet':
+                    $order['payment_method_display'] = 'Ví AuraDisc';
+                    break;
+                case 'vnpay':
+                    $order['payment_method_display'] = 'VNPay';
+                    break;
+                case 'cash':
+                    $order['payment_method_display'] = 'Tiền mặt (COD)';
+                    break;
+                default:
+                    $order['payment_method_display'] = 'Không xác định';
+            }
             
             foreach ($items as &$item) {
                 // Sử dụng unit_price nếu có, nếu không thì dùng product_price
