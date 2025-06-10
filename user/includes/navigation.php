@@ -57,18 +57,18 @@ if (isLoggedIn()) {
                     </a>
                     <ul class="dropdown-menu user-menu s-cate">
                         <?php if (isLoggedIn()): ?>
-                            <li class="user-menu-item">
-                                <a href="<?php echo $base_path; ?>profile.php" class="user-menu-link">
-                                    <i class="fa fa-user"></i>
-                                    <span>Xem thông tin cá nhân</span>
-                                </a>
-                            </li>
-                            <li class="user-menu-item">
-                                <a href="/WEB_MXH/logout.php" class="user-menu-link logout-link">
-                                    <i class="fa fa-sign-out"></i>
-                                    <span>Đăng xuất</span>
-                                </a>
-                            </li>
+                        <li class="user-menu-item">
+                            <a href="<?php echo $base_path; ?>profile.php" class="user-menu-link">
+                                <i class="fa fa-user"></i>
+                                <span>Xem thông tin cá nhân</span>
+                            </a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="/WEB_MXH/logout.php" class="user-menu-link logout-link">
+                                <i class="fa fa-sign-out"></i>
+                                <span>Đăng xuất</span>
+                            </a>
+                        </li>
                         <?php else: ?>
                             <li class="user-menu-item">
                                 <a href="/WEB_MXH/index.php" class="user-menu-link">

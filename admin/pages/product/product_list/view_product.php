@@ -81,10 +81,11 @@ function getStatusText($stock) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .product-detail-container {
-            background: #191C24;
+            background: #ebecef;
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .product-image {
@@ -92,30 +93,32 @@ function getStatusText($stock) {
             height: 400px;
             object-fit: cover;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 3px solid #ddd;
         }
         
         .product-info {
-            color: #fff;
+            color: #333;
         }
         
         .product-title {
-            color: #3498DB;
+            color: #412d3b;
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 20px;
         }
         
         .info-item {
-            background: #2C3E50;
+            background: #fff;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 4px solid #3498DB;
+            border-left: 4px solid #412d3b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .info-label {
-            color: #BDC3C7;
+            color: #666;
             font-weight: 600;
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -124,13 +127,13 @@ function getStatusText($stock) {
         }
         
         .info-value {
-            color: #fff;
+            color: #333;
             font-size: 1.1rem;
             font-weight: 500;
         }
         
         .price-display {
-            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            background: linear-gradient(135deg, #412d3b, #2d1e26);
             color: white;
             padding: 15px 25px;
             border-radius: 10px;
@@ -138,13 +141,16 @@ function getStatusText($stock) {
             font-weight: bold;
             text-align: center;
             margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(65, 45, 59, 0.3);
         }
         
         .artist-section {
-            background: #34495E;
+            background: #fff;
             border-radius: 15px;
             padding: 25px;
             margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
         
         .artist-image {
@@ -152,18 +158,18 @@ function getStatusText($stock) {
             height: 80px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #3498DB;
+            border: 3px solid #412d3b;
         }
         
         .artist-name {
-            color: #3498DB;
+            color: #412d3b;
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 10px;
         }
         
         .artist-bio {
-            color: #BDC3C7;
+            color: #666;
             line-height: 1.6;
         }
         
@@ -177,41 +183,72 @@ function getStatusText($stock) {
             font-weight: 600;
             margin-right: 10px;
             margin-bottom: 10px;
+            transition: all 0.3s;
         }
         
         .btn-primary-custom {
-            background: #3498DB;
-            border-color: #3498DB;
+            background: #412d3b;
+            border-color: #412d3b;
             color: white;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #2d1e26;
+            border-color: #2d1e26;
+            color: white;
+            transform: translateY(-2px);
         }
         
         .btn-warning-custom {
-            background: #F39C12;
-            border-color: #F39C12;
-            color: white;
+            background: #deccca;
+            border-color: #deccca;
+            color: #412d3b;
+        }
+        
+        .btn-warning-custom:hover {
+            background: #c9b5b0;
+            border-color: #c9b5b0;
+            color: #412d3b;
+            transform: translateY(-2px);
         }
         
         .btn-danger-custom {
-            background: #E74C3C;
-            border-color: #E74C3C;
+            background: #dc3545;
+            border-color: #dc3545;
             color: white;
+        }
+        
+        .btn-danger-custom:hover {
+            background: #c82333;
+            border-color: #bd2130;
+            color: white;
+            transform: translateY(-2px);
         }
         
         .btn-secondary-custom {
-            background: #6C757D;
-            border-color: #6C757D;
+            background: #6c757d;
+            border-color: #6c757d;
             color: white;
         }
         
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+            border-color: #545b62;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
         .description-box {
-            background: #2C3E50;
+            background: #fff;
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
         }
         
         .description-text {
-            color: #ECF0F1;
+            color: #333;
             line-height: 1.8;
             font-size: 1rem;
         }
@@ -232,6 +269,35 @@ function getStatusText($stock) {
         .stock-medium { background-color: #F39C12; }
         .stock-low { background-color: #E74C3C; }
         .stock-out { background-color: #95A5A6; }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .product-detail-container {
+                padding: 20px;
+                margin: 0 10px;
+            }
+            
+            .product-title {
+                font-size: 2rem;
+            }
+            
+            .product-image {
+                height: 300px;
+            }
+            
+            .btn-custom {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .product-detail-container {
+                max-width: 95%;
+                margin: 0 auto 20px auto;
+            }
+        }
     </style>
 </head>
 
@@ -250,13 +316,13 @@ function getStatusText($stock) {
             }
             ?>
             
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
+            <div class="container-fluid pt-4 px-2">
+                <div class="row g-2">
                     <div class="col-12">
                         <div class="product-detail-container">
                             <!-- Header với nút quay lại -->
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h4 class="text-white mb-0">
+                                <h4 class="mb-0" style="color: #333; font-weight: bold;">
                                     <i class="fas fa-eye me-2"></i>Chi Tiết Sản Phẩm
                                 </h4>
                                 <a href="product_list.php" class="btn btn-secondary-custom btn-custom">

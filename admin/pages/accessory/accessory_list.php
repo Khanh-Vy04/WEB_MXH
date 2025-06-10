@@ -82,11 +82,179 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     
     <style>
+        /* Override theme colors for light design - KHÔNG ẢNH HƯỞNG SIDEBAR */
+        .content {
+            background: #ebecef !important;
+        }
+        
+        .content .bg-secondary {
+            background-color: #fff !important;
+            border: 1px solid #ddd !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            color: #333 !important;
+        }
+        
+        .content h2, .content h5, .content p, .content .text-muted {
+            color: #333 !important;
+        }
+        
+        .content .badge {
+            color: #333 !important;
+        }
+        
+        /* Badge màu hồng nâu */
+        .content .badge.bg-primary {
+            background-color: #deccca !important;
+            color: #412d3b !important;
+        }
+        
+        .table-dark {
+            --bs-table-bg: #fff !important;
+            --bs-table-striped-bg: #f8f9fa !important;
+            color: #333 !important;
+            border-color: #ddd !important;
+        }
+        
+        .table-dark th, .table-dark td {
+            color: #333 !important;
+            border-color: #ddd !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        
+        .table-dark thead th {
+            background-color: #f8f9fa !important;
+            color: #333 !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+        }
+        
+        /* BỎ HOVER EFFECT CHO DÒNG SẢN PHẨM */
+        .table-dark tbody tr:hover, .table-hover tbody tr:hover {
+            background-color: transparent !important;
+            color: inherit !important;
+        }
+        
+        .table-dark.table-hover tbody tr:hover td, 
+        .table-dark.table-hover tbody tr:hover th {
+            background-color: transparent !important;
+            color: inherit !important;
+        }
+        
+        .content .text-warning {
+            color: #856404 !important;
+        }
+        
+        .content .text-muted {
+            color: #6c757d !important;
+        }
+        
+        /* Button themes matching other pages */
+        .btn-primary {
+            background-color: #412d3b !important;
+            border-color: #412d3b !important;
+            color: white !important;
+        }
+        
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: #2d1e26 !important;
+            border-color: #2d1e26 !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .btn-secondary {
+            background-color: #deccca !important;
+            border-color: #deccca !important;
+            color: #412d3b !important;
+        }
+        
+        .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+            background-color: #c9b5b0 !important;
+            border-color: #c9b5b0 !important;
+            color: #412d3b !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .btn-warning {
+            background-color: #deccca !important;
+            border-color: #deccca !important;
+            color: #412d3b !important;
+        }
+        
+        .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+            background-color: #c9b5b0 !important;
+            border-color: #c9b5b0 !important;
+            color: #412d3b !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+        }
+        
+        .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+            background-color: #c82333 !important;
+            border-color: #bd2130 !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        /* Form controls */
+        .form-control {
+            background-color: #fff !important;
+            border-color: #ddd !important;
+            color: #333 !important;
+        }
+        
+        .form-control:focus {
+            background-color: #fff !important;
+            border-color: #412d3b !important;
+            color: #333 !important;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
+        }
+        
+        /* Alert styles */
+        .alert-success {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+        }
+        
+        /* Pagination */
+        .page-link {
+            background-color: #fff !important;
+            border-color: #ddd !important;
+            color: #412d3b !important;
+        }
+        
+        .page-link:hover {
+            background-color: #deccca !important;
+            border-color: #c9b5b0 !important;
+            color: #412d3b !important;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #412d3b !important;
+            border-color: #412d3b !important;
+            color: white !important;
+        }
+        
+        /* Original accessory-specific styles */
         .accessory-image {
             width: 60px;
             height: 60px;
             object-fit: cover;
             border-radius: 8px;
+            border: 2px solid #ddd;
         }
         
         .stock-badge {
@@ -99,6 +267,135 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
         .stock-high { background: #28a745; color: white; }
         .stock-medium { background: #ffc107; color: #000; }
         .stock-low { background: #dc3545; color: white; }
+        
+        /* Stats cards - KÍCH THƯỚC CÂN ĐỐI */
+        .stat-card {
+            background: linear-gradient(135deg, #412d3b, #2d1e26) !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 20px 15px !important;
+            margin-bottom: 15px !important;
+            text-align: center !important;
+            box-shadow: 0 4px 12px rgba(65, 45, 59, 0.25) !important;
+            height: 120px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem !important;
+            font-weight: bold !important;
+            color: #fff !important;
+            margin-bottom: 5px !important;
+            line-height: 1.2 !important;
+        }
+        
+        .stat-label {
+            color: #deccca !important;
+            font-size: 0.75rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            font-weight: 500 !important;
+            line-height: 1.3 !important;
+        }
+        
+        /* Special color for low stock */
+        .stat-card.low-stock .stat-number {
+            color: #ff6b6b !important;
+        }
+        
+        /* Search bar */
+        .search-bar {
+            background: #fff !important;
+            border-radius: 10px !important;
+            padding: 20px !important;
+            margin-bottom: 20px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Accessories table */
+        .accessories-table {
+            background: #fff !important;
+            border-radius: 10px !important;
+            padding: 20px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Modal */
+        .modal-content {
+            background-color: #fff !important;
+            color: #333 !important;
+        }
+        
+        .modal-header {
+            border-bottom-color: #ddd !important;
+        }
+        
+        .modal-footer {
+            border-top-color: #ddd !important;
+        }
+        
+        .modal-title {
+            color: #333 !important;
+        }
+        
+        /* ẨN MÔ TẢ TRONG TÊN SẢN PHẨM */
+        .product-description {
+            display: none !important;
+        }
+        
+        /* Header section tích hợp với stats */
+        .header-stats-section {
+            background: #fff !important;
+            border-radius: 15px !important;
+            padding: 30px !important;
+            margin-bottom: 20px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Combined search and table */
+        .table-search-section {
+            background: #fff !important;
+            border-radius: 15px !important;
+            padding: 30px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-search-section .row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .table-search-section .col-md-6 {
+                flex: none;
+                width: 100%;
+            }
+            
+            .table-search-section .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .table-search-section form.d-flex {
+                width: 100%;
+            }
+            
+            .stat-card {
+                height: 100px !important;
+                padding: 15px 10px !important;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem !important;
+            }
+            
+            .stat-label {
+                font-size: 0.7rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -118,12 +415,6 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
         ?>
         
         <div class="container-fluid pt-4 px-4">
-            <!-- Header -->
-            <div class="bg-secondary rounded h-100 p-4 mb-4">
-                <h2 class="mb-2"><i class="fas fa-headphones me-2"></i>Quản Lý Accessories</h2>
-                <p class="mb-0">Quản lý các phụ kiện âm nhạc và thiết bị audio</p>
-            </div>
-            
             <?php if (isset($success_message)): ?>
             <div class="alert alert-success alert-dismissible fade show">
                 <i class="fas fa-check-circle"></i> <?php echo $success_message; ?>
@@ -138,71 +429,87 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             </div>
             <?php endif; ?>
             
-            <!-- Stats Cards -->
-            <div class="row g-4 mb-4">
-            <?php
-            $stats_sql = "SELECT 
-                COUNT(*) as total_accessories,
-                SUM(stock) as total_stock,
-                AVG(price) as avg_price,
-                COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock
-                FROM accessories";
-            $stats_result = $conn->query($stats_sql);
-            $stats = $stats_result->fetch_assoc();
-            ?>
-            <div class="stat-card">
-                <div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div>
-                <div class="stat-label">Tổng Accessories</div>
+            <!-- Header + Stats Cards Section -->
+            <div class="header-stats-section">
+                <div class="row align-items-center mb-4">
+                    <div class="col-12">
+                        <h2 class="mb-2"><i class="fas fa-headphones me-2"></i>Quản Lý Accessories</h2>
+                        <p class="mb-0">Quản lý các phụ kiện âm nhạc và thiết bị audio</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <?php
+                    $stats_sql = "SELECT 
+                        COUNT(*) as total_accessories,
+                        SUM(stock) as total_stock,
+                        AVG(price) as avg_price,
+                        COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock
+                        FROM accessories";
+                    $stats_result = $conn->query($stats_sql);
+                    $stats = $stats_result->fetch_assoc();
+                    ?>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div>
+                            <div class="stat-label">Tổng Accessories</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div>
+                            <div class="stat-label">Tổng Tồn Kho</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-number">$<?php echo number_format($stats['avg_price'], 2); ?></div>
+                            <div class="stat-label">Giá Trung Bình</div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card low-stock">
+                            <div class="stat-number"><?php echo $stats['low_stock']; ?></div>
+                            <div class="stat-label">Sắp Hết Hàng</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div>
-                <div class="stat-label">Tổng Tồn Kho</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">$<?php echo number_format($stats['avg_price'], 2); ?></div>
-                <div class="stat-label">Giá Trung Bình</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #dc3545;"><?php echo $stats['low_stock']; ?></div>
-                <div class="stat-label">Sắp Hết Hàng</div>
-            </div>
-        </div>
         
-        <!-- Search and Add Button -->
-        <div class="search-bar">
-            <div class="row">
-                <div class="col-md-8">
-                    <form method="GET" class="d-flex">
-                        <input type="text" class="form-control me-2" placeholder="Tìm kiếm accessories..." 
-                               name="search" value="<?php echo htmlspecialchars($search); ?>">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fas fa-search"></i> Tìm
-                        </button>
-                        <?php if (!empty($search)): ?>
-                        <a href="accessory_list.php" class="btn btn-secondary ms-2">
-                            <i class="fas fa-times"></i> Xóa
+        <!-- Search + Table Section -->
+        <div class="table-search-section">
+            <!-- Search Bar -->
+            <div class="row align-items-center mb-4">
+                <div class="col-md-6">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list"></i> Danh Sách Accessories 
+                        <span class="badge bg-primary"><?php echo $total_records; ?> items</span>
+                    </h5>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex gap-2">
+                        <form method="GET" class="d-flex flex-grow-1">
+                            <input type="text" class="form-control me-2" placeholder="Tìm kiếm accessories..." 
+                                   name="search" value="<?php echo htmlspecialchars($search); ?>">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <?php if (!empty($search)): ?>
+                            <a href="accessory_list.php" class="btn btn-secondary ms-2">
+                                <i class="fas fa-times"></i>
+                            </a>
+                            <?php endif; ?>
+                        </form>
+                        <a href="add_accessory.php" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Thêm
                         </a>
-                        <?php endif; ?>
-                    </form>
-                </div>
-                <div class="col-md-4 text-end">
-                    <a href="add_accessory.php" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Thêm Accessory
-                    </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Accessories Table -->
-        <div class="accessories-table">
-            <h5 class="mb-3">
-                <i class="fas fa-list"></i> Danh Sách Accessories 
-                <span class="badge bg-secondary"><?php echo $total_records; ?> items</span>
-            </h5>
             
             <?php if ($result->num_rows > 0): ?>
             <div class="table-responsive">
-                <table class="table table-dark table-hover">
+                <table class="table table-dark">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -227,7 +534,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                             <td>
                                 <strong><?php echo htmlspecialchars($accessory['accessory_name']); ?></strong>
                                 <br>
-                                <small class="text-muted">
+                                <small class="text-muted product-description">
                                     <?php echo htmlspecialchars(substr($accessory['description'], 0, 50)) . '...'; ?>
                                 </small>
                             </td>
@@ -300,9 +607,9 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             
             <?php else: ?>
             <div class="text-center py-5">
-                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                <h5>Không có accessories nào</h5>
-                <p class="text-muted">
+                <i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i>
+                <h5 style="color: #333;">Không có accessories nào</h5>
+                <p style="color: #6c757d;">
                     <?php if (!empty($search)): ?>
                         Không tìm thấy accessories nào với từ khóa "<?php echo htmlspecialchars($search); ?>"
                     <?php else: ?>
@@ -315,7 +622,12 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             </div>
             <?php endif; ?>
         </div>
-        </div>
+        
+        <?php 
+        if (file_exists(__DIR__.'/../dashboard/footer.php')) {
+            include __DIR__.'/../dashboard/footer.php'; 
+        }
+        ?>
     </div>
 </div>
     
@@ -344,9 +656,9 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
     </div>
 </div>
     
-<script src="/WEB_MXH/admin/pages/dashboard/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
     <script>
         function deleteAccessory(id, name) {
             document.getElementById('deleteAccessoryId').value = id;

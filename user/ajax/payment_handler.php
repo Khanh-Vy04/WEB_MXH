@@ -36,7 +36,7 @@ function processPayment() {
         // Bắt đầu transaction
         $conn->begin_transaction();
         
-        // Lấy và validate data
+                 // Lấy và validate data
         $selectedItems = json_decode($_POST['selected_items'] ?? '[]', true);
         $selectedVoucher = $_POST['selected_voucher'] !== 'null' ? json_decode($_POST['selected_voucher'] ?? 'null', true) : null;
         $selectedTotal = floatval($_POST['selected_total'] ?? 0);
@@ -61,20 +61,20 @@ function processPayment() {
         $user_data = null;
         if ($paymentMethod === 'wallet') {
             // Kiểm tra số dư người dùng cho thanh toán ví
-            $user_query = "SELECT balance FROM users WHERE user_id = ?";
-            $user_stmt = $conn->prepare($user_query);
-            $user_stmt->bind_param("i", $user_id);
-            $user_stmt->execute();
-            $user_result = $user_stmt->get_result();
-            $user_data = $user_result->fetch_assoc();
-            
-            if (!$user_data) {
-                throw new Exception('Không tìm thấy thông tin người dùng');
-            }
-            
-            if ($user_data['balance'] < $finalAmount) {
-                throw new Exception('Số dư không đủ để thanh toán. Số dư hiện tại: ' . number_format($user_data['balance']) . '₫');
-            }
+        $user_query = "SELECT balance FROM users WHERE user_id = ?";
+        $user_stmt = $conn->prepare($user_query);
+        $user_stmt->bind_param("i", $user_id);
+        $user_stmt->execute();
+        $user_result = $user_stmt->get_result();
+        $user_data = $user_result->fetch_assoc();
+        
+        if (!$user_data) {
+            throw new Exception('Không tìm thấy thông tin người dùng');
+        }
+        
+        if ($user_data['balance'] < $finalAmount) {
+            throw new Exception('Số dư không đủ để thanh toán. Số dư hiện tại: ' . number_format($user_data['balance']) . '₫');
+        }
         }
         
         // 2. Tạo order trong bảng orders với payment_method
@@ -227,12 +227,12 @@ function processPayment() {
         
         // 6. Trừ tiền trong tài khoản user chỉ cho phương thức ví
         if ($paymentMethod === 'wallet') {
-            $update_balance_query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
-            $update_balance_stmt = $conn->prepare($update_balance_query);
-            $update_balance_stmt->bind_param("di", $finalAmount, $user_id);
-            
-            if (!$update_balance_stmt->execute()) {
-                throw new Exception('Không thể trừ tiền từ tài khoản');
+        $update_balance_query = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
+        $update_balance_stmt = $conn->prepare($update_balance_query);
+        $update_balance_stmt->bind_param("di", $finalAmount, $user_id);
+        
+        if (!$update_balance_stmt->execute()) {
+            throw new Exception('Không thể trừ tiền từ tài khoản');
             }
         }
         

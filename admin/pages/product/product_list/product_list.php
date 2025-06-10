@@ -257,7 +257,6 @@ function getUrlWithParams($params) {
                                 <img src="<?php echo $product['image_url']; ?>" class="product-img-thumb" alt="product" style="width: 50px; height: 50px; object-fit: cover;">
                                 <div>
                                     <div style="font-weight:600; color:#222;"><?php echo htmlspecialchars($product['name']); ?></div>
-                                    <div style="font-size:0.9em;color:#888;"><?php echo htmlspecialchars(substr($product['desc'], 0, 50)) . '...'; ?></div>
                                 </div>
                             </td>
                             <td><?php echo htmlspecialchars($product['artist']); ?></td>
@@ -329,11 +328,14 @@ function getUrlWithParams($params) {
         ?>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
 <script src="product_list.js"></script>
-<script>console.log('All scripts loaded, page should be ready');</script>
+<script>
+// Đơn giản hóa - để Bootstrap tự xử lý dropdown như các trang admin khác
+console.log('Product list page loaded successfully');
+</script>
 </body>
 </html>
 

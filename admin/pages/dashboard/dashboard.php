@@ -488,7 +488,7 @@ try {
                         <div class="messages-widget h-100 rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h6 class="mb-0">Tin nhắn gần đây</h6>
-                                <a href="" class="btn btn-primary btn-sm">
+                                <a href="/WEB_MXH/admin/pages/customer_support/message/message.php" class="btn btn-primary btn-sm">
                                     <i class="fas fa-comments me-2"></i>Xem tất cả
                                 </a>
                             </div>

@@ -11,17 +11,17 @@ $cart_count = 0;
 
 // Lấy cart count nếu đã đăng nhập
 if ($is_logged_in) {
-    function getCartItemCount() {
-        global $conn, $user_id;
-        $sql = "SELECT SUM(quantity) as total FROM shopping_cart WHERE user_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        return $row['total'] ?? 0;
-    }
-    $cart_count = getCartItemCount();
+function getCartItemCount() {
+    global $conn, $user_id;
+    $sql = "SELECT SUM(quantity) as total FROM shopping_cart WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    return $row['total'] ?? 0;
+}
+$cart_count = getCartItemCount();
 }
 ?>
 
@@ -1483,8 +1483,8 @@ Bạn có muốn tiếp tục thanh toán?
         // Voucher functions
         let selectedVoucher = null;
         
-            // Current payment data
-    let currentPaymentData = null;
+        // Current payment data
+        let currentPaymentData = null;
     let selectedPaymentMethod = null;
     let userBalance = 0;
 
@@ -2595,7 +2595,7 @@ Bạn có muốn tiếp tục thanh toán?
         `;
         document.getElementById('checkoutBody').innerHTML = processingHTML;
     }
-
+    
     // Close popup when clicking outside
     document.addEventListener('click', function(e) {
         if (e.target.id === 'checkoutPopup') {

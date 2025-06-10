@@ -117,6 +117,59 @@ function getUrlWithParams($params) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="artist_list.css" />
+    <style>
+        .artist-title {
+            color: #222 !important;
+            font-size: 1.55rem !important;
+            font-weight: bold !important;
+            margin-bottom: 1.2rem !important;
+            letter-spacing: 0.5px;
+        }
+        .artist-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .artist-action-bar .search-form {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+        .artist-action-bar .filter-btn,
+        .artist-action-bar .add-btn {
+            background: #deccca !important;
+            color: #412d3b !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-weight: 600;
+            padding: 8px 18px;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s;
+            box-shadow: none;
+        }
+        .artist-action-bar .filter-btn:hover,
+        .artist-action-bar .add-btn:hover {
+            background: #c9b5b0 !important;
+            color: #412d3b !important;
+        }
+        @media (max-width: 900px) {
+            .artist-action-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.7rem;
+            }
+            .artist-action-bar .search-form {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+        }
+    </style>
     <script>
         console.log('HTML head loaded');
         console.log('Total artists to display: <?php echo count($currentPageArtists); ?>');
@@ -154,7 +207,7 @@ function getUrlWithParams($params) {
                 <div class="row g-4">
                     <div class="col-12">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Artist Management</h6>
+                            <h6 class="mb-4 artist-title">Artist Management</h6>
                             
                             <!-- Artist Action Bar -->
                             <div class="artist-action-bar">
@@ -167,7 +220,16 @@ function getUrlWithParams($params) {
                                     </select>
                                     <button type="submit" class="filter-btn"><i class="fas fa-search"></i> Filter</button>
                                 </form>
-                                <a href="/WEB_MXH/admin/pages/artist/add_artist.php" class="add-btn"><i class="fas fa-plus"></i> Add Artist</a>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div class="pagination-dropdown">
+                                        <select class="pagination-select" onchange="window.location.href='<?php echo getUrlWithParams(['rows' => '']); ?>' + this.value">
+                                            <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                                            <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                                            <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                                        </select>
+                                    </div>
+                                    <a href="/WEB_MXH/admin/pages/artist/add_artist.php" class="add-btn"><i class="fas fa-plus"></i> Add Artist</a>
+                                </div>
                             </div>
 
                             <!-- Artist Table -->
@@ -176,7 +238,7 @@ function getUrlWithParams($params) {
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col"><input type="checkbox" /></th>
+                                            <th scope="col"><input type="checkbox" id="select-all-artists"></th>
                                             <th scope="col">ARTIST</th>
                                             <th scope="col">PRODUCTS</th>
                                             <th scope="col">STATUS</th>
@@ -190,7 +252,7 @@ function getUrlWithParams($params) {
                                             echo "<script>console.log('Rendering artist " . ($index + 1) . ": " . addslashes($artist['artist_name']) . "');</script>";
                                         ?>
                                         <tr>
-                                            <td><input type="checkbox" name="selected_artists[]" value="<?php echo $artist['artist_id']; ?>" /></td>
+                                            <td><input type="checkbox" class="artist-checkbox" name="selected_artists[]" value="<?php echo $artist['artist_id']; ?>"></td>
                                             <td class="artist-cell">
                                                 <img src="<?php echo $artist['image_url']; ?>" class="artist-img-thumb" alt="artist" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
                                                 <div class="artist-info">
@@ -231,12 +293,6 @@ function getUrlWithParams($params) {
                                     Showing <?php echo $start + 1; ?> to <?php echo min($start + $rowsPerPage, $totalRows); ?> of <?php echo $totalRows; ?> entries
                                 </div>
                                 <div class="pagination-controls">
-                                    <select onchange="window.location.href='<?php echo getUrlWithParams(['rows' => '']); ?>' + this.value">
-                                        <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
-                                        <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
-                                        <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
-                                    </select>
-                                    
                                     <div class="pagination-buttons">
                                         <?php if ($page > 1): ?>
                                             <a href="<?php echo getUrlWithParams(['page' => $page - 1]); ?>" class="btn btn-sm btn-outline-primary">Previous</a>
@@ -275,6 +331,19 @@ function getUrlWithParams($params) {
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var selectAll = document.getElementById('select-all-artists');
+        var checkboxes = document.querySelectorAll('.artist-checkbox');
+        if(selectAll) {
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(function(cb) {
+                    cb.checked = selectAll.checked;
+                });
+            });
+        }
+    });
+    </script>
     <script>console.log('All scripts loaded, artist page should be ready');</script>
 </body>
 </html> 

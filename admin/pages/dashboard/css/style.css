@@ -234,6 +234,31 @@
   background: #deccca;
 }
 
+/* Đảm bảo dropdown luôn hiển thị khi đang ở trang con */
+.sidebar .nav-item.dropdown .dropdown-menu.show {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Đảm bảo dropdown toggle active khi đang ở trang con */
+.sidebar .nav-item.dropdown .nav-link.dropdown-toggle.active {
+  color: #412d3bca !important;
+  background: #deccca !important;
+  border-color: #412d3b !important;
+  font-weight: bold !important;
+}
+
+/* Override Bootstrap dropdown behavior cho sidebar */
+.sidebar .dropdown-menu {
+  position: static !important;
+  float: none !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
 .content .navbar .navbar-nav .nav-link {
   margin-left: 25px;
   padding: 12px 0;

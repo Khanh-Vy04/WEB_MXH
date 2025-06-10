@@ -309,15 +309,15 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                     <td>
                                         <div class="fw-bold">#<?php echo $user['user_id']; ?></div>
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <?php if (isAdmin($user)): ?>
-                                                <span class="admin-badge">
-                                                    <i class="fas fa-crown me-1"></i>ADMIN
-                                                </span>
-                                            <?php else: ?>
-                                                <span class="user-badge">
-                                                    <i class="fas fa-user me-1"></i>USER
-                                                </span>
-                                            <?php endif; ?>
+                                        <?php if (isAdmin($user)): ?>
+                                            <span class="admin-badge">
+                                                <i class="fas fa-crown me-1"></i>ADMIN
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="user-badge">
+                                                <i class="fas fa-user me-1"></i>USER
+                                            </span>
+                                        <?php endif; ?>
                                             
                                             <?php if ($user['user_id'] != $current_admin_id): ?>
                                                 <button type="button" 

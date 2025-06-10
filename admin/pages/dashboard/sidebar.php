@@ -70,3 +70,81 @@
             </nav>
         </div>
         <!-- Sidebar End -->
+        
+        <script>
+        // JavaScript để maintain dropdown state
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarDropdowns = document.querySelectorAll('.sidebar .nav-item.dropdown');
+            
+            sidebarDropdowns.forEach(function(dropdown) {
+                const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+                const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+                
+                // Chỉ xử lý dropdown đang active (có class 'show' từ PHP)
+                if (dropdownMenu && dropdownMenu.classList.contains('show')) {
+                    dropdownToggle.setAttribute('aria-expanded', 'true');
+                    
+                    // Mark dropdown này là "locked" để không bị đóng
+                    dropdown.classList.add('locked-open');
+                    
+                    // Prevent Bootstrap từ đóng dropdown đang active này
+                    dropdownToggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Giữ nguyên trạng thái mở
+                    });
+                    
+                    // Prevent dropdown đóng khi click vào items bên trong
+                    dropdownMenu.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                } else {
+                    // Cho phép dropdown khác hoạt động bình thường
+                    dropdownToggle.addEventListener('click', function(e) {
+                        // Đóng tất cả dropdown khác trước khi mở cái mới
+                        sidebarDropdowns.forEach(function(otherDropdown) {
+                            if (otherDropdown !== dropdown && !otherDropdown.classList.contains('locked-open')) {
+                                const otherMenu = otherDropdown.querySelector('.dropdown-menu');
+                                const otherToggle = otherDropdown.querySelector('.dropdown-toggle');
+                                if (otherMenu && otherToggle) {
+                                    otherMenu.classList.remove('show');
+                                    otherToggle.setAttribute('aria-expanded', 'false');
+                                }
+                            }
+                        });
+                        
+                        // Toggle dropdown hiện tại
+                        const isOpen = dropdownMenu.classList.contains('show');
+                        if (isOpen) {
+                            dropdownMenu.classList.remove('show');
+                            dropdownToggle.setAttribute('aria-expanded', 'false');
+                        } else {
+                            dropdownMenu.classList.add('show');
+                            dropdownToggle.setAttribute('aria-expanded', 'true');
+                        }
+                        
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                }
+            });
+            
+            // Đóng dropdown khi click bên ngoài (trừ dropdown locked)
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.sidebar .dropdown')) {
+                    sidebarDropdowns.forEach(function(dropdown) {
+                        if (!dropdown.classList.contains('locked-open')) {
+                            const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+                            const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+                            if (dropdownMenu && dropdownToggle) {
+                                dropdownMenu.classList.remove('show');
+                                dropdownToggle.setAttribute('aria-expanded', 'false');
+                            }
+                        }
+                    });
+                }
+            });
+            
+            console.log('Sidebar dropdown states maintained - active dropdown locked, others free');
+        });
+        </script>

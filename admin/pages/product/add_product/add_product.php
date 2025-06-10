@@ -145,11 +145,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .form-container {
-            background: #191C24;
+            background: #ebecef;
             border-radius: 15px;
             padding: 30px;
-            max-width: 1000px;
+            max-width: 95%;
             margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .form-group {
@@ -157,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-label {
-            color: #fff;
+            color: #333;
             font-weight: 600;
             margin-bottom: 10px;
             display: block;
@@ -165,9 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-control {
-            background: #2C3E50;
-            border: 2px solid #34495E;
-            color: #fff;
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
             border-radius: 8px;
             padding: 15px;
             font-size: 1rem;
@@ -175,21 +176,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-control:focus {
-            background: #34495E;
-            border-color: #3498DB;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            background: #fff;
+            border-color: #412d3b;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25);
             outline: none;
         }
         
         .form-control::placeholder {
-            color: #BDC3C7;
+            color: #888;
         }
         
         .form-select {
-            background: #2C3E50;
-            border: 2px solid #34495E;
-            color: #fff;
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
             border-radius: 8px;
             padding: 15px;
             font-size: 1rem;
@@ -197,48 +198,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-select:focus {
-            background: #34495E;
-            border-color: #3498DB;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            background: #fff;
+            border-color: #412d3b;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25);
             outline: none;
         }
         
         .form-select option {
-            background: #2C3E50;
-            color: #fff;
+            background: #fff;
+            color: #333;
         }
         
         .btn-primary {
-            background: #3498DB;
-            border-color: #3498DB;
+            background: #412d3b;
+            border-color: #412d3b;
             padding: 15px 30px;
             font-weight: 600;
             font-size: 1rem;
             border-radius: 8px;
             transition: all 0.3s;
+            color: #fff;
         }
         
         .btn-primary:hover {
-            background: #2980B9;
-            border-color: #2980B9;
+            background: #2d1e26;
+            border-color: #2d1e26;
             transform: translateY(-2px);
+            color: #fff;
         }
         
         .btn-secondary {
-            background: #6C757D;
-            border-color: #6C757D;
+            background: #deccca;
+            border-color: #deccca;
             padding: 15px 30px;
             font-weight: 600;
             font-size: 1rem;
             border-radius: 8px;
             transition: all 0.3s;
+            color: #412d3b;
         }
         
         .btn-secondary:hover {
-            background: #5A6268;
-            border-color: #5A6268;
+            background: #c9b5b0;
+            border-color: #c9b5b0;
             transform: translateY(-2px);
+            color: #412d3b;
         }
         
         .alert {
@@ -270,15 +275,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .page-title {
-            color: #fff;
+            color: #333;
             font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
         }
         
         .btn-back {
-            background: #6C757D;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
@@ -288,8 +293,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .btn-back:hover {
-            background: #5A6268;
-            color: white;
+            background: #c9b5b0;
+            color: #412d3b;
             text-decoration: none;
             transform: translateY(-2px);
         }
@@ -302,11 +307,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .required {
-            color: #E74C3C;
+            color: #dc3545;
         }
         
         .form-help {
-            color: #BDC3C7;
+            color: #666;
             font-size: 0.9rem;
             margin-top: 5px;
         }
@@ -317,6 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 8px;
             margin-top: 10px;
             display: none;
+            border: 2px solid #ddd;
         }
         
         .row {
@@ -329,10 +335,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding-right: 15px;
         }
         
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .form-container {
                 padding: 20px;
-                margin: 0 15px;
+                margin: 0 10px;
+                max-width: calc(100% - 20px);
             }
             
             .page-header {
@@ -347,6 +355,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             .btn-primary, .btn-secondary {
                 width: 100%;
                 text-align: center;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .form-container {
+                max-width: 90%;
             }
         }
     </style>
@@ -367,8 +381,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             ?>
             
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
+            <div class="container-fluid pt-4 px-2">
+                <div class="row g-2">
                     <div class="col-12">
                         <div class="form-container">
                             <!-- Header -->
