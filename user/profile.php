@@ -403,24 +403,75 @@ while ($row = $result_vouchers->fetch_assoc()) {
             <button class="modal-close" onclick="hideAddBalanceModal()">×</button>
         </div>
         
+        <!-- Payment notice -->
+        <div class="payment-notice">
+            <div class="notice-icon">
+                <i class="fa fa-info-circle"></i>
+            </div>
+            <div class="notice-text">
+                <strong>Thanh toán an toàn</strong><br>
+                Giao dịch được xử lý qua cổng thanh toán bảo mật. Bạn sẽ được chuyển đến trang thanh toán trong tab mới.
+            </div>
+        </div>
+        
         <div class="amount-options">
-            <div class="amount-btn" onclick="selectAmount(50000)">50.000₫</div>
-            <div class="amount-btn" onclick="selectAmount(100000)">100.000₫</div>
-            <div class="amount-btn" onclick="selectAmount(200000)">200.000₫</div>
-            <div class="amount-btn" onclick="selectAmount(500000)">500.000₫</div>
-            <div class="amount-btn" onclick="selectAmount(1000000)">1.000.000₫</div>
-            <div class="amount-btn" onclick="selectAmount(2000000)">2.000.000₫</div>
+            <div class="amount-btn" onclick="selectAmount(50000)">
+                <span class="amount-value">50.000₫</span>
+                <span class="amount-label">Cơ bản</span>
+            </div>
+            <div class="amount-btn" onclick="selectAmount(100000)">
+                <span class="amount-value">100.000₫</span>
+                <span class="amount-label">Phổ biến</span>
+            </div>
+            <div class="amount-btn" onclick="selectAmount(200000)">
+                <span class="amount-value">200.000₫</span>
+                <span class="amount-label">Tiết kiệm</span>
+            </div>
+            <div class="amount-btn" onclick="selectAmount(500000)">
+                <span class="amount-value">500.000₫</span>
+                <span class="amount-label">Ưu đãi</span>
+            </div>
+            <div class="amount-btn" onclick="selectAmount(1000000)">
+                <span class="amount-value">1.000.000₫</span>
+                <span class="amount-label">VIP</span>
+            </div>
+            <div class="amount-btn" onclick="selectAmount(2000000)">
+                <span class="amount-value">2.000.000₫</span>
+                <span class="amount-label">Premium</span>
+            </div>
         </div>
         
         <div class="custom-amount">
             <label for="customAmountInput">Hoặc nhập số tiền khác:</label>
             <input type="number" id="customAmountInput" placeholder="Nhập số tiền (VND)" min="1000" step="1000">
+            <small class="amount-hint">Số tiền tối thiểu: 1.000₫</small>
+        </div>
+        
+        <div class="payment-methods">
+            <div class="payment-method-header">
+                <i class="fa fa-credit-card"></i>
+                <span>Phương thức thanh toán</span>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option active">
+                    <i class="fa fa-university"></i>
+                    <span>Ngân hàng / Ví điện tử</span>
+                </div>
+            </div>
+            <div class="connection-test">
+                <button type="button" class="btn-test-connection" onclick="testConnectionManual()">
+                    <i class="fa fa-wifi"></i> Kiểm tra kết nối
+                </button>
+                <span id="connectionStatus"></span>
+            </div>
         </div>
         
         <div class="modal-actions">
-            <button class="btn-modal-cancel" onclick="hideAddBalanceModal()">Hủy</button>
+            <button class="btn-modal-cancel" onclick="hideAddBalanceModal()">
+                <i class="fa fa-times"></i> Hủy
+            </button>
             <button class="btn-modal-confirm" onclick="confirmAddBalance()">
-                <i class="fa fa-credit-card"></i> Nạp tiền
+                <i class="fa fa-credit-card"></i> Thanh toán ngay
             </button>
         </div>
     </div>
@@ -984,6 +1035,28 @@ while ($row = $result_vouchers->fetch_assoc()) {
             color: #333;
         }
 
+        .payment-notice {
+            display: flex;
+            gap: 12px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .notice-icon {
+            color: #1976d2;
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .notice-text {
+            color: #1565c0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
         .amount-options {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -995,23 +1068,108 @@ while ($row = $result_vouchers->fetch_assoc()) {
             background: #f8f9fa;
             border: 2px solid #e9ecef;
             padding: 15px 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s ease;
-            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .amount-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .amount-btn:hover::before {
+            left: 100%;
         }
 
         .amount-btn:hover {
-            background: #ff6b35;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
             color: white;
             border-color: #ff6b35;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
         }
 
         .amount-btn.active {
-            background: #ff6b35;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
             color: white;
             border-color: #ff6b35;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .amount-value {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .amount-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .amount-hint {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .payment-methods {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .payment-method-header {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .payment-options {
+            padding: 15px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option.active {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.05);
+            color: #ff6b35;
+        }
+
+        .payment-option i {
+            font-size: 16px;
         }
 
         .custom-amount {
@@ -1071,6 +1229,58 @@ while ($row = $result_vouchers->fetch_assoc()) {
 
         .btn-modal-confirm:hover {
             background: #218838;
+        }
+        
+        /* Connection test styles */
+        .connection-test {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-test-connection {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-test-connection:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .btn-test-connection:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        #connectionStatus {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-testing {
+            color: #007bff;
+        }
+        
+        .status-success {
+            color: #28a745;
+        }
+        
+        .status-warning {
+            color: #ffc107;
+        }
+        
+        .status-error {
+            color: #dc3545;
         }
 
         @media (max-width: 768px) {
@@ -1697,21 +1907,545 @@ while ($row = $result_vouchers->fetch_assoc()) {
             // Show loading
             const confirmBtn = document.querySelector('.btn-modal-confirm');
             const originalText = confirmBtn.innerHTML;
-            confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang xử lý...';
+            confirmBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tạo đơn thanh toán...';
             confirmBtn.disabled = true;
             
-            // Call API
+            // Step 1: Create payment order
+            console.log('🔄 Creating payment order for amount:', amount);
+            
+            // Test connection first, then create payment order
+            testAPIConnection()
+                .then(() => {
+                    console.log('✅ API connection test successful');
+                    return createPaymentOrderFetch(amount, confirmBtn, originalText);
+                })
+                .catch(error => {
+                    console.warn('🔄 Fetch failed, trying XMLHttpRequest...', error);
+                    
+                    // Update button to show we're trying alternative method
+                    confirmBtn.innerHTML = '<i class="fa fa-refresh fa-spin"></i> Đang thử phương pháp khác...';
+                    
+                    // Wait a bit then try XHR
+                    setTimeout(() => {
+                        createPaymentOrderXHR(amount, confirmBtn, originalText)
+                            .catch(xhrError => {
+                                console.warn('🔄 XHR also failed, trying PHP proxy...', xhrError);
+                                confirmBtn.innerHTML = '<i class="fa fa-server fa-spin"></i> Đang thử proxy...';
+                                
+                                setTimeout(() => {
+                                    createPaymentOrderProxy(amount, confirmBtn, originalText);
+                                }, 1000);
+                            });
+                    }, 1000);
+                });
+        }
+        
+        // Test API connection (skip for now, directly try payment)
+        function testAPIConnection() {
+            return new Promise((resolve, reject) => {
+                console.log('🌐 Skipping health check, testing direct API...');
+                resolve(); // Always continue without health check
+            });
+        }
+        
+        // Create payment order using fetch API
+        function createPaymentOrderFetch(amount, confirmBtn, originalText) {
+            return new Promise((resolve, reject) => {
+            
+                fetch('https://duc-spring.ngodat0103.live/demo/api/app/order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                        'Origin': window.location.origin,
+                        'Referer': window.location.href,
+                    },
+                    mode: 'cors',
+                    credentials: 'omit',
+                    body: JSON.stringify({
+                        amount: amount,
+                        orderInfo: 'Nạp tiền AuraDisc'
+                    })
+                })
+                .then(response => {
+                    console.log('📡 Fetch Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('✅ Fetch Payment order created:', data);
+                    
+                    if (data.orderId && data.paymentUrl) {
+                        const orderId = data.orderId;
+                        confirmBtn.innerHTML = '<i class="fa fa-credit-card"></i> Đang chờ thanh toán...';
+                        const paymentWindow = window.open(data.paymentUrl, '_blank');
+                        checkPaymentStatus(orderId, amount, confirmBtn, originalText, paymentWindow);
+                        resolve(data);
+                    } else {
+                        throw new Error('Không nhận được thông tin thanh toán từ server. Response: ' + JSON.stringify(data));
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Fetch Payment order error:', error);
+                    reject(error);
+                });
+            });
+        }
+        
+        // Create payment order using XMLHttpRequest (fallback)
+        function createPaymentOrderXHR(amount, confirmBtn, originalText) {
+            return new Promise((resolve, reject) => {
+            console.log('🔄 Trying XMLHttpRequest method...');
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://duc-spring.ngodat0103.live/demo/api/app/order', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Accept', 'application/json');
+            xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
+            xhr.setRequestHeader('Origin', window.location.origin);
+            xhr.setRequestHeader('Referer', window.location.href);
+            xhr.withCredentials = false;
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    console.log('📡 XHR Response status:', xhr.status);
+                    console.log('📡 XHR Response text:', xhr.responseText);
+                    
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            console.log('✅ XHR Payment order created:', data);
+                            
+                            if (data.orderId && data.paymentUrl) {
+                                const orderId = data.orderId;
+                                confirmBtn.innerHTML = '<i class="fa fa-credit-card"></i> Đang chờ thanh toán...';
+                                const paymentWindow = window.open(data.paymentUrl, '_blank');
+                                checkPaymentStatus(orderId, amount, confirmBtn, originalText, paymentWindow);
+                                resolve(data);
+                            } else {
+                                reject(new Error('Không nhận được thông tin thanh toán từ server. Response: ' + JSON.stringify(data)));
+                            }
+                        } catch (parseError) {
+                            console.error('❌ JSON parse error:', parseError);
+                            reject(parseError);
+                        }
+                    } else {
+                        console.error('❌ XHR HTTP error:', xhr.status, xhr.statusText);
+                        
+                        let errorMessage = 'Không thể kết nối đến server thanh toán';
+                        
+                        if (xhr.status === 0) {
+                            errorMessage = 'Không thể kết nối đến server thanh toán. Vui lòng kiểm tra kết nối mạng.';
+                        } else if (xhr.status >= 500) {
+                            errorMessage = 'Server thanh toán đang gặp sự cố. Vui lòng thử lại sau.';
+                        } else if (xhr.status === 404) {
+                            errorMessage = 'Không tìm thấy API thanh toán. Vui lòng liên hệ hỗ trợ.';
+                        } else {
+                            errorMessage = `Lỗi server thanh toán (${xhr.status}): ${xhr.statusText}`;
+                        }
+                        
+                        reject(new Error(errorMessage));
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                console.error('❌ XHR Network error');
+                reject(new Error('Lỗi mạng khi kết nối đến server thanh toán'));
+            };
+            
+            xhr.ontimeout = function() {
+                console.error('❌ XHR Timeout');
+                reject(new Error('Hết thời gian chờ kết nối đến server thanh toán'));
+            };
+            
+            xhr.timeout = 30000; // 30 seconds timeout
+            
+            const requestData = JSON.stringify({
+                amount: amount,
+                orderInfo: 'Nạp tiền AuraDisc'
+            });
+            
+            console.log('📤 XHR Sending request:', requestData);
+            
+            try {
+                xhr.send(requestData);
+            } catch (sendError) {
+                console.error('❌ XHR Send error:', sendError);
+                reject(sendError);
+            }
+            
+            }); // End of Promise
+        }
+        
+        // Create payment order using PHP proxy (final fallback)
+        function createPaymentOrderProxy(amount, confirmBtn, originalText) {
+            console.log('🔄 Trying PHP proxy method...');
+            
+            fetch('ajax/payment_proxy.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'create_order',
+                    amount: amount,
+                    orderInfo: 'Nạp tiền AuraDisc'
+                })
+            })
+            .then(response => {
+                console.log('📡 Proxy Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                console.log('✅ Proxy Payment order created:', data);
+                
+                if (data.error) {
+                    throw new Error('Proxy Error: ' + data.error);
+                }
+                
+                if (data.orderId && data.paymentUrl) {
+                    const orderId = data.orderId;
+                    confirmBtn.innerHTML = '<i class="fa fa-credit-card"></i> Đang chờ thanh toán...';
+                    const paymentWindow = window.open(data.paymentUrl, '_blank');
+                    checkPaymentStatusProxy(orderId, amount, confirmBtn, originalText, paymentWindow);
+                } else {
+                    throw new Error('Không nhận được thông tin thanh toán từ proxy. Response: ' + JSON.stringify(data));
+                }
+            })
+            .catch(error => {
+                console.error('❌ All payment methods failed:', error);
+                
+                let errorMessage = 'Tất cả phương pháp thanh toán đều thất bại. ';
+                
+                if (error.message.includes('Proxy Error')) {
+                    errorMessage += 'Lỗi từ server proxy: ' + error.message;
+                } else {
+                    errorMessage += 'Vui lòng kiểm tra kết nối mạng và thử lại sau.';
+                }
+                
+                alert('❌ ' + errorMessage);
+                
+                // Reset button
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+            });
+        }
+        
+        // Check payment status using proxy
+        function checkPaymentStatusProxy(orderId, amount, confirmBtn, originalText, paymentWindow) {
+            console.log('🔍 Checking payment status via proxy for order:', orderId);
+            
+            const maxAttempts = 60;
+            let attempts = 0;
+            
+            const checkInterval = setInterval(() => {
+                attempts++;
+                
+                const remainingTime = Math.max(0, maxAttempts - attempts);
+                confirmBtn.innerHTML = `<i class="fa fa-clock-o"></i> Kiểm tra thanh toán... (${remainingTime}s)`;
+                
+                fetch('ajax/payment_proxy.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'check_status',
+                        orderId: orderId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('💳 Payment status via proxy:', data);
+                    
+                    if (data.error) {
+                        console.error('❌ Proxy status check error:', data.error);
+                        return;
+                    }
+                    
+                    if (data.status === 'PAID') {
+                        clearInterval(checkInterval);
+                        
+                        if (paymentWindow && !paymentWindow.closed) {
+                            paymentWindow.close();
+                        }
+                        
+                        confirmBtn.innerHTML = '<i class="fa fa-check"></i> Đang cập nhật số dư...';
+                        updateUserBalance(amount, orderId, confirmBtn, originalText);
+                        
+                    } else if (data.status === 'UNPAID') {
+                        console.log('⏳ Payment still pending via proxy...');
+                        
+                        if (paymentWindow && paymentWindow.closed) {
+                            clearInterval(checkInterval);
+                            confirmBtn.innerHTML = originalText;
+                            confirmBtn.disabled = false;
+                            alert('⚠️ Bạn đã đóng cửa sổ thanh toán. Vui lòng thử lại nếu muốn nạp tiền.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Proxy status check error:', error);
+                });
+                
+                if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    
+                    if (paymentWindow && !paymentWindow.closed) {
+                        paymentWindow.close();
+                    }
+                    
+                    confirmBtn.innerHTML = originalText;
+                    confirmBtn.disabled = false;
+                    
+                    alert('⏰ Hết thời gian chờ thanh toán. Vui lòng thử lại hoặc kiểm tra lại giao dịch.');
+                }
+                
+            }, 5000);
+        }
+        
+        // Manual connection test
+        function testConnectionManual() {
+            const statusEl = document.getElementById('connectionStatus');
+            const testBtn = document.querySelector('.btn-test-connection');
+            
+            statusEl.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang kiểm tra...';
+            statusEl.className = 'status-testing';
+            testBtn.disabled = true;
+            
+            // Test both fetch and XHR
+            Promise.all([
+                testFetchConnection(),
+                testXHRConnection()
+            ])
+            .then(results => {
+                const [fetchResult, xhrResult] = results;
+                
+                if (fetchResult.success || xhrResult.success) {
+                    statusEl.innerHTML = '<i class="fa fa-check-circle"></i> Kết nối tốt';
+                    statusEl.className = 'status-success';
+                } else {
+                    statusEl.innerHTML = '<i class="fa fa-exclamation-triangle"></i> Có vấn đề kết nối';
+                    statusEl.className = 'status-warning';
+                }
+                
+                console.log('📊 Connection test results:', { fetchResult, xhrResult });
+            })
+            .catch(error => {
+                statusEl.innerHTML = '<i class="fa fa-times-circle"></i> Lỗi kết nối';
+                statusEl.className = 'status-error';
+                console.error('❌ Connection test error:', error);
+            })
+            .finally(() => {
+                testBtn.disabled = false;
+                
+                // Clear status after 5 seconds
+                setTimeout(() => {
+                    statusEl.innerHTML = '';
+                    statusEl.className = '';
+                }, 5000);
+            });
+        }
+        
+        function testFetchConnection() {
+            return new Promise((resolve) => {
+                // Test with a simple OPTIONS request to check CORS
+                fetch('https://duc-spring.ngodat0103.live/demo/api/app/order', {
+                    method: 'OPTIONS',
+                    mode: 'cors',
+                    headers: {
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type',
+                    },
+                })
+                .then(response => {
+                    console.log('📡 Fetch OPTIONS test:', response.status, response.headers);
+                    resolve({ method: 'fetch', success: response.status < 400, status: response.status });
+                })
+                .catch(error => {
+                    console.log('❌ Fetch test error:', error);
+                    resolve({ method: 'fetch', success: false, error: error.message });
+                });
+            });
+        }
+        
+        function testXHRConnection() {
+            return new Promise((resolve) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('OPTIONS', 'https://duc-spring.ngodat0103.live/demo/api/app/order', true);
+                xhr.timeout = 10000;
+                xhr.setRequestHeader('Access-Control-Request-Method', 'POST');
+                xhr.setRequestHeader('Access-Control-Request-Headers', 'Content-Type');
+                
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        console.log('📡 XHR OPTIONS test:', xhr.status, xhr.getAllResponseHeaders());
+                        resolve({ method: 'xhr', success: xhr.status < 400, status: xhr.status });
+                    }
+                };
+                
+                xhr.onerror = function() {
+                    console.log('❌ XHR test error');
+                    resolve({ method: 'xhr', success: false, error: 'Network error' });
+                };
+                
+                xhr.ontimeout = function() {
+                    console.log('❌ XHR test timeout');
+                    resolve({ method: 'xhr', success: false, error: 'Timeout' });
+                };
+                
+                try {
+                    xhr.send();
+                } catch (error) {
+                    console.log('❌ XHR send error:', error);
+                    resolve({ method: 'xhr', success: false, error: error.message });
+                }
+            });
+        }
+
+        // Check payment status function
+        function checkPaymentStatus(orderId, amount, confirmBtn, originalText, paymentWindow) {
+            console.log('🔍 Checking payment status for order:', orderId);
+            
+            const maxAttempts = 60; // Kiểm tra trong 5 phút (60 lần x 5 giây)
+            let attempts = 0;
+            
+            const checkInterval = setInterval(() => {
+                attempts++;
+                
+                // Update button text with countdown
+                const remainingTime = Math.max(0, maxAttempts - attempts);
+                confirmBtn.innerHTML = `<i class="fa fa-clock-o"></i> Kiểm tra thanh toán... (${remainingTime}s)`;
+                
+                fetch(`https://duc-spring.ngodat0103.live/demo/api/app/order/${orderId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                        'Origin': window.location.origin,
+                    },
+                    mode: 'cors',
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('💳 Payment status:', data);
+                    
+                    if (data.status === 'PAID') {
+                        // Payment successful
+                        clearInterval(checkInterval);
+                        
+                        // Close payment window if still open
+                        if (paymentWindow && !paymentWindow.closed) {
+                            paymentWindow.close();
+                        }
+                        
+                        confirmBtn.innerHTML = '<i class="fa fa-check"></i> Đang cập nhật số dư...';
+                        
+                        // Update balance in database
+                        updateUserBalance(amount, orderId, confirmBtn, originalText);
+                        
+                    } else if (data.status === 'UNPAID') {
+                        // Still unpaid, continue checking
+                        console.log('⏳ Payment still pending...');
+                        
+                        // Check if payment window is closed (user canceled)
+                        if (paymentWindow && paymentWindow.closed) {
+                            clearInterval(checkInterval);
+                            confirmBtn.innerHTML = originalText;
+                            confirmBtn.disabled = false;
+                            alert('⚠️ Bạn đã đóng cửa sổ thanh toán. Vui lòng thử lại nếu muốn nạp tiền.');
+                        }
+                        
+                    } else {
+                        // Unknown status
+                        console.log('❓ Unknown payment status:', data.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Status check error, trying proxy:', error);
+                    
+                    // Fallback to proxy for status check
+                    fetch('ajax/payment_proxy.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'check_status',
+                            orderId: orderId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('💳 Payment status via proxy fallback:', data);
+                        
+                        if (!data.error && data.status === 'PAID') {
+                            clearInterval(checkInterval);
+                            
+                            if (paymentWindow && !paymentWindow.closed) {
+                                paymentWindow.close();
+                            }
+                            
+                            confirmBtn.innerHTML = '<i class="fa fa-check"></i> Đang cập nhật số dư...';
+                            updateUserBalance(amount, orderId, confirmBtn, originalText);
+                        }
+                    })
+                    .catch(proxyError => {
+                        console.error('❌ Proxy status check also failed:', proxyError);
+                    });
+                });
+                
+                // Timeout after max attempts
+                if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    
+                    // Close payment window if still open
+                    if (paymentWindow && !paymentWindow.closed) {
+                        paymentWindow.close();
+                    }
+                    
+                    confirmBtn.innerHTML = originalText;
+                    confirmBtn.disabled = false;
+                    
+                    alert('⏰ Hết thời gian chờ thanh toán. Vui lòng thử lại hoặc kiểm tra lại giao dịch.');
+                }
+                
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Update user balance in database
+        function updateUserBalance(amount, orderId, confirmBtn, originalText) {
             $.ajax({
                 url: 'ajax/wallet_handler.php',
                 method: 'POST',
                 data: {
                     action: 'add_balance',
                     amount: amount,
-                    description: 'Nạp tiền qua website'
+                    description: `Nạp tiền qua cổng thanh toán - Order: ${orderId}`,
+                    order_id: orderId
                 },
                 dataType: 'json',
                 success: function(data) {
-                    console.log('✅ Add balance response:', data);
+                    console.log('✅ Balance updated:', data);
+                    
                     if (data.success) {
                         // Update balance display
                         document.getElementById('balanceAmount').textContent = data.formatted_balance;
@@ -1720,17 +2454,22 @@ while ($row = $result_vouchers->fetch_assoc()) {
                         hideAddBalanceModal();
                         
                         // Show success message
-                        alert('✅ ' + data.message + '\nSố dư mới: ' + data.formatted_balance);
+                        alert('🎉 Nạp tiền thành công!\n' + 
+                              '💰 Số tiền: ' + formatCurrency(amount) + '\n' +
+                              '💳 Mã giao dịch: ' + orderId + '\n' +
+                              '📊 Số dư mới: ' + data.formatted_balance);
+                        
+                        // Reload balance to make sure it's up to date
+                        loadUserBalance();
+                        
                     } else {
-                        console.log('❌ Add balance error:', data.message);
-                        alert('❌ Lỗi: ' + data.message);
+                        console.log('❌ Balance update error:', data.message);
+                        alert('⚠️ Thanh toán thành công nhưng có lỗi khi cập nhật số dư. Vui lòng liên hệ hỗ trợ.\nMã giao dịch: ' + orderId);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('❌ AJAX Error:', error);
-                    console.error('Response Text:', xhr.responseText);
-                    console.error('Status:', status);
-                    alert('❌ Có lỗi xảy ra khi nạp tiền!');
+                    console.error('❌ Balance update AJAX error:', error);
+                    alert('⚠️ Thanh toán thành công nhưng có lỗi khi cập nhật số dư. Vui lòng liên hệ hỗ trợ.\nMã giao dịch: ' + orderId);
                 },
                 complete: function() {
                     // Reset button

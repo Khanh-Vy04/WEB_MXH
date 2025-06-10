@@ -2,12 +2,8 @@
 require_once '../../config/database.php';
 require_once '../../includes/session.php';
 
-// Cấu hình ChatGPT API
-$dotenv = parse_ini_file(__DIR__ . '/../../.env');
-if (!$dotenv || !isset($dotenv['OPENAI_API_KEY'])) {
-    die('Error: Missing OPENAI_API_KEY in .env file');
-}
-define('OPENAI_API_KEY', $dotenv['OPENAI_API_KEY']);
+// Sử dụng biến môi trường hoặc file config để lưu API key
+define('OPENAI_API_KEY', $_ENV['OPENAI_API_KEY'] ?? 'your-openai-api-key-here');
 define('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions');
 
 // Lấy action từ request

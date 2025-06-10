@@ -265,7 +265,7 @@ if (isset($_POST['register'])) {
                     </button>
                     
                     <div class="text-center mt-3">
-                        <a href="user/forgot-password.php" class="text-decoration-none" style="color: #ff6b35; font-weight: 600;">
+                        <a href="admin/pages/auth/forgot-password.php" class="text-decoration-none" style="color: #ff6b35; font-weight: 600;">
                             <i class="fas fa-lock me-1"></i> Quên mật khẩu?
                         </a>
                     </div>

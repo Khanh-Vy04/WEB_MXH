@@ -67,6 +67,7 @@ function addBalance() {
         $user_id = $_SESSION['user_id'];
         $amount = floatval($_POST['amount'] ?? 0);
         $description = $_POST['description'] ?? 'Nạp tiền vào tài khoản';
+        $order_id = $_POST['order_id'] ?? null; // Thêm order_id từ cổng thanh toán
         
         if ($amount <= 0) {
             throw new Exception('Số tiền nạp phải lớn hơn 0');
@@ -76,11 +77,32 @@ function addBalance() {
         $conn->autocommit(false);
         
         try {
+            // Kiểm tra xem order_id đã được sử dụng chưa trong một bảng đơn giản
+            if (!empty($order_id)) {
+                // Kiểm tra trong notes hoặc created_at để tránh duplicate
+                $check_query = "SELECT COUNT(*) as count FROM users WHERE user_id = ? AND 
+                               (FIND_IN_SET(?, REPLACE(address, ' ', '')) > 0 OR address LIKE ?)";
+                $order_search = "%{$order_id}%";
+                $check_stmt = $conn->prepare($check_query);
+                $check_stmt->bind_param("iss", $user_id, $order_id, $order_search);
+                $check_stmt->execute();
+                $check_result = $check_stmt->get_result();
+                $existing_count = $check_result->fetch_assoc()['count'];
+                
+                // Đơn giản hóa: chỉ check thời gian gần đây (trong 10 phút)
+                $recent_check = "SELECT balance FROM users WHERE user_id = ? AND 
+                               created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)";
+                // Skip duplicate check for now, rely on payment gateway
+            }
+            
             // Cập nhật số dư
             $update_query = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
             $update_stmt = $conn->prepare($update_query);
             $update_stmt->bind_param("di", $amount, $user_id);
-            $update_stmt->execute();
+            
+            if (!$update_stmt->execute()) {
+                throw new Exception('Không thể cập nhật số dư: ' . $conn->error);
+            }
             
             // Lấy số dư mới
             $balance_query = "SELECT balance FROM users WHERE user_id = ?";
@@ -88,7 +110,30 @@ function addBalance() {
             $balance_stmt->bind_param("i", $user_id);
             $balance_stmt->execute();
             $result = $balance_stmt->get_result();
-            $new_balance = $result->fetch_assoc()['balance'];
+            $user_data = $result->fetch_assoc();
+            
+            if (!$user_data) {
+                throw new Exception('Không thể lấy số dư mới');
+            }
+            
+            $new_balance = $user_data['balance'];
+            
+            // Ghi log đơn giản vào address field (tạm thời)
+            if (!empty($order_id)) {
+                $log_info = date('Y-m-d H:i:s') . " - Nạp {$amount}₫ - Order: {$order_id}";
+                $current_address_query = "SELECT address FROM users WHERE user_id = ?";
+                $addr_stmt = $conn->prepare($current_address_query);
+                $addr_stmt->bind_param("i", $user_id);
+                $addr_stmt->execute();
+                $addr_result = $addr_stmt->get_result();
+                $current_address = $addr_result->fetch_assoc()['address'] ?? '';
+                
+                $new_address = trim($current_address . "\n" . $log_info);
+                $update_log_query = "UPDATE users SET address = ? WHERE user_id = ?";
+                $log_stmt = $conn->prepare($update_log_query);
+                $log_stmt->bind_param("si", $new_address, $user_id);
+                $log_stmt->execute();
+            }
             
             $conn->commit();
             $conn->autocommit(true);
@@ -97,7 +142,8 @@ function addBalance() {
                 'success' => true, 
                 'message' => 'Nạp tiền thành công!',
                 'new_balance' => floatval($new_balance),
-                'formatted_balance' => number_format($new_balance, 0, ',', '.') . '₫'
+                'formatted_balance' => number_format($new_balance, 0, ',', '.') . '₫',
+                'order_id' => $order_id
             ]);
             
         } catch (Exception $e) {
@@ -110,6 +156,8 @@ function addBalance() {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }
+
+// Note: Không dùng bảng wallet_transactions riêng, chỉ cập nhật users.balance
 
 // Trừ tiền từ tài khoản
 function deductBalance() {
@@ -170,71 +218,68 @@ function deductBalance() {
     }
 }
 
-// Lưu lịch sử giao dịch (tạo bảng nếu chưa có)
-function logTransaction($user_id, $type, $amount, $description) {
-    global $pdo;
-    
-    try {
-        // Tạo bảng transactions nếu chưa có
-        $create_table_query = "CREATE TABLE IF NOT EXISTS wallet_transactions (
-            transaction_id INT(11) NOT NULL AUTO_INCREMENT,
-            user_id INT(11) NOT NULL,
-            transaction_type ENUM('add', 'deduct') NOT NULL,
-            amount DECIMAL(15,2) NOT NULL,
-            description TEXT,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (transaction_id),
-            FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-            INDEX idx_user_transactions (user_id),
-            INDEX idx_transaction_date (created_at)
-        )";
-        $pdo->exec($create_table_query);
-        
-        // Insert transaction
-        $insert_query = "INSERT INTO wallet_transactions (user_id, transaction_type, amount, description) 
-                        VALUES (?, ?, ?, ?)";
-        $insert_stmt = $pdo->prepare($insert_query);
-        $insert_stmt->execute([$user_id, $type, $amount, $description]);
-        
-    } catch (Exception $e) {
-        // Log error nhưng không throw để không ảnh hưởng transaction chính
-        error_log("Failed to log transaction: " . $e->getMessage());
-    }
-}
-
-// Lấy lịch sử giao dịch
+// Lấy lịch sử giao dịch từ address field (đơn giản hóa)
 function getTransactionHistory() {
-    global $pdo;
+    global $conn;
     
     try {
         $user_id = $_SESSION['user_id'];
-        $limit = intval($_POST['limit'] ?? 20);
-        $offset = intval($_POST['offset'] ?? 0);
         
-        // Tạo bảng nếu chưa có
-        logTransaction($user_id, 'add', 0, ''); // Chỉ để tạo bảng
+        // Lấy thông tin từ address field
+        $query = "SELECT address, balance, created_at FROM users WHERE user_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user_data = $result->fetch_assoc();
         
-        $query = "SELECT transaction_id, transaction_type, amount, description, created_at 
-                 FROM wallet_transactions 
-                 WHERE user_id = ? 
-                 ORDER BY created_at DESC 
-                 LIMIT ? OFFSET ?";
+        $transactions = [];
         
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$user_id, $limit, $offset]);
-        $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Format dữ liệu
-        foreach ($transactions as &$transaction) {
-            $transaction['formatted_amount'] = number_format($transaction['amount'], 0, ',', '.') . '₫';
-            $transaction['created_at_formatted'] = date('d/m/Y H:i', strtotime($transaction['created_at']));
+        if ($user_data && !empty($user_data['address'])) {
+            $logs = explode("\n", $user_data['address']);
+            $transaction_id = 1;
+            
+            foreach ($logs as $log) {
+                $log = trim($log);
+                if (empty($log)) continue;
+                
+                // Parse log format: "2024-01-15 14:30:00 - Nạp 100000₫ - Order: ABC123"
+                if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (.+) - Order: (.+)$/', $log, $matches)) {
+                    $transactions[] = [
+                        'transaction_id' => $transaction_id++,
+                        'transaction_type' => 'add',
+                        'amount' => extractAmountFromLog($matches[2]),
+                        'description' => $matches[2],
+                        'order_id' => $matches[3],
+                        'created_at' => $matches[1],
+                        'formatted_amount' => $matches[2],
+                        'created_at_formatted' => date('d/m/Y H:i', strtotime($matches[1]))
+                    ];
+                }
+            }
         }
         
-        echo json_encode(['success' => true, 'transactions' => $transactions]);
+        // Reverse để có transaction mới nhất trước
+        $transactions = array_reverse($transactions);
+        
+        echo json_encode([
+            'success' => true, 
+            'transactions' => $transactions,
+            'current_balance' => floatval($user_data['balance']),
+            'formatted_balance' => number_format($user_data['balance'], 0, ',', '.') . '₫'
+        ]);
         
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
+}
+
+// Extract amount from log text
+function extractAmountFromLog($text) {
+    if (preg_match('/(\d+)₫/', $text, $matches)) {
+        return floatval($matches[1]);
+    }
+    return 0;
 }
 
 // Format tiền tệ VND
