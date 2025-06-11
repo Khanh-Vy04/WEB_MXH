@@ -130,8 +130,8 @@ if (isLoggedIn()) {
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse menu-ui-design" id="navbar-menu">
             <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
-                <li class="scroll <?php echo ($current_page == 'index') ? 'active' : ''; ?>">
-                    <a href="<?php echo $base_path; ?>index.php#home">Home</a>
+                <li class="<?php echo ($current_page == 'index') ? 'active' : ''; ?>">
+                    <a href="<?php echo $base_path; ?>index.php">Home</a>
                 </li>
                 
                 <li class="<?php echo ($current_page == 'new-arrivals') ? 'active' : ''; ?>">

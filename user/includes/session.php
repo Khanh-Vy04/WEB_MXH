@@ -8,18 +8,19 @@ function isLoggedIn() {
 
 // Hàm lấy thông tin user hiện tại
 function getCurrentUser() {
-    if (!isLoggedIn()) {
-        return null;
+    if (isLoggedIn()) {
+        global $conn;
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT * FROM users WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
     }
-    
-    return [
-        'user_id' => $_SESSION['user_id'],
-        'username' => $_SESSION['username'] ?? '',
-        'email' => $_SESSION['email'] ?? '',
-        'fullname' => $_SESSION['fullname'] ?? '',
-        'full_name' => $_SESSION['full_name'] ?? $_SESSION['fullname'] ?? '',
-        'role_id' => $_SESSION['role_id'] ?? 2
-    ];
+    return null;
 }
 
 // Hàm login user
@@ -30,6 +31,9 @@ function loginUser($userData) {
     $_SESSION['fullname'] = $userData['fullname'] ?? $userData['full_name'] ?? '';
     $_SESSION['full_name'] = $userData['full_name'] ?? $userData['fullname'] ?? '';
     $_SESSION['role_id'] = $userData['role_id'] ?? 2;
+    $_SESSION['gender'] = $userData['gender'] ?? '';
+    $_SESSION['phone'] = $userData['phone'] ?? '';
+    $_SESSION['address'] = $userData['address'] ?? '';
 }
 
 // Hàm logout user

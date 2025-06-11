@@ -48,6 +48,15 @@ if (isset($_POST['login'])) {
                 $_SESSION['user_role'] = ($user['role_id'] == 1) ? 'admin' : 'user';
                 $_SESSION['login_time'] = time();
                 
+                // Lưu thêm thông tin người dùng vào session
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['full_name'] = $user['full_name'];
+                $_SESSION['gender'] = $user['gender'];
+                $_SESSION['phone'] = $user['phone'];
+                $_SESSION['address'] = $user['address'];
+                $_SESSION['role_id'] = $user['role_id'];
+                $_SESSION['created_at'] = $user['created_at'];
+                
                 // Chuyển hướng dựa vào role_id
                 if ($user['role_id'] == 1) {
                     header("Location: admin/pages/dashboard/dashboard.php");

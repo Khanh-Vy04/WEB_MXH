@@ -310,7 +310,7 @@ $total_count = $week_count + $month_count;
         <div class="clearfix"></div>
     </div>
     <!-- Navigation End -->
-    
+
     <!-- Breadcrumb -->
     <div class="page-breadcrumb">
         <div class="container">

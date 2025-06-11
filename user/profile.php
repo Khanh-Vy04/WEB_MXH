@@ -241,32 +241,32 @@ if ($is_logged_in) {
                                         <div class="info-grid">
                                             <div class="info-item">
                                                 <label class="info-label">Tên đăng nhập:</label>
-                                                <span class="info-value"><?php echo htmlspecialchars($current_user['username']); ?></span>
+                                                <span class="info-value"><?php echo htmlspecialchars($current_user['username'] ?? ''); ?></span>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Họ và tên:</label>
-                                                <span class="info-value" id="viewFullName"><?php echo htmlspecialchars($current_user['full_name']); ?></span>
+                                                <span class="info-value" id="viewFullName"><?php echo htmlspecialchars($current_user['full_name'] ?? ''); ?></span>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Email:</label>
-                                                <span class="info-value" id="viewEmail"><?php echo htmlspecialchars($current_user['email']); ?></span>
+                                                <span class="info-value" id="viewEmail"><?php echo htmlspecialchars($current_user['email'] ?? ''); ?></span>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Giới tính:</label>
-                                                <span class="info-value" id="viewGender"><?php echo htmlspecialchars($current_user['gender']); ?></span>
+                                                <span class="info-value" id="viewGender"><?php echo htmlspecialchars($current_user['gender'] ?? 'Chưa cập nhật'); ?></span>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Số điện thoại:</label>
-                                                <span class="info-value" id="viewPhone"><?php echo htmlspecialchars($current_user['phone']); ?></span>
+                                                <span class="info-value" id="viewPhone"><?php echo htmlspecialchars($current_user['phone'] ?? 'Chưa cập nhật'); ?></span>
                                             </div>
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Địa chỉ:</label>
-                                                <span class="info-value" id="viewAddress"><?php echo $current_user['address'] ? htmlspecialchars($current_user['address']) : 'Chưa cập nhật'; ?></span>
+                                                <span class="info-value" id="viewAddress"><?php echo isset($current_user['address']) && $current_user['address'] ? htmlspecialchars($current_user['address']) : 'Chưa cập nhật'; ?></span>
                                             </div>
                                             
                                             <div class="info-item wallet-info">
@@ -282,7 +282,16 @@ if ($is_logged_in) {
                                             
                                             <div class="info-item">
                                                 <label class="info-label">Ngày đăng ký:</label>
-                                                <span class="info-value"><?php echo date('d/m/Y H:i', strtotime($current_user['created_at'])); ?></span>
+                                                <span class="info-value">
+                                                    <?php 
+                                                    if (isset($current_user['created_at']) && !empty($current_user['created_at'])) {
+                                                        echo date('d/m/Y H:i', strtotime($current_user['created_at']));
+                                                    } else {
+                                                        // Nếu không có ngày đăng ký, hiển thị ngày hiện tại
+                                                        echo date('d/m/Y H:i');
+                                                    }
+                                                    ?>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -294,30 +303,30 @@ if ($is_logged_in) {
                                                 <div class="form-group">
                                                     <label for="editFullName">Họ và tên:</label>
                                                     <input type="text" id="editFullName" name="full_name" 
-                                                           value="<?php echo htmlspecialchars($current_user['full_name']); ?>" 
+                                                           value="<?php echo htmlspecialchars($current_user['full_name'] ?? ''); ?>" 
                                                            class="form-control" required>
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="editEmail">Email:</label>
                                                     <input type="email" id="editEmail" name="email" 
-                                                           value="<?php echo htmlspecialchars($current_user['email']); ?>" 
+                                                           value="<?php echo htmlspecialchars($current_user['email'] ?? ''); ?>" 
                                                            class="form-control" required>
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="editGender">Giới tính:</label>
                                                     <select id="editGender" name="gender" class="form-control" required>
-                                                        <option value="Nam" <?php echo $current_user['gender'] == 'Nam' ? 'selected' : ''; ?>>Nam</option>
-                                                        <option value="Nữ" <?php echo $current_user['gender'] == 'Nữ' ? 'selected' : ''; ?>>Nữ</option>
-                                                        <option value="Khác" <?php echo $current_user['gender'] == 'Khác' ? 'selected' : ''; ?>>Khác</option>
+                                                        <option value="Nam" <?php echo isset($current_user['gender']) && $current_user['gender'] == 'Nam' ? 'selected' : ''; ?>>Nam</option>
+                                                        <option value="Nữ" <?php echo isset($current_user['gender']) && $current_user['gender'] == 'Nữ' ? 'selected' : ''; ?>>Nữ</option>
+                                                        <option value="Khác" <?php echo isset($current_user['gender']) && $current_user['gender'] == 'Khác' ? 'selected' : ''; ?>>Khác</option>
                                                     </select>
                                                 </div>
                                                 
                                                 <div class="form-group">
                                                     <label for="editPhone">Số điện thoại:</label>
                                                     <input type="tel" id="editPhone" name="phone" 
-                                                           value="<?php echo htmlspecialchars($current_user['phone']); ?>" 
+                                                           value="<?php echo htmlspecialchars($current_user['phone'] ?? ''); ?>" 
                                                            class="form-control" required>
                                                 </div>
                                                 

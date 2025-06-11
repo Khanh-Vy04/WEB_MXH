@@ -183,6 +183,7 @@
             // ------------------------------------------------------------------------------ //
             // Toggle Search
             // ------------------------------------------------------------------------------ //
+            /*
             $("nav.navbar.bootsnav .attr-nav").each(function(){  
                 $("li.search > a", this).on("click", function(e){
                     e.preventDefault();
@@ -192,6 +193,7 @@
             $(".input-group-addon.close-search").on("click", function(){
                 $(".top-search").slideUp();
             });
+            */
             
             // ------------------------------------------------------------------------------ //
             // Toggle Side Menu
@@ -515,39 +517,43 @@
                 
                 // Animation Scrollspy
                 $('.scroll').on('click', function(event) {
-                    event.preventDefault();
+                    // Chỉ ngăn chặn hành vi mặc định nếu href chứa dấu #
+                    var href = $(this).attr('href');
+                    if (href && href.indexOf('#') !== -1) {
+                        event.preventDefault();
 
-                    // Active link
-                    $('.scroll').removeClass("active");
-                    $(this).addClass("active");
+                        // Active link
+                        $('.scroll').removeClass("active");
+                        $(this).addClass("active");
 
-                    // Remove navbar collapse
-                    $(".navbar-collapse").removeClass("in");
+                        // Remove navbar collapse
+                        $(".navbar-collapse").removeClass("in");
 
-                    // Toggle Bars
-                    $(".navbar-toggle").each(function(){
-                        $(".fa", this).removeClass("fa-times");
-                        $(".fa", this).addClass("fa-bars");
-                    });
+                        // Toggle Bars
+                        $(".navbar-toggle").each(function(){
+                            $(".fa", this).removeClass("fa-times");
+                            $(".fa", this).addClass("fa-bars");
+                        });
 
-                    // Scroll
-                    var scrollTop = $(window).scrollTop(),
-                        $anchor = $(this).find('a'),
-                        $section = $($anchor.attr('href')).offset().top,
-                        $window = $(window).width(),
-                        $minusDesktop = getNav.data("minus-value-desktop"),
-                        $minusMobile = getNav.data("minus-value-mobile"),
-                        $speed = getNav.data("speed");
-                    
-                    if( $window > 992 ){
-                        var $position = $section - $minusDesktop;
-                    }else{
-                        var $position = $section - $minusMobile;
-                    }             
+                        // Scroll
+                        var scrollTop = $(window).scrollTop(),
+                            $anchor = $(this).find('a'),
+                            $section = $($anchor.attr('href')).offset().top,
+                            $window = $(window).width(),
+                            $minusDesktop = getNav.data("minus-value-desktop"),
+                            $minusMobile = getNav.data("minus-value-mobile"),
+                            $speed = getNav.data("speed");
                         
-                    $('html, body').stop().animate({
-                        scrollTop: $position
-                    }, $speed);
+                        if( $window > 992 ){
+                            var $position = $section - $minusDesktop;
+                        }else{
+                            var $position = $section - $minusMobile;
+                        }             
+            
+                        $('html, body').stop().animate({
+                            scrollTop: $position
+                        }, $speed);
+                    }
                 });
                 
                 // Activate Navigation

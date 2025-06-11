@@ -105,3 +105,18 @@ $(document).ready(function(){
 		});
 
 });
+
+// Đảm bảo liên kết Home hoạt động
+$(document).ready(function() {
+    // Xử lý riêng cho liên kết Home
+    $('nav li a').each(function() {
+        var href = $(this).attr('href');
+        if (href && (href.endsWith('index.php') || href.endsWith('/'))) {
+            $(this).off('click.scrollEvent'); // Loại bỏ sự kiện scroll nếu có
+            $(this).on('click', function(e) {
+                // Cho phép hành vi mặc định của liên kết
+                return true;
+            });
+        }
+    });
+});
