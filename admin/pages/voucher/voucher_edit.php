@@ -151,13 +151,6 @@ if (!empty($errors)) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
-        .form-section {
-            background: #f8f9fa;
-            border-left: 4px solid #007bff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
         .preview-voucher {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
@@ -175,25 +168,35 @@ if (!empty($errors)) {
             border-radius: 10px;
             margin: 10px 0;
         }
-        .stats-card {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .stats-number {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #007bff;
-        }
         .warning-box {
             background: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
+        }
+        /* Thêm các style cho header-section để đồng bộ với trang add */
+        .header-section { 
+            background: #fff; 
+            border-radius: 18px; 
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04); 
+        }
+        .header-section h2 { 
+            color: #222; 
+            font-size: 1.5rem; 
+            font-weight: 600;
+            margin-bottom: 0; 
+            margin-left: 0.1rem;
+        }
+        .stat-box {
+            min-height: 100px; /* Adjust as needed */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa !important; /* Retain the light gray background */
         }
     </style>
 </head>
@@ -216,14 +219,14 @@ if (!empty($errors)) {
         ?>
         <div class="container-fluid pt-4 px-4">
             <!-- Header -->
-            <div class="bg-secondary rounded h-100 p-4 mb-4">
+            <div class="header-section">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h2 class="text-primary"><i class="fas fa-edit me-3"></i>Chỉnh sửa Voucher</h2>
+                        <h2><i class="fas fa-edit me-2" style="color: #000 !important;"></i><span style="color: #000 !important;">Chỉnh sửa Voucher</span></h2>
                         <small class="text-muted">ID: <?php echo $voucher_id; ?> | Mã: <?php echo htmlspecialchars($voucher['voucher_code']); ?></small>
                     </div>
                     <div class="col-md-6 text-end">
-                        <a href="voucher_list.php" class="btn btn-primary btn-lg">
+                        <a href="voucher_list.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại Danh sách
                         </a>
                     </div>
@@ -253,8 +256,8 @@ if (!empty($errors)) {
             <!-- Form chỉnh sửa voucher -->
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Thông tin Voucher</h5>
+                    <div class="card-header" style="background-color: #412d3b !important;">
+                        <h5 class="mb-0" style="color: #fff !important;"><i class="fas fa-edit me-2" style="color: #fff !important;"></i>Thông tin Voucher</h5>
                     </div>
                     <div class="card-body">
                         <form method="POST" id="voucherForm">
@@ -266,57 +269,46 @@ if (!empty($errors)) {
                                         <label class="form-label">Mã voucher <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="voucher_code" id="voucher_code" 
                                                placeholder="VD: SALE10, WELCOME20" maxlength="50" required 
-                                               value="<?php echo htmlspecialchars($form_data['voucher_code']); ?>">
+                                               value="<?php echo htmlspecialchars($form_data['voucher_code']); ?>" <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?> style="background-color: #e9ecef !important; color: #000 !important;">
                                         <small class="text-muted">Mã voucher sẽ được chuyển thành chữ in hoa</small>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Tên voucher <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="voucher_name" 
                                                placeholder="VD: Giảm giá 10% cho khách hàng mới" required 
-                                               value="<?php echo htmlspecialchars($form_data['voucher_name']); ?>">
+                                               value="<?php echo htmlspecialchars($form_data['voucher_name']); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
                                 <div class="mt-3">
                                     <label class="form-label">Mô tả</label>
                                     <textarea class="form-control" name="description" rows="3" 
-                                              placeholder="Mô tả chi tiết về voucher..."><?php echo htmlspecialchars($form_data['description']); ?></textarea>
+                                              placeholder="Mô tả chi tiết về voucher..." style="background-color: #e9ecef !important; color: #000 !important;"><?php echo htmlspecialchars($form_data['description']); ?></textarea>
                                 </div>
                             </div>
 
                             <!-- Cấu hình giảm giá -->
                             <div class="form-section">
                                 <h6 class="text-primary mb-3"><i class="fas fa-percentage me-2"></i>Cấu hình giảm giá</h6>
-                                <?php if ($stats['total_used'] > 0): ?>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-lock me-2"></i>Các thông số giảm giá không thể thay đổi vì đã có người sử dụng.
-                                    </div>
-                                <?php endif; ?>
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="discount_type" id="discount_type" required 
-                                                <?php echo ($stats['total_used'] > 0) ? 'disabled' : ''; ?>>
+                                        <select class="form-control" name="discount_type" id="discount_type" required <?php echo ($stats['total_used'] > 0) ? 'disabled' : ''; ?> style="background-color: #e9ecef !important; color: #000 !important;">
                                             <option value="percentage" <?php echo ($form_data['discount_type'] == 'percentage') ? 'selected' : ''; ?>>Phần trăm (%)</option>
                                             <option value="fixed_amount" <?php echo ($form_data['discount_type'] == 'fixed_amount') ? 'selected' : ''; ?>>Số tiền cố định (VNĐ)</option>
                                         </select>
-                                        <?php if ($stats['total_used'] > 0): ?>
-                                            <input type="hidden" name="discount_type" value="<?php echo $form_data['discount_type']; ?>">
-                                        <?php endif; ?>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Giá trị giảm <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" name="discount_value" id="discount_value" 
                                                step="0.01" min="0" required 
-                                               value="<?php echo $form_data['discount_value']; ?>"
-                                               <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?>>
-                                        <small class="text-muted" id="discount_hint">Nhập phần trăm (0-100)</small>
+                                               value="<?php echo htmlspecialchars($form_data['discount_value']); ?>" <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?> style="background-color: #e9ecef !important; color: #000 !important;">
+                                        <small class="text-muted">Nhập phần trăm (0-100)</small>
                                     </div>
                                     <div class="col-md-4" id="max_discount_section">
                                         <label class="form-label">Giảm tối đa (VNĐ)</label>
                                         <input type="number" class="form-control" name="max_discount_amount" 
                                                step="1000" min="0" placeholder="Không giới hạn" 
-                                               value="<?php echo $form_data['max_discount_amount']; ?>"
-                                               <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?>>
+                                               value="<?php echo htmlspecialchars($form_data['max_discount_amount']); ?>" <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?> style="background-color: #e9ecef !important; color: #000 !important;">
                                         <small class="text-muted">Chỉ áp dụng cho giảm theo %</small>
                                     </div>
                                 </div>
@@ -330,179 +322,122 @@ if (!empty($errors)) {
                                         <label class="form-label">Đơn hàng tối thiểu (VNĐ)</label>
                                         <input type="number" class="form-control" name="min_order_amount" 
                                                step="1000" min="0" 
-                                               value="<?php echo $form_data['min_order_amount']; ?>"
-                                               <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?>>
+                                               value="<?php echo htmlspecialchars($form_data['min_order_amount']); ?>" <?php echo ($stats['total_used'] > 0) ? 'readonly' : ''; ?> style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Giới hạn sử dụng tổng</label>
                                         <input type="number" class="form-control" name="usage_limit" 
-                                               min="<?php echo $stats['total_used']; ?>" placeholder="Không giới hạn" 
-                                               value="<?php echo $form_data['usage_limit']; ?>">
-                                        <?php if ($stats['total_used'] > 0): ?>
-                                            <small class="text-muted">Tối thiểu: <?php echo $stats['total_used']; ?> (đã sử dụng)</small>
-                                        <?php endif; ?>
+                                               min="1" placeholder="Không giới hạn" 
+                                               value="<?php echo htmlspecialchars($form_data['usage_limit']); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Giới hạn per user <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" name="per_user_limit" 
                                                min="1" required 
-                                               value="<?php echo $form_data['per_user_limit']; ?>">
+                                               value="<?php echo htmlspecialchars($form_data['per_user_limit']); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Thời gian hiệu lực -->
+                            <!-- Thời gian áp dụng và trạng thái -->
                             <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-calendar me-2"></i>Thời gian hiệu lực</h6>
+                                <h6 class="text-primary mb-3"><i class="fas fa-calendar-alt me-2"></i>Thời gian áp dụng & Trạng thái</h6>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" name="start_date" required 
-                                               value="<?php echo $form_data['start_date']; ?>">
+                                        <input type="datetime-local" class="form-control" name="start_date" required 
+                                               value="<?php echo date('Y-m-d\TH:i', strtotime($form_data['start_date'])); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" name="end_date" required 
-                                               value="<?php echo $form_data['end_date']; ?>">
+                                        <input type="datetime-local" class="form-control" name="end_date" required 
+                                               value="<?php echo date('Y-m-d\TH:i', strtotime($form_data['end_date'])); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Trạng thái -->
-                            <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-toggle-on me-2"></i>Trạng thái</h6>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
-                                           <?php echo $form_data['is_active'] ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_active">
-                                        Kích hoạt voucher
-                                    </label>
+                                <div class="form-check form-switch mt-3">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                           <?php echo ($form_data['is_active'] == 1) ? 'checked' : ''; ?> style="background-color: #deccca !important; border-color: #deccca !important;">
+                                    <label class="form-check-label" for="is_active" style="color: #000 !important;">Kích hoạt voucher ngay</label>
                                 </div>
                             </div>
 
-                            <div class="text-center">
-                                <button type="submit" name="update_voucher" class="btn btn-warning btn-lg">
-                                    <i class="fas fa-save me-2"></i>Cập nhật Voucher
-                                </button>
-                                <a href="voucher_list.php" class="btn btn-secondary btn-lg ms-2">
-                                    <i class="fas fa-times me-2"></i>Hủy
-                                </a>
-                            </div>
+                            <button type="submit" name="update_voucher" class="btn btn-primary mt-3" style="background-color: #deccca !important; color: #000 !important; border-color: #deccca !important;">
+                                <i class="fas fa-sync-alt me-2"></i>Cập nhật Voucher
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Thống kê và Preview -->
+            <!-- Phần xem trước và thống kê voucher -->
             <div class="col-md-4">
-                <!-- Thống kê sử dụng -->
-                <div class="card mb-3">
-                    <div class="card-header bg-info text-white">
-                        <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Thống kê sử dụng</h6>
+                <div class="card mb-4">
+                    <div class="card-header" style="background-color: #412d3b !important;">
+                        <h5 class="mb-0" style="color: #fff !important;"><i class="fas fa-eye me-2" style="color: #fff !important;"></i>Xem trước Voucher</h5>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="stats-card">
-                                    <div class="stats-number"><?php echo $stats['total_assigned']; ?></div>
-                                    <div class="text-muted">Đã phát</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stats-card">
-                                    <div class="stats-number"><?php echo $stats['total_used']; ?></div>
-                                    <div class="text-muted">Đã dùng</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="stats-card">
-                                    <div class="stats-number"><?php echo $stats['total_unused']; ?></div>
-                                    <div class="text-muted">Chưa dùng</div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stats-card">
-                                    <div class="stats-number"><?php echo $voucher['used_count']; ?></div>
-                                    <div class="text-muted">Tổng sử dụng</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3">
-                            <small class="text-muted">
-                                <strong>Lưu ý:</strong> "Đã phát" là số user đã được gán voucher này. 
-                                "Tổng sử dụng" bao gồm cả việc 1 user có thể dùng nhiều lần.
-                            </small>
+                        <div class="preview-voucher">
+                            <h4 id="preview_name">Tên Voucher</h4>
+                            <div class="voucher-code-display" id="preview_code">MÃ VOUCHER</div>
+                            <p id="preview_desc">Mô tả voucher...</p>
+                            <hr>
+                            <p>Giảm giá: <span id="preview_discount">0%</span></p>
+                            <p id="preview_min_order">Đơn tối thiểu: 0đ</p>
+                            <p id="preview_dates">Ngày: DD/MM/YYYY - DD/MM/YYYY</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Preview voucher -->
                 <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h6 class="mb-0"><i class="fas fa-eye me-2"></i>Xem trước Voucher</h6>
+                    <div class="card-header" style="background-color: #412d3b !important;">
+                        <h6 class="mb-0" style="color: #fff !important;"><i class="fas fa-eye me-2" style="color: #fff !important;"></i>Thống kê sử dụng</h6>
                     </div>
                     <div class="card-body">
-                        <div class="preview-voucher" id="voucherPreview">
-                            <div class="text-center">
-                                <i class="fas fa-ticket-alt fa-3x mb-3"></i>
-                                <div class="voucher-code-display" id="previewCode"><?php echo htmlspecialchars($voucher['voucher_code']); ?></div>
-                                <h5 id="previewName"><?php echo htmlspecialchars($voucher['voucher_name']); ?></h5>
-                                <p id="previewDescription"><?php echo htmlspecialchars($voucher['description']); ?></p>
-                                <hr style="border-color: rgba(255,255,255,0.3);">
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <strong>Giảm</strong><br>
-                                        <span id="previewDiscount">
-                                            <?php 
-                                            if ($voucher['discount_type'] == 'percentage') {
-                                                echo $voucher['discount_value'] . '%';
-                                                if ($voucher['max_discount_amount']) {
-                                                    echo '<br><small>(Tối đa: ' . number_format($voucher['max_discount_amount']) . 'đ)</small>';
-                                                }
-                                            } else {
-                                                echo number_format($voucher['discount_value']) . 'đ';
-                                            }
-                                            ?>
-                                        </span>
-                                    </div>
-                                    <div class="col-6">
-                                        <strong>Đơn tối thiểu</strong><br>
-                                        <span id="previewMinOrder"><?php echo number_format($voucher['min_order_amount']); ?>đ</span>
-                                    </div>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="p-3 rounded-3 stat-box">
+                                    <div class="stats-number" style="color: #000 !important;"><?php echo $stats['total_assigned']; ?></div>
+                                    <small style="color: #000 !important;">Đã tạo</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-3 rounded-3 stat-box">
+                                    <div class="stats-number" style="color: #000 !important;"><?php echo $stats['total_used']; ?></div>
+                                    <small style="color: #000 !important;">Đã dùng</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-3 rounded-3 stat-box">
+                                    <div class="stats-number" style="color: #000 !important;"><?php echo $stats['total_unused']; ?></div>
+                                    <small style="color: #000 !important;">Chưa dùng</small>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="mt-3">
-                            <h6 class="text-primary">Chi tiết:</h6>
-                            <ul class="list-unstyled">
-                                <li><strong>Loại:</strong> <span id="previewType"><?php echo ($voucher['discount_type'] == 'percentage') ? 'Phần trăm' : 'Số tiền cố định'; ?></span></li>
-                                <li><strong>Sử dụng tối đa:</strong> <span id="previewUsageLimit"><?php echo $voucher['usage_limit'] ? $voucher['usage_limit'] . ' lần' : 'Không giới hạn'; ?></span></li>
-                                <li><strong>Per user:</strong> <span id="previewPerUser"><?php echo $voucher['per_user_limit']; ?> lần</span></li>
-                                <li><strong>Thời gian:</strong> <span id="previewDuration"><?php echo date('d/m/Y', strtotime($voucher['start_date'])) . ' - ' . date('d/m/Y', strtotime($voucher['end_date'])); ?></span></li>
-                                <li><strong>Trạng thái:</strong> 
-                                    <span class="badge <?php echo $voucher['is_active'] ? 'bg-success' : 'bg-danger'; ?>">
-                                        <?php echo $voucher['is_active'] ? 'Đang hoạt động' : 'Tạm dừng'; ?>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
+                        <?php if ($voucher['usage_limit']): ?>
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">Tổng giới hạn sử dụng: <?php echo $voucher['usage_limit']; ?></small>
+                                <div class="progress mt-1" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo ($stats['total_used'] / $voucher['usage_limit']) * 100; ?>%;" aria-valuenow="<?php echo ($stats['total_used'] / $voucher['usage_limit']) * 100; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
         
-        </div> <!-- container-fluid pt-4 px-4 -->
-        
-        <!-- Footer Start -->
-        <?php include __DIR__.'/../dashboard/footer.php'; ?>
-        <!-- Footer End -->
-    </div> <!-- content -->
-</div> <!-- container-fluid position-relative d-flex p-0 -->
+        <?php 
+        if (file_exists(__DIR__.'/../dashboard/footer.php')) {
+            include __DIR__.'/../dashboard/footer.php'; 
+        } else {
+            echo "<div>Footer not found</div>";
+        }
+        ?>
+    </div>
+    <!-- Content End -->
+</div>
 
+<!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/lib/chart/chart.min.js"></script>
@@ -512,80 +447,65 @@ if (!empty($errors)) {
 <script src="/WEB_MXH/admin/pages/dashboard/lib/tempusdominus/js/moment.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
-<script>
-    // Preview voucher real-time
-    function updatePreview() {
-        const code = document.getElementById('voucher_code').value.toUpperCase() || 'VOUCHER CODE';
-        const name = document.querySelector('input[name="voucher_name"]').value || 'Tên voucher';
-        const description = document.querySelector('textarea[name="description"]').value || 'Mô tả voucher';
-        const discountType = document.getElementById('discount_type').value;
-        const discountValue = document.getElementById('discount_value').value || '0';
-        const minOrder = document.querySelector('input[name="min_order_amount"]').value || '0';
-        const maxDiscount = document.querySelector('input[name="max_discount_amount"]').value;
-        const usageLimit = document.querySelector('input[name="usage_limit"]').value;
-        const perUserLimit = document.querySelector('input[name="per_user_limit"]').value || '1';
-        const startDate = document.querySelector('input[name="start_date"]').value;
-        const endDate = document.querySelector('input[name="end_date"]').value;
 
-        document.getElementById('previewCode').textContent = code;
-        document.getElementById('previewName').textContent = name;
-        document.getElementById('previewDescription').textContent = description;
-        
+<!-- Template Javascript -->
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
+
+<script>
+    // Cập nhật preview
+    function updatePreview() {
+        $('#preview_name').text($('[name="voucher_name"]').val() || 'Tên Voucher');
+        $('#preview_code').text($('[name="voucher_code"]').val().toUpperCase() || 'MÃ VOUCHER');
+        $('#preview_desc').text($('[name="description"]').val() || 'Mô tả voucher...');
+
+        var discountType = $('#discount_type').val();
+        var discountValue = $('#discount_value').val();
+        var maxDiscount = $('[name="max_discount_amount"]').val();
+
         if (discountType === 'percentage') {
-            let discountText = discountValue + '%';
+            $('#preview_discount').text(discountValue + '%');
             if (maxDiscount) {
-                discountText += '<br><small>(Tối đa: ' + parseInt(maxDiscount).toLocaleString() + 'đ)</small>';
+                $('#preview_discount').append('<br><small class="text-muted">Tối đa: ' + new Intl.NumberFormat('vi-VN').format(maxDiscount) + 'đ</small>');
             }
-            document.getElementById('previewDiscount').innerHTML = discountText;
-            document.getElementById('previewType').textContent = 'Phần trăm';
         } else {
-            document.getElementById('previewDiscount').innerHTML = parseInt(discountValue).toLocaleString() + 'đ';
-            document.getElementById('previewType').textContent = 'Số tiền cố định';
+            $('#preview_discount').text(new Intl.NumberFormat('vi-VN').format(discountValue) + 'đ');
         }
-        
-        document.getElementById('previewMinOrder').textContent = parseInt(minOrder).toLocaleString() + 'đ';
-        document.getElementById('previewUsageLimit').textContent = usageLimit ? usageLimit + ' lần' : 'Không giới hạn';
-        document.getElementById('previewPerUser').textContent = perUserLimit + ' lần';
-        
+
+        var minOrder = $('[name="min_order_amount"]').val();
+        if (minOrder > 0) {
+            $('#preview_min_order').text('Đơn tối thiểu: ' + new Intl.NumberFormat('vi-VN').format(minOrder) + 'đ');
+        } else {
+            $('#preview_min_order').text('Không có điều kiện');
+        }
+
+        var startDate = $('[name="start_date"]').val();
+        var endDate = $('[name="end_date"]').val();
+
         if (startDate && endDate) {
-            document.getElementById('previewDuration').textContent = 
-                new Date(startDate).toLocaleDateString('vi-VN') + ' - ' + 
-                new Date(endDate).toLocaleDateString('vi-VN');
+            var formattedStartDate = new Date(startDate).toLocaleDateString('vi-VN');
+            var formattedEndDate = new Date(endDate).toLocaleDateString('vi-VN');
+            $('#preview_dates').text('Ngày: ' + formattedStartDate + ' - ' + formattedEndDate);
+        } else {
+            $('#preview_dates').text('Ngày: DD/MM/YYYY - DD/MM/YYYY');
         }
     }
 
-    // Event listeners
-    document.getElementById('voucher_code').addEventListener('input', function() {
-        this.value = this.value.toUpperCase();
-        updatePreview();
-    });
-
-    document.getElementById('discount_type').addEventListener('change', function() {
-        const maxSection = document.getElementById('max_discount_section');
-        const hint = document.getElementById('discount_hint');
-        
-        if (this.value === 'percentage') {
-            maxSection.style.display = 'block';
-            hint.textContent = 'Nhập phần trăm (0-100)';
-            document.getElementById('discount_value').setAttribute('max', '100');
+    // Hiển thị/ẩn Max Discount Amount
+    function toggleMaxDiscountField() {
+        if ($('#discount_type').val() === 'percentage') {
+            $('#max_discount_section').show();
         } else {
-            maxSection.style.display = 'none';
-            hint.textContent = 'Nhập số tiền (VNĐ)';
-            document.getElementById('discount_value').removeAttribute('max');
+            $('#max_discount_section').hide();
         }
+    }
+
+    $(document).ready(function() {
         updatePreview();
-    });
+        toggleMaxDiscountField();
 
-    // Add event listeners to all form inputs (chỉ những input không bị disabled)
-    document.querySelectorAll('#voucherForm input:not([disabled]):not([readonly]), #voucherForm select:not([disabled]), #voucherForm textarea').forEach(input => {
-        input.addEventListener('input', updatePreview);
-        input.addEventListener('change', updatePreview);
+        $('#voucherForm input, #voucherForm textarea, #voucherForm select').on('input change', updatePreview);
+        $('#discount_type').on('change', toggleMaxDiscountField);
     });
-
-    // Initialize
-    updatePreview();
-    document.getElementById('discount_type').dispatchEvent(new Event('change'));
 </script>
 </body>
 </html> 

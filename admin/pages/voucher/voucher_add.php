@@ -94,13 +94,6 @@ if (isset($_POST['add_voucher'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
-        .form-section {
-            background: #f8f9fa;
-            border-left: 4px solid #007bff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
         .preview-voucher {
             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
@@ -117,6 +110,27 @@ if (isset($_POST['add_voucher'])) {
             padding: 10px;
             border-radius: 10px;
             margin: 10px 0;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .header-section { 
+            background: #fff; 
+            border-radius: 18px; 
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04); 
+        }
+        .header-section h2 { 
+            color: #222; 
+            font-size: 1.5rem; 
+            font-weight: 600;
+            margin-bottom: 0; 
+            margin-left: 0.1rem;
         }
     </style>
 </head>
@@ -139,13 +153,13 @@ if (isset($_POST['add_voucher'])) {
         ?>
         <div class="container-fluid pt-4 px-4">
             <!-- Header -->
-            <div class="bg-secondary rounded h-100 p-4 mb-4">
+            <div class="header-section">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h2 class="text-primary"><i class="fas fa-plus me-3"></i>Thêm Voucher Mới</h2>
+                        <h2><i class="fas fa-plus-circle me-2" style="color: #000 !important;"></i><span style="color: #000 !important;">Thêm Voucher Mới</span></h2>
                     </div>
                     <div class="col-md-6 text-end">
-                        <a href="voucher_list.php" class="btn btn-primary btn-lg">
+                        <a href="voucher_list.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
                             <i class="fas fa-arrow-left me-2"></i>Quay lại Danh sách
                         </a>
                     </div>
@@ -166,8 +180,8 @@ if (isset($_POST['add_voucher'])) {
             <!-- Form thêm voucher -->
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Thông tin Voucher</h5>
+                    <div class="card-header" style="background-color: #412d3b !important;">
+                        <h5 class="mb-0" style="color: #fff !important;"><i class="fas fa-edit me-2" style="color: #fff !important;"></i>Thông tin Voucher</h5>
                     </div>
                     <div class="card-body">
                         <form method="POST" id="voucherForm">
@@ -179,20 +193,20 @@ if (isset($_POST['add_voucher'])) {
                                         <label class="form-label">Mã voucher <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="voucher_code" id="voucher_code" 
                                                placeholder="VD: SALE10, WELCOME20" maxlength="50" required 
-                                               value="<?php echo isset($_POST['voucher_code']) ? htmlspecialchars($_POST['voucher_code']) : ''; ?>">
+                                               value="<?php echo isset($_POST['voucher_code']) ? htmlspecialchars($_POST['voucher_code']) : ''; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                         <small class="text-muted">Mã voucher sẽ được chuyển thành chữ in hoa</small>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Tên voucher <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="voucher_name" 
                                                placeholder="VD: Giảm giá 10% cho khách hàng mới" required 
-                                               value="<?php echo isset($_POST['voucher_name']) ? htmlspecialchars($_POST['voucher_name']) : ''; ?>">
+                                               value="<?php echo isset($_POST['voucher_name']) ? htmlspecialchars($_POST['voucher_name']) : ''; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
                                 <div class="mt-3">
                                     <label class="form-label">Mô tả</label>
                                     <textarea class="form-control" name="description" rows="3" 
-                                              placeholder="Mô tả chi tiết về voucher..."><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
+                                              placeholder="Mô tả chi tiết về voucher..." style="background-color: #e9ecef !important; color: #000 !important;"><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
                                 </div>
                             </div>
 
@@ -202,7 +216,7 @@ if (isset($_POST['add_voucher'])) {
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="discount_type" id="discount_type" required>
+                                        <select class="form-control" name="discount_type" id="discount_type" required style="background-color: #e9ecef !important; color: #000 !important;">
                                             <option value="percentage" <?php echo (isset($_POST['discount_type']) && $_POST['discount_type'] == 'percentage') ? 'selected' : ''; ?>>Phần trăm (%)</option>
                                             <option value="fixed_amount" <?php echo (isset($_POST['discount_type']) && $_POST['discount_type'] == 'fixed_amount') ? 'selected' : ''; ?>>Số tiền cố định (VNĐ)</option>
                                         </select>
@@ -211,14 +225,14 @@ if (isset($_POST['add_voucher'])) {
                                         <label class="form-label">Giá trị giảm <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" name="discount_value" id="discount_value" 
                                                step="0.01" min="0" required 
-                                               value="<?php echo isset($_POST['discount_value']) ? $_POST['discount_value'] : ''; ?>">
-                                        <small class="text-muted" id="discount_hint">Nhập phần trăm (0-100)</small>
+                                               value="<?php echo isset($_POST['discount_value']) ? $_POST['discount_value'] : ''; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
+                                        <small class="text-muted">Nhập phần trăm (0-100)</small>
                                     </div>
                                     <div class="col-md-4" id="max_discount_section">
                                         <label class="form-label">Giảm tối đa (VNĐ)</label>
                                         <input type="number" class="form-control" name="max_discount_amount" 
                                                step="1000" min="0" placeholder="Không giới hạn" 
-                                               value="<?php echo isset($_POST['max_discount_amount']) ? $_POST['max_discount_amount'] : ''; ?>">
+                                               value="<?php echo isset($_POST['max_discount_amount']) ? $_POST['max_discount_amount'] : ''; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                         <small class="text-muted">Chỉ áp dụng cho giảm theo %</small>
                                     </div>
                                 </div>
@@ -232,19 +246,19 @@ if (isset($_POST['add_voucher'])) {
                                         <label class="form-label">Đơn hàng tối thiểu (VNĐ)</label>
                                         <input type="number" class="form-control" name="min_order_amount" 
                                                step="1000" min="0" value="0" 
-                                               value="<?php echo isset($_POST['min_order_amount']) ? $_POST['min_order_amount'] : '0'; ?>">
+                                               value="<?php echo isset($_POST['min_order_amount']) ? $_POST['min_order_amount'] : '0'; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Giới hạn sử dụng tổng</label>
                                         <input type="number" class="form-control" name="usage_limit" 
                                                min="1" placeholder="Không giới hạn" 
-                                               value="<?php echo isset($_POST['usage_limit']) ? $_POST['usage_limit'] : ''; ?>">
+                                               value="<?php echo isset($_POST['usage_limit']) ? $_POST['usage_limit'] : ''; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Giới hạn per user <span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" name="per_user_limit" 
                                                min="1" value="1" required 
-                                               value="<?php echo isset($_POST['per_user_limit']) ? $_POST['per_user_limit'] : '1'; ?>">
+                                               value="<?php echo isset($_POST['per_user_limit']) ? $_POST['per_user_limit'] : '1'; ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
                             </div>
@@ -256,30 +270,30 @@ if (isset($_POST['add_voucher'])) {
                                     <div class="col-md-6">
                                         <label class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" name="start_date" required 
-                                               value="<?php echo isset($_POST['start_date']) ? $_POST['start_date'] : date('Y-m-d'); ?>">
+                                               value="<?php echo isset($_POST['start_date']) ? $_POST['start_date'] : date('Y-m-d'); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control" name="end_date" required 
-                                               value="<?php echo isset($_POST['end_date']) ? $_POST['end_date'] : date('Y-m-d', strtotime('+30 days')); ?>">
+                                               value="<?php echo isset($_POST['end_date']) ? $_POST['end_date'] : date('Y-m-d', strtotime('+30 days')); ?>" style="background-color: #e9ecef !important; color: #000 !important;">
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Trạng thái -->
                             <div class="form-section">
-                                <h6 class="text-primary mb-3"><i class="fas fa-toggle-on me-2"></i>Trạng thái</h6>
+                                <h6 class="text-primary mb-3" style="color: #000 !important;"><i class="fas fa-toggle-on me-2"></i>Trạng thái</h6>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="is_active" id="is_active" 
-                                           <?php echo (!isset($_POST['is_active']) || $_POST['is_active']) ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="is_active">
+                                           <?php echo (!isset($_POST['is_active']) || $_POST['is_active']) ? 'checked' : ''; ?> style="background-color: #deccca !important; border-color: #deccca !important;">
+                                    <label class="form-check-label" for="is_active" style="color: #000 !important;">
                                         Kích hoạt voucher ngay
                                     </label>
                                 </div>
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" name="add_voucher" class="btn btn-primary btn-lg">
+                                <button type="submit" name="add_voucher" class="btn btn-lg" style="background-color: #deccca !important; color: #000 !important;">
                                     <i class="fas fa-save me-2"></i>Thêm Voucher
                                 </button>
                                 <a href="voucher_list.php" class="btn btn-secondary btn-lg ms-2">
@@ -294,8 +308,8 @@ if (isset($_POST['add_voucher'])) {
             <!-- Preview voucher -->
             <div class="col-md-4">
                 <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h6 class="mb-0"><i class="fas fa-eye me-2"></i>Xem trước Voucher</h6>
+                    <div class="card-header" style="background-color: #412d3b !important;">
+                        <h6 class="mb-0" style="color: #fff !important;"><i class="fas fa-eye me-2" style="color: #fff !important;"></i>Xem trước Voucher</h6>
                     </div>
                     <div class="card-body">
                         <div class="preview-voucher" id="voucherPreview">

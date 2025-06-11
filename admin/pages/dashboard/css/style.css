@@ -389,9 +389,13 @@ input.form-control.bg-dark {
   color: #191c24 !important; /* hoặc màu chữ bạn muốn */
 }
 .table th {
-  color: #412d3b !important;
-  text-align: center !important;
-  vertical-align: middle !important;
+  background: #f9fafb;
+  color: #222;
+  font-weight: 700;
+  padding: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 2px solid #e5e7eb;
 }
 .show-all-link {
   color: #cc8889 !important; /* Màu mặc định */
@@ -410,17 +414,44 @@ input.form-control.bg-dark {
   vertical-align: middle;
 }
 .btn.btn-sm.btn-primary {
-  background-color: #deccca !important; /* Màu nền mặc định */
-  color: #412d3b !important; /* Màu chữ mặc định */
-  border: none !important; /* (Tùy chọn) Bỏ viền */
-  transition: background 0.2s, color 0.2s;
+  background-color: transparent;
+  color: #412d3b;
+  border-color: #412d3b;
 }
+
 .btn.btn-sm.btn-primary:hover,
-.btn.btn-sm.btn-primary:focus,
-.btn.btn-sm.btn-primary:active {
-  background-color: #412d3b !important; /* Màu nền khi hover/bấm */
-  color: #deccca !important; /* Màu chữ khi hover/bấm */
+.btn.btn-sm.btn-primary:focus {
+  background-color: #412d3b;
+  color: #fff;
+  border-color: #412d3b;
 }
+
+.btn-warning {
+  background-color: transparent;
+  color: #412d3b;
+  border-color: #412d3b;
+}
+
+.btn-warning:hover,
+.btn-warning:focus {
+  background-color: #412d3b;
+  color: #fff;
+  border-color: #412d3b;
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: #412d3b;
+  border-color: #412d3b;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #412d3b;
+  color: #fff;
+  border-color: #412d3b;
+}
+
 .back-to-top {
   background-color: #cc8889 !important; /* Đổi #2E86C1 thành màu bạn muốn */
   color: #fff !important; /* Màu icon mũi tên */
@@ -433,4 +464,84 @@ input.form-control.bg-dark {
 .back-to-top:active {
   background-color: #412d3b !important; /* Màu khi hover/bấm */
   color: #fff !important;
+}
+
+/* Ensure white text for voucher codes with dark gray background */
+.badge[style*="background-color: #412d3b"] {
+    color: #fff !important;
+}
+
+/* Cập nhật màu cho các nút thao tác */
+.btn-outline-primary.btn-action {
+  color: #412d3b !important;
+  border-color: #412d3b !important;
+}
+
+.btn-outline-primary.btn-action:hover,
+.btn-outline-primary.btn-action:focus {
+  background-color: #412d3b !important;
+  color: #fff !important;
+}
+
+.btn-outline-warning.btn-action {
+  color: #412d3b !important;
+  border-color: #412d3b !important;
+}
+
+.btn-outline-warning.btn-action:hover,
+.btn-outline-warning.btn-action:focus {
+  background-color: #412d3b !important;
+  color: #fff !important;
+}
+
+.btn-outline-danger.btn-action {
+  color: #412d3b !important;
+  border-color: #412d3b !important;
+}
+
+.btn-outline-danger.btn-action:hover,
+.btn-outline-danger.btn-action:focus {
+  background-color: #412d3b !important;
+  color: #fff !important;
+}
+
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  background: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
+}
+
+.table-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
+}
+
+.table td {
+  padding: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #222;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
 }

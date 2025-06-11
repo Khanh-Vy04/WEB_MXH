@@ -120,11 +120,13 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Voucher - AuraDisc Admin</title>
+    
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
+    
     <style>
         .voucher-card {
             border: none;
@@ -137,10 +139,12 @@ try {
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
         .badge-percentage {
-            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            background: #412d3b !important;
+            color: #fff !important;
         }
         .badge-fixed {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            background: #412d3b !important;
+            color: #fff !important;
         }
         .btn-action {
             margin: 2px;
@@ -161,8 +165,21 @@ try {
             font-family: monospace;
             font-size: 12px;
         }
+        .badge[style*="background-color: #412d3b"] {
+            color: #fff !important;
+        }
+        .content { background: #f3f4f6 !important; }
+        .container-fluid { background: #f7f8f9; }
+        .header-section {
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+        }
     </style>
 </head>
+
 <body>
 <div class="container-fluid position-relative d-flex p-0">
     <?php 
@@ -172,6 +189,7 @@ try {
         echo "<div>Sidebar not found</div>";
     }
     ?>
+    
     <div class="content">
         <?php 
         if (file_exists(__DIR__.'/../dashboard/navbar.php')) {
@@ -180,6 +198,7 @@ try {
             echo "<div>Navbar not found</div>";
         }
         ?>
+        
         <div class="container-fluid pt-4 px-4">
             <!-- Debug Information -->
             <div class="debug-info">
@@ -194,197 +213,199 @@ try {
             </div>
 
             <!-- Header -->
-            <div class="bg-secondary rounded h-100 p-4 mb-4">
+            <div class="header-section">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h2 class="text-primary"><i class="fas fa-ticket-alt me-3"></i>Quản lý Voucher</h2>
+                        <h2 style="color: #000; font-size: 1.5rem; font-weight: 600; margin-bottom: 0; margin-left: 0.1rem;">
+                            <i class="fas fa-ticket-alt me-2" style="color: #000 !important;"></i>Quản Lý Voucher
+                        </h2>
                     </div>
                     <div class="col-md-6 text-end">
-                        <a href="voucher_add.php" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i>Thêm Voucher Mới
+                        <a href="voucher_add.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
+                            <i class="fas fa-plus fa-sm me-2"></i> Thêm Voucher Mới
                         </a>
                     </div>
                 </div>
             </div>
-        <?php if (isset($success_msg)): ?>
+            
+            <?php if (isset($success_msg)): ?>
             <div class="alert alert-success alert-dismissible fade show">
                 <i class="fas fa-check-circle me-2"></i><?php echo $success_msg; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        <?php endif; ?>
-
-        <?php if (isset($error_msg)): ?>
+            <?php endif; ?>
+            
+            <?php if (isset($error_msg)): ?>
             <div class="alert alert-danger alert-dismissible fade show">
                 <i class="fas fa-exclamation-circle me-2"></i><?php echo $error_msg; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        <?php endif; ?>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-list me-2"></i>Danh sách Voucher
-                            <span class="badge bg-warning text-dark ms-2"><?php echo count($vouchers); ?> voucher</span>
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <?php if (empty($vouchers)): ?>
-                            <div class="text-center py-5">
-                                <i class="fas fa-ticket-alt fa-5x text-muted mb-4"></i>
-                                <h4 class="text-muted">Chưa có voucher nào</h4>
-                                <p class="text-muted">Hãy tạo voucher đầu tiên của bạn!</p>
-                                <a href="voucher_add.php" class="btn btn-primary">
-                                    <i class="fas fa-plus me-2"></i>Thêm Voucher Mới
-                                </a>
-                                
-                                <!-- Nút tạo voucher mẫu -->
-                                <button class="btn btn-secondary ms-2" onclick="createSampleVouchers()">
-                                    <i class="fas fa-magic me-2"></i>Tạo Voucher Mẫu
-                                </button>
-                            </div>
-                        <?php else: ?>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Mã Voucher</th>
-                                            <th>Tên Voucher</th>
-                                            <th>Loại Giảm Giá</th>
-                                            <th>Giá Trị</th>
-                                            <th>Điều Kiện</th>
-                                            <th>Sử Dụng</th>
-                                            <th>Thời Gian</th>
-                                            <th>Trạng Thái</th>
-                                            <th>Thao Tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($vouchers as $voucher): 
-                                            $is_expired = strtotime($voucher['end_date']) < time();
-                                            $row_class = '';
-                                            if ($is_expired) $row_class .= ' expired';
-                                            if (!$voucher['is_active']) $row_class .= ' inactive';
-                                        ?>
-                                            <tr class="<?php echo $row_class; ?>">
-                                                <td>
-                                                    <strong>#<?php echo $voucher['voucher_id']; ?></strong>
-                                                </td>
-                                                <td>
-                                                    <code class="bg-light p-1 rounded"><?php echo htmlspecialchars($voucher['voucher_code']); ?></code>
-                                                </td>
-                                                <td>
-                                                    <strong><?php echo htmlspecialchars($voucher['voucher_name']); ?></strong>
-                                                    <?php if ($voucher['description']): ?>
-                                                        <br><small class="text-muted"><?php echo htmlspecialchars(substr($voucher['description'], 0, 50)); ?>...</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($voucher['discount_type'] == 'percentage'): ?>
-                                                        <span class="badge badge-percentage text-white">
-                                                            <i class="fas fa-percentage me-1"></i>Phần trăm
-                                                        </span>
-                                                    <?php else: ?>
-                                                        <span class="badge badge-fixed text-white">
-                                                            <i class="fas fa-dollar-sign me-1"></i>Số tiền
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($voucher['discount_type'] == 'percentage'): ?>
-                                                        <strong class="text-success"><?php echo $voucher['discount_value']; ?>%</strong>
-                                                        <?php if ($voucher['max_discount_amount']): ?>
-                                                            <br><small class="text-muted">Tối đa: <?php echo number_format($voucher['max_discount_amount']); ?>đ</small>
-                                                        <?php endif; ?>
-                                                    <?php else: ?>
-                                                        <strong class="text-success"><?php echo number_format($voucher['discount_value']); ?>đ</strong>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <?php if ($voucher['min_order_amount'] > 0): ?>
-                                                        <small class="text-info">
-                                                            <i class="fas fa-shopping-cart me-1"></i>
-                                                            Đơn tối thiểu: <?php echo number_format($voucher['min_order_amount']); ?>đ
-                                                        </small>
-                                                    <?php else: ?>
-                                                        <small class="text-muted">Không có điều kiện</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center">
-                                                        <strong><?php echo $voucher['used_count']; ?></strong>
-                                                        <?php if ($voucher['usage_limit']): ?>
-                                                            / <?php echo $voucher['usage_limit']; ?>
-                                                            <div class="progress mt-1" style="height: 4px;">
-                                                                <div class="progress-bar" style="width: <?php echo ($voucher['used_count'] / $voucher['usage_limit']) * 100; ?>%"></div>
-                                                            </div>
-                                                        <?php else: ?>
-                                                            <br><small class="text-muted">Không giới hạn</small>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <small>
-                                                        <strong>Từ:</strong> <?php echo date('d/m/Y', strtotime($voucher['start_date'])); ?><br>
-                                                        <strong>Đến:</strong> <?php echo date('d/m/Y', strtotime($voucher['end_date'])); ?>
-                                                        <?php if ($is_expired): ?>
-                                                            <br><span class="badge bg-danger">Đã hết hạn</span>
-                                                        <?php elseif (strtotime($voucher['start_date']) > time()): ?>
-                                                            <br><span class="badge bg-warning">Chưa hiệu lực</span>
-                                                        <?php else: ?>
-                                                            <br><span class="badge bg-success">Đang hiệu lực</span>
-                                                        <?php endif; ?>
-                                                    </small>
-                                                </td>
-                                                <td>
-                                                    <?php if ($voucher['is_active']): ?>
-                                                        <span class="badge bg-success">
-                                                            <i class="fas fa-check me-1"></i>Hoạt động
-                                                        </span>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-secondary">
-                                                            <i class="fas fa-times me-1"></i>Tạm dừng
-                                                        </span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group-vertical" role="group">
-                                                        <a href="voucher_edit.php?id=<?php echo $voucher['voucher_id']; ?>" 
-                                                           class="btn btn-sm btn-outline-primary btn-action">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <a href="?toggle=<?php echo $voucher['voucher_id']; ?>" 
-                                                           class="btn btn-sm btn-outline-warning btn-action"
-                                                           onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái voucher này?')">
-                                                            <i class="fas fa-toggle-<?php echo $voucher['is_active'] ? 'on' : 'off'; ?>"></i>
-                                                        </a>
-                                                        <a href="?delete=<?php echo $voucher['voucher_id']; ?>" 
-                                                           class="btn btn-sm btn-outline-danger btn-action"
-                                                           onclick="return confirm('Bạn có chắc muốn xóa voucher này? Hành động này không thể hoàn tác!')">
-                                                            <i class="fas fa-trash"></i>
-                                                        </a>
-                                                    </div>
-                                                </td>
+            <?php endif; ?>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header text-white" style="background-color: #412d3b !important; color: #fff !important;">
+                            <h5 class="mb-0" style="color: #fff !important;">
+                                <i class="fas fa-list me-2"></i>Danh sách Voucher
+                                <span class="badge ms-2" style="background-color: #412d3b !important; color: #fff !important; padding: 5px 10px; border-radius: 5px; border: 1px solid #fff;"><?php echo count($vouchers); ?> voucher</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if (empty($vouchers)): ?>
+                                <div class="text-center py-5">
+                                    <i class="fas fa-ticket-alt fa-5x text-muted mb-4"></i>
+                                    <h4 class="text-muted">Chưa có voucher nào</h4>
+                                    <p class="text-muted">Hãy tạo voucher đầu tiên của bạn!</p>
+                                    <a href="voucher_add.php" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Thêm Voucher Mới
+                                    </a>
+                                    
+                                    <!-- Nút tạo voucher mẫu -->
+                                    <button class="btn btn-secondary ms-2" onclick="createSampleVouchers()">
+                                        <i class="fas fa-magic me-2"></i>Tạo Voucher Mẫu
+                                    </button>
+                                </div>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 5%;">ID</th>
+                                                <th style="width: 10%;">Mã Voucher</th>
+                                                <th style="text-align: left !important; width: 20%;">Tên Voucher</th>
+                                                <th style="width: 10%;">Loại Giảm Giá</th>
+                                                <th style="width: 10%;">Giá Trị</th>
+                                                <th style="width: 15%;">Điều Kiện</th>
+                                                <th style="width: 8%;">Sử Dụng</th>
+                                                <th style="width: 12%;">Thời Gian</th>
+                                                <th style="width: 10%;">Trạng Thái</th>
+                                                <th style="width: 10%;">Thao Tác</th>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php endif; ?>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($vouchers as $voucher): 
+                                                $is_expired = strtotime($voucher['end_date']) < time();
+                                                $row_class = '';
+                                                if ($is_expired) $row_class .= ' expired';
+                                                if (!$voucher['is_active']) $row_class .= ' inactive';
+                                            ?>
+                                                <tr class="<?php echo $row_class; ?>">
+                                                    <td style="color: #444 !important;">
+                                                        <strong>#<?php echo $voucher['voucher_id']; ?></strong>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <span class="badge p-2 rounded-3" style="font-size: 0.9em; background-color: #412d3b !important; color: #fff !important;">
+                                                            <?php echo htmlspecialchars($voucher['voucher_code']); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td style="color: #444 !important; text-align: left !important;">
+                                                        <strong><?php echo htmlspecialchars($voucher['voucher_name']); ?></strong>
+                                                        <?php if ($voucher['description']): ?>
+                                                            <br><small class="text-muted"><?php echo htmlspecialchars(substr($voucher['description'], 0, 50)); ?>...</small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <?php if ($voucher['discount_type'] == 'percentage'): ?>
+                                                            <span class="badge badge-percentage text-white">
+                                                                <i class="fas fa-percentage me-1"></i>Phần trăm
+                                                            </span>
+                                                        <?php else: ?>
+                                                            <span class="badge badge-fixed text-white">
+                                                                <i class="fas fa-dollar-sign me-1"></i>Số tiền
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <?php if ($voucher['discount_type'] == 'percentage'): ?>
+                                                            <strong class="text-success"><?php echo $voucher['discount_value']; ?>%</strong>
+                                                            <?php if ($voucher['max_discount_amount']): ?>
+                                                                <br><small class="text-muted">Tối đa: <?php echo number_format($voucher['max_discount_amount']); ?>đ</small>
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
+                                                            <strong class="text-success"><?php echo number_format($voucher['discount_value']); ?>đ</strong>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <?php if ($voucher['min_order_amount'] > 0): ?>
+                                                            <small style="color: #000 !important;">
+                                                                <i class="fas fa-shopping-cart me-1"></i>
+                                                                Đơn tối thiểu: <?php echo number_format($voucher['min_order_amount']); ?>đ
+                                                            </small>
+                                                        <?php else: ?>
+                                                            <small class="text-muted">Không có điều kiện</small>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <div class="text-center">
+                                                            <strong><?php echo $voucher['used_count']; ?></strong>
+                                                            <?php if ($voucher['usage_limit']): ?>
+                                                                / <?php echo $voucher['usage_limit']; ?>
+                                                                <div class="progress mt-1" style="height: 4px;">
+                                                                    <div class="progress-bar" style="width: <?php echo ($voucher['used_count'] / $voucher['usage_limit']) * 100; ?>%"></div>
+                                                                </div>
+                                                            <?php else: ?>
+                                                                <br><small class="text-muted">Không giới hạn</small>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <small>
+                                                            <strong>Từ:</strong> <?php echo date('d/m/Y', strtotime($voucher['start_date'])); ?><br>
+                                                            <strong>Đến:</strong> <?php echo date('d/m/Y', strtotime($voucher['end_date'])); ?>
+                                                            <?php if ($is_expired): ?>
+                                                                <br><span class="badge bg-danger">Đã hết hạn</span>
+                                                            <?php elseif (strtotime($voucher['start_date']) > time()): ?>
+                                                                <br><span class="badge bg-warning">Chưa hiệu lực</span>
+                                                            <?php else: ?>
+                                                                <br><span class="badge bg-success">Đang hiệu lực</span>
+                                                            <?php endif; ?>
+                                                        </small>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <?php if ($voucher['is_active']): ?>
+                                                            <span class="badge bg-success">
+                                                                <i class="fas fa-check me-1"></i>Hoạt động
+                                                            </span>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-secondary">
+                                                                <i class="fas fa-times me-1"></i>Tạm dừng
+                                                            </span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td style="color: #444 !important;">
+                                                        <div class="btn-group-vertical" role="group">
+                                                            <a href="voucher_edit.php?id=<?php echo $voucher['voucher_id']; ?>" 
+                                                               class="btn btn-sm btn-outline-primary btn-action">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a href="?toggle=<?php echo $voucher['voucher_id']; ?>" 
+                                                               class="btn btn-sm btn-outline-warning btn-action"
+                                                               onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái voucher này?')">
+                                                                <i class="fas fa-toggle-<?php echo $voucher['is_active'] ? 'on' : 'off'; ?>"></i>
+                                                            </a>
+                                                            <a href="?delete=<?php echo $voucher['voucher_id']; ?>" 
+                                                               class="btn btn-sm btn-outline-danger btn-action"
+                                                               onclick="return confirm('Bạn có chắc muốn xóa voucher này? Hành động này không thể hoàn tác!')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        </div> <!-- container-fluid pt-4 px-4 -->
-        
-        <!-- Footer Start -->
         <?php include __DIR__.'/../dashboard/footer.php'; ?>
-        <!-- Footer End -->
-    </div> <!-- content -->
-</div> <!-- container-fluid position-relative d-flex p-0 -->
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -396,6 +417,7 @@ try {
 <script src="/WEB_MXH/admin/pages/dashboard/lib/tempusdominus/js/moment-timezone.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
+
 <script>
     function createSampleVouchers() {
         if (confirm('Bạn có muốn tạo một số voucher mẫu không?')) {

@@ -319,8 +319,11 @@ while ($stat = $stats_result->fetch_assoc()) {
                                     <button class="btn btn-success" onclick="exportOrders()">
                                         <i class="fas fa-download me-1"></i> Xuất Excel
                                     </button>
-              </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                             <!-- Thông báo -->
                             <?php if (isset($success_message)): ?>
@@ -334,7 +337,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                                 <div class="alert alert-danger alert-custom">
                                     <i class="fas fa-exclamation-circle me-2"></i>
                                     <?php echo $error_message; ?>
-              </div>
+                                </div>
                             <?php endif; ?>
                             
                             <!-- Thống kê nhanh -->
@@ -352,14 +355,14 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <div class="stat-item">
                                                             <div class="h4 mb-2"><?php echo $stat['count']; ?></div>
                                                             <div class="small"><?php echo $stat['stage_name']; ?></div>
-              </div>
-            </div>
+                                                        </div>
+                                                    </div>
                                                 <?php endforeach; ?>
-              </div>
-            </div>
-              </div>
-            </div>
-          </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Filters -->
                             <div class="row mb-4">
@@ -367,33 +370,33 @@ while ($stat = $stats_result->fetch_assoc()) {
                                     <form method="GET" class="d-flex">
                                         <input type="hidden" name="entries" value="<?php echo $rowsPerPage; ?>">
                                         <input type="text" 
-                name="search" 
+                                               name="search" 
                                                class="form-control search-box me-2" 
                                                placeholder="Tìm kiếm theo ID, tên khách hàng, email..."
                                                value="<?php echo htmlspecialchars($search); ?>">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-search"></i>
                                         </button>
-            </form>
+                                    </form>
                                 </div>
                                 <div class="col-md-6 d-flex justify-content-end">
                                     <form method="GET" class="d-flex align-items-center">
                                         <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                                         <label class="me-2">Hiển thị:</label>
                                         <select name="entries" class="form-select" style="width: auto;" onchange="this.form.submit()">
-                  <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
-                  <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
-                  <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
-                  <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
-                </select>
-              </form>
-            </div>
-          </div>
+                                            <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                                            <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                                            <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                                            <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
 
           <!-- Orders Table -->
                             <div class="table-responsive">
                                 <table class="table table-custom">
-              <thead>
+                                    <thead>
                                         <tr style="background: #667eea; color: white;">
                                             <th style="border-radius: 10px 0 0 10px; padding: 15px;">
                                                 <i class="fas fa-hashtag me-1"></i> Đơn hàng
@@ -415,10 +418,10 @@ while ($stat = $stats_result->fetch_assoc()) {
                                             </th>
                                             <th style="border-radius: 0 10px 10px 0; padding: 15px;">
                                                 <i class="fas fa-cogs me-1"></i> Thao tác
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         <?php if (empty($orders)): ?>
                                             <tr>
                                                 <td colspan="7" class="text-center" style="border-radius: 10px;">
@@ -426,8 +429,8 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                                         <h5 class="text-muted">Không có đơn hàng nào</h5>
                                                         <p class="text-muted">Chưa có dữ liệu đơn hàng để hiển thị</p>
-                    </div>
-                  </td>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($orders as $order): ?>
@@ -438,12 +441,12 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="customer-avatar me-3">
-                    <?php
-                                                                    $name_parts = explode(' ', trim($order['full_name']));
-                                                                    echo strtoupper(substr($name_parts[0], 0, 1));
-                                                                    if (count($name_parts) > 1) {
-                                                                        echo strtoupper(substr(end($name_parts), 0, 1));
-                                                                    }
+                                                                <?php
+                                                                $name_parts = explode(' ', trim($order['full_name']));
+                                                                echo strtoupper(substr($name_parts[0], 0, 1));
+                                                                if (count($name_parts) > 1) {
+                                                                    echo strtoupper(substr(end($name_parts), 0, 1));
+                                                                }
                                                                 ?>
                                                             </div>
                                                             <div>
@@ -467,9 +470,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                                 Giảm: -<?php echo number_format($order['voucher_discount'], 0, '.', ','); ?>đ
                                                             </div>
                                                         <?php endif; ?>
-                  </td>
-                  <td>
-                        <form method="POST" style="display: inline;">
+                                                    </td>
+                                                    <td>
+                                                        <form method="POST" style="display: inline;">
                                                             <input type="hidden" name="action" value="update_stage">
                                                             <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                                                             <select name="stage_id" class="stage-dropdown" onchange="this.form.submit()">
@@ -480,24 +483,24 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                                     </option>
                                                                 <?php endforeach; ?>
                                                             </select>
-                        </form>
+                                                        </form>
                                                         <div class="mt-2">
                                                             <span class="stage-badge" style="background-color: <?php echo $order['color_code']; ?>">
                                                                 <?php echo htmlspecialchars($order['stage_name']); ?>
                                                             </span>
-                    </div>
-                  </td>
+                                                        </div>
+                                                    </td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary" onclick="viewOrderDetail(<?php echo $order['order_id']; ?>)" title="Xem chi tiết">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
                                                     </td>
-                </tr>
-                <?php endforeach; ?>
+                                                </tr>
+                                            <?php endforeach; ?>
                                         <?php endif; ?>
-              </tbody>
-            </table>
-          </div>
+                                    </tbody>
+                                </table>
+                            </div>
 
           <!-- Pagination -->
                             <?php if ($totalPages > 1): ?>
@@ -540,12 +543,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                         </ul>
                                     </nav>
                                 </div>
-              <?php endif; ?>
+                            <?php endif; ?>
                         </div>
-            </div>
-          </div>
-        </div>
-
+        
         <!-- Footer -->
         <?php include __DIR__.'/../../dashboard/footer.php'; ?>
       </div>

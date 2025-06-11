@@ -104,11 +104,16 @@ while ($item = $items_result->fetch_assoc()) {
     
     <style>
         .order-detail-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #764ba2;
             color: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
+            box-shadow: none; /* Remove box-shadow for flat look */
+        }
+
+        .order-detail-header h2, .order-detail-header p, .order-detail-header span, .order-detail-header h4 {
+            color: #fff !important;
         }
         
         .order-status-badge {
@@ -220,21 +225,12 @@ while ($item = $items_result->fetch_assoc()) {
                 <div class="order-detail-header">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <h3 class="mb-2">
-                                <i class="fas fa-receipt me-2"></i>
-                                Đơn hàng #<?php echo $order['order_id']; ?>
-                            </h3>
-                            <p class="mb-0 opacity-75">
-                                Ngày đặt: <?php echo date('d/m/Y H:i', strtotime($order['order_date'])); ?>
-                            </p>
+                            <h2 class="mb-0" style="color: #fff !important;"><i class="fas fa-file-invoice me-2"></i>Đơn hàng #<?php echo $order_id; ?></h2>
+                            <p class="mb-0 text-muted" style="color: #fff !important;">Ngày đặt: <?php echo date('d/m/Y H:i', strtotime($order['order_date'])); ?></p>
                         </div>
                         <div class="col-md-6 text-end">
-                            <div class="order-status-badge" style="background-color: <?php echo $order['color_code']; ?>">
-                                <?php echo htmlspecialchars($order['stage_name']); ?>
-                            </div>
-                            <div class="h4 mt-2 mb-0">
-                                <?php echo number_format($order['final_amount'], 0, '.', ','); ?>đ
-                            </div>
+                            <span class="order-status-badge" style="background-color: <?php echo ($order['stage_name'] == 'Đặt hàng') ? '#FFD700' : $order['color_code']; ?> !important; color: <?php echo ($order['stage_name'] == 'Đặt hàng') ? '#000' : '#fff'; ?> !important;"><?php echo $order['stage_name']; ?></span>
+                            <h4 class="mt-2 mb-0" style="color: #fff !important;"><?php echo number_format($order['total_amount']); ?>đ</h4>
                         </div>
                     </div>
                 </div>
