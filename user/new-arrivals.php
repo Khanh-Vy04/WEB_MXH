@@ -312,14 +312,14 @@ $total_count = $week_count + $month_count;
     <!-- Navigation End -->
 
     <!-- Breadcrumb -->
-    <div class="page-breadcrumb">
+    <!-- <div class="page-breadcrumb">
         <div class="container">
             <ol class="breadcrumb">
                 <li><a href="index.php">Home</a></li>
                 <li class="active">New Arrivals</li>
             </ol>
         </div>
-    </div>
+    </div> -->
     
     <!-- Header Section -->
     <div class="new-arrivals-header">
