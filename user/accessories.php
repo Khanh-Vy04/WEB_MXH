@@ -38,7 +38,10 @@ if ($result->num_rows > 0) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Common CSS -->
     <link rel="stylesheet" href="includes/common.css">
-    
+
+    <!-- Footer CSS -->
+    <link rel="stylesheet" href="assets/css/footer.css">
+
     <style>
         .accessory-card {
             background: white;
@@ -300,7 +303,10 @@ if ($result->num_rows > 0) {
     <script src="assets/js/bootsnav.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
-    
+
+    <!-- Search JS -->
+    <script src="assets/js/custom-search.js"></script>
+
     <script>
         // Tìm kiếm phụ kiện
         document.getElementById('searchInput').addEventListener('input', function() {
@@ -327,9 +333,12 @@ if ($result->num_rows > 0) {
             });
         });
     </script>
+
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
 
 <?php
 $conn->close();
-?> 
+?>

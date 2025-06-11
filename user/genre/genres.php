@@ -255,7 +255,10 @@ if ($result->num_rows > 0) {
     <script src="../assets/js/bootsnav.js"></script>
     <!-- Main JS -->
     <script src="../assets/js/main.js"></script>
-    
+
+    <!-- Search JS -->
+    <script src="../assets/js/custom-search.js"></script>
+
     <script>
         // Tìm kiếm thể loại
         document.getElementById('searchInput').addEventListener('input', function() {
@@ -282,5 +285,8 @@ if ($result->num_rows > 0) {
             });
         });
     </script>
+
+    <!-- Include Footer -->
+    <?php include '../includes/footer.php'; ?>
 </body>
-</html> 
+</html>

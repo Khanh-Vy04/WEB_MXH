@@ -224,5 +224,7 @@ if ($artist_id > 0) {
     <p><a href="simple_products.php?artist_id=4&debug=1">Test artist_id=4</a></p>
     <p><a href="../describe_db.php">🔍 Database Analysis</a></p>
     <p><a href="products.php?genre_id=2&debug=1">🐛 Original products.php</a></p>
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
 </body>
-</html> 
+</html>

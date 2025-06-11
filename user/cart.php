@@ -2760,5 +2760,8 @@ Bạn có muốn tiếp tục thanh toán?
         }
     });
     </script>
+
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>

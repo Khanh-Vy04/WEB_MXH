@@ -89,6 +89,9 @@ $total_count = $week_count + $month_count;
     <!--responsive.css-->
     <link rel="stylesheet" href="assets/css/responsive.css">
 
+    <!-- Footer CSS -->
+    <link rel="stylesheet" href="assets/css/footer.css">
+
     <style>
         .new-arrivals-header {
             background: linear-gradient(135deg, #ff6b35, #f7931e);
@@ -298,6 +301,55 @@ $total_count = $week_count + $month_count;
         .breadcrumb > .active {
             color: #ff6b35;
         }
+
+        /* Search Container */
+        .search-container {
+            max-width: 600px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff6b35;
+            font-size: 18px;
+        }
+
+        /* Product card hidden state */
+        .product-card.hidden,
+        .col-md-3.hidden {
+            display: none;
+        }
+
+        /* Filter results message */
+        .filter-results {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #666;
+        }
     </style>
 </head>
 
@@ -358,8 +410,18 @@ $total_count = $week_count + $month_count;
             </div>
         </div>
     </div>
-    
+
     <div class="container">
+        <!-- Tìm kiếm -->
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm sản phẩm mới...">
+            <i class="fa fa-search search-icon"></i>
+        </div>
+
+        <!-- Filter results message -->
+        <div id="filterResults" class="filter-results" style="display: none;">
+            <i class="fa fa-filter"></i> <span id="filterCount">0</span> sản phẩm được tìm thấy
+        </div>
         <!-- Sản phẩm mới trong tuần -->
         <?php if ($week_count > 0): ?>
         <div class="section-divider">
@@ -374,18 +436,18 @@ $total_count = $week_count + $month_count;
                 $days_ago = $current_date->diff($created_date)->days;
             ?>
             <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="product-card">
+                <div class="product-card" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
                     <div class="new-badge week-badge">
                         <?php echo $days_ago; ?> ngày trước
                     </div>
                     
-                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>" 
-                         alt="<?php echo htmlspecialchars($product['title']); ?>" 
+                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
+                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
                          class="product-image"
-                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['title']); ?>'">
-                    
+                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
+
                     <div class="product-info">
-                        <h3 class="product-title"><?php echo htmlspecialchars($product['title']); ?></h3>
+                        <h3 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h3>
                         
                         <?php if (!empty($product['artist_name'])): ?>
                         <div class="product-artist">
@@ -431,18 +493,18 @@ $total_count = $week_count + $month_count;
                 $days_ago = $current_date->diff($created_date)->days;
             ?>
             <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="product-card">
+                <div class="product-card" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
                     <div class="new-badge">
                         <?php echo $days_ago; ?> ngày trước
                     </div>
                     
-                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>" 
-                         alt="<?php echo htmlspecialchars($product['title']); ?>" 
+                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
+                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
                          class="product-image"
-                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['title']); ?>'">
-                    
+                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
+
                     <div class="product-info">
-                        <h3 class="product-title"><?php echo htmlspecialchars($product['title']); ?></h3>
+                        <h3 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h3>
                         
                         <?php if (!empty($product['artist_name'])): ?>
                         <div class="product-artist">
@@ -487,27 +549,8 @@ $total_count = $week_count + $month_count;
         <?php endif; ?>
     </div>
     
-    <!-- Footer -->
-    <footer id="footer" class="footer" style="margin-top: 60px;">
-        <div class="container">
-            <div class="hm-footer-copyright text-center">
-                <div class="footer-social">
-                    <a href="#"><i class="fa fa-facebook"></i></a>	
-                    <a href="#"><i class="fa fa-instagram"></i></a>
-                    <a href="#"><i class="fa fa-linkedin"></i></a>
-                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                    <a href="#"><i class="fa fa-behance"></i></a>	
-                </div>
-                <p>&copy;copyright. designed and developed by <a href="https://www.themesine.com/">themesine</a></p>
-            </div>
-        </div>
-        
-        <div id="scroll-Top">
-            <div class="return-to-top">
-                <i class="fa fa-angle-up " id="scroll-top" data-toggle="tooltip" data-placement="top" title="" data-original-title="Back to Top" aria-hidden="true"></i>
-            </div>
-        </div>
-    </footer>
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
     
     <!-- Scripts -->
     <script src="assets/js/jquery.js"></script>
@@ -517,6 +560,109 @@ $total_count = $week_count + $month_count;
     <script src="assets/js/owl.carousel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="assets/js/custom.js"></script>
+
+    <!-- Search JS -->
+    <script src="assets/js/custom-search.js"></script>
+
+    <script>
+        // Local search functionality for new arrivals page
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const productCards = document.querySelectorAll('.product-card[data-name]');
+            const filterResults = document.getElementById('filterResults');
+            const filterCount = document.getElementById('filterCount');
+            let visibleCount = 0;
+
+            productCards.forEach(card => {
+                const productName = card.getAttribute('data-name') || '';
+                const artistName = card.getAttribute('data-artist') || '';
+                const genreName = card.getAttribute('data-genre') || '';
+
+                // Search in product name, artist name, and genre name
+                const isMatch = productName.includes(searchTerm) ||
+                               artistName.includes(searchTerm) ||
+                               genreName.includes(searchTerm);
+
+                if (searchTerm === '' || isMatch) {
+                    card.parentElement.classList.remove('hidden');
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.parentElement.classList.add('hidden');
+                    card.classList.add('hidden');
+                }
+            });
+
+            // Show/hide filter results message
+            if (searchTerm === '') {
+                filterResults.style.display = 'none';
+            } else {
+                filterResults.style.display = 'block';
+                filterCount.textContent = visibleCount;
+            }
+
+            // Hide section dividers if no products in that section
+            updateSectionVisibility();
+        });
+
+        function updateSectionVisibility() {
+            // Check week section
+            const weekSection = document.querySelector('.section-divider:first-of-type');
+            const weekProducts = document.querySelectorAll('.week-badge');
+            let weekVisible = 0;
+
+            weekProducts.forEach(badge => {
+                const card = badge.closest('.product-card');
+                if (card && !card.classList.contains('hidden')) {
+                    weekVisible++;
+                }
+            });
+
+            if (weekSection) {
+                const weekContainer = weekSection.nextElementSibling;
+                if (weekVisible === 0) {
+                    weekSection.style.display = 'none';
+                    if (weekContainer) weekContainer.style.display = 'none';
+                } else {
+                    weekSection.style.display = 'block';
+                    if (weekContainer) weekContainer.style.display = 'block';
+                }
+            }
+
+            // Check month section
+            const monthSection = document.querySelector('.section-divider:last-of-type');
+            const allProducts = document.querySelectorAll('.product-card[data-name]');
+            const monthProducts = Array.from(allProducts).filter(card =>
+                !card.querySelector('.week-badge')
+            );
+            let monthVisible = 0;
+
+            monthProducts.forEach(card => {
+                if (!card.classList.contains('hidden')) {
+                    monthVisible++;
+                }
+            });
+
+            if (monthSection) {
+                const monthContainer = monthSection.nextElementSibling;
+                if (monthVisible === 0) {
+                    monthSection.style.display = 'none';
+                    if (monthContainer) monthContainer.style.display = 'none';
+                } else {
+                    monthSection.style.display = 'block';
+                    if (monthContainer) monthContainer.style.display = 'block';
+                }
+            }
+        }
+
+        // Clear search when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+        });
+    </script>
 </body>
 </html>
 

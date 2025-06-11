@@ -571,6 +571,9 @@ if ($artist_id > 0) {
         </div>
     </div>
 
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
+
     <!-- jQuery -->
     <script src="assets/js/jquery.js"></script>
     <!-- Bootstrap JS -->
@@ -579,7 +582,10 @@ if ($artist_id > 0) {
     <script src="assets/js/bootsnav.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
-    
+
+    <!-- Search JS -->
+    <script src="assets/js/custom-search.js"></script>
+
     <script>
         <?php if ($debug): ?>
         // Debug logging

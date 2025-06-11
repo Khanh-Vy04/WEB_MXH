@@ -800,28 +800,8 @@ if (!empty($reviews)) {
     </section>
     <!-- Product Detail Section End -->
 
-    <!--footer start-->
-    <footer id="footer" class="footer">
-        <div class="container">
-            <div class="hm-footer-copyright text-center">
-                <div class="footer-social">
-                    <a href="#"><i class="fa fa-facebook"></i></a>	
-                    <a href="#"><i class="fa fa-instagram"></i></a>
-                    <a href="#"><i class="fa fa-linkedin"></i></a>
-                    <a href="#"><i class="fa fa-pinterest"></i></a>
-                    <a href="#"><i class="fa fa-behance"></i></a>	
-                </div>
-                <p>&copy;copyright. designed and developed by <a href="#">AuraDisc</a></p>
-            </div>
-        </div>
-        
-        <div id="scroll-Top">
-            <div class="return-to-top">
-                <i class="fa fa-angle-up" id="scroll-top" data-toggle="tooltip" data-placement="top" title="" data-original-title="Back to Top" aria-hidden="true"></i>
-            </div>
-        </div>
-    </footer>
-    <!--footer end-->
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
 
     <!-- Include all js compiled plugins -->
     <script src="assets/js/jquery.js"></script>
@@ -831,7 +811,10 @@ if (!empty($reviews)) {
     <script src="assets/js/owl.carousel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="assets/js/custom.js"></script>
-    
+
+    <!-- Search JS -->
+    <script src="assets/js/custom-search.js"></script>
+
     <script>
         // Quantity Controls
         function increaseQuantity() {

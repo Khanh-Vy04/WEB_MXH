@@ -2966,6 +2966,9 @@ if ($is_logged_in) {
             });
         });
     </script>
+
+    <!-- Include Footer -->
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>
-<?php endif; ?> 
+<?php endif; ?>
