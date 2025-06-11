@@ -10,65 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $order_id = (int)$_POST['order_id'];
         $new_stage_id = (int)$_POST['stage_id'];
         
-        // Kiểm tra đơn hàng hiện tại có phải đã hủy không
-        $check_query = "SELECT stage_id, buyer_id, final_amount, payment_method FROM orders WHERE order_id = ?";
-        $check_stmt = $conn->prepare($check_query);
-        $check_stmt->bind_param("i", $order_id);
-        $check_stmt->execute();
-        $current_order = $check_stmt->get_result()->fetch_assoc();
+        $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
+        $update_stmt->bind_param("ii", $new_stage_id, $order_id);
         
-        if (!$current_order) {
-            $error_message = "Không tìm thấy đơn hàng #{$order_id}";
-        } else if ($current_order['stage_id'] == -1) {
-            $error_message = "Đơn hàng #{$order_id} đã bị hủy, không thể sửa đổi!";
+        if ($update_stmt->execute()) {
+            $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
         } else {
-            // Nếu chuyển sang trạng thái hủy (-1), thực hiện hoàn tiền
-            if ($new_stage_id == -1) {
-                $conn->begin_transaction();
-                try {
-                    // Cập nhật trạng thái đơn hàng
-                    $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
-                    $update_stmt->bind_param("ii", $new_stage_id, $order_id);
-                    
-                    if (!$update_stmt->execute()) {
-                        throw new Exception("Không thể cập nhật trạng thái đơn hàng");
-                    }
-                    
-                    // Hoàn tiền nếu thanh toán bằng ví hoặc VNPay (đã thanh toán trước)
-                    if ($current_order['payment_method'] === 'wallet' || $current_order['payment_method'] === 'vnpay') {
-                        $refund_amount = $current_order['final_amount'];
-                        $buyer_id = $current_order['buyer_id'];
-                        
-                        // Cộng tiền vào ví user
-                        $refund_query = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
-                        $refund_stmt = $conn->prepare($refund_query);
-                        $refund_stmt->bind_param("di", $refund_amount, $buyer_id);
-                        
-                        if (!$refund_stmt->execute()) {
-                            throw new Exception("Không thể hoàn tiền vào ví");
-                        }
-                        
-                        $success_message = "Đã hủy đơn hàng #{$order_id} và hoàn tiền " . number_format($refund_amount, 0, '.', ',') . "đ vào ví khách hàng!";
-                    } else {
-                        $success_message = "Đã hủy đơn hàng #{$order_id} thành công! (COD - không cần hoàn tiền)";
-                    }
-                    
-                    $conn->commit();
-                } catch (Exception $e) {
-                    $conn->rollback();
-                    $error_message = "Lỗi hủy đơn hàng: " . $e->getMessage();
-                }
-            } else {
-                // Cập nhật bình thường
-                $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
-                $update_stmt->bind_param("ii", $new_stage_id, $order_id);
-                
-                if ($update_stmt->execute()) {
-                    $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
-                } else {
-                    $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
-                }
-            }
+            $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
         }
     }
 }
@@ -131,7 +79,6 @@ $orders_query = "
         o.final_amount,
         o.voucher_discount,
         o.stage_id,
-        o.payment_method,
         u.user_id,
         u.username,
         u.full_name,
@@ -198,7 +145,7 @@ while ($stat = $stats_result->fetch_assoc()) {
 
 <!DOCTYPE html>
 <html lang="vi">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý đơn hàng - Admin</title>
@@ -342,20 +289,20 @@ while ($stat = $stats_result->fetch_assoc()) {
             outline: none;
         }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container-fluid position-relative d-flex p-0">
-        <!-- Sidebar -->
-        <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
+      <!-- Sidebar -->
+      <?php include __DIR__.'/../../dashboard/sidebar.php'; ?>
 
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar -->
-            <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
-            
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar -->
+        <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
+
             <!-- Page Content -->
-            <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4">
                 <!-- Header -->
                 <div class="row g-4">
                     <div class="col-12">
@@ -372,9 +319,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                     <button class="btn btn-success" onclick="exportOrders()">
                                         <i class="fas fa-download me-1"></i> Xuất Excel
                                     </button>
-                                </div>
-                            </div>
-                            
+              </div>
+            </div>
+
                             <!-- Thông báo -->
                             <?php if (isset($success_message)): ?>
                                 <div class="alert alert-success alert-custom">
@@ -387,7 +334,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                                 <div class="alert alert-danger alert-custom">
                                     <i class="fas fa-exclamation-circle me-2"></i>
                                     <?php echo $error_message; ?>
-                                </div>
+              </div>
                             <?php endif; ?>
                             
                             <!-- Thống kê nhanh -->
@@ -405,48 +352,48 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <div class="stat-item">
                                                             <div class="h4 mb-2"><?php echo $stat['count']; ?></div>
                                                             <div class="small"><?php echo $stat['stage_name']; ?></div>
-                                                        </div>
-                                                    </div>
+              </div>
+            </div>
                                                 <?php endforeach; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
+              </div>
+            </div>
+              </div>
+            </div>
+          </div>
+
                             <!-- Filters -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <form method="GET" class="d-flex">
                                         <input type="hidden" name="entries" value="<?php echo $rowsPerPage; ?>">
                                         <input type="text" 
-                                               name="search" 
+                name="search" 
                                                class="form-control search-box me-2" 
                                                placeholder="Tìm kiếm theo ID, tên khách hàng, email..."
                                                value="<?php echo htmlspecialchars($search); ?>">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-search"></i>
                                         </button>
-                                    </form>
+            </form>
                                 </div>
                                 <div class="col-md-6 d-flex justify-content-end">
                                     <form method="GET" class="d-flex align-items-center">
                                         <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                                         <label class="me-2">Hiển thị:</label>
                                         <select name="entries" class="form-select" style="width: auto;" onchange="this.form.submit()">
-                                            <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
-                                            <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
-                                            <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
-                                            <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
-                                        </select>
-                                    </form>
-                                </div>
-                            </div>
-                            
-                            <!-- Orders Table -->
+                  <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                  <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                  <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                  <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
+                </select>
+              </form>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
                             <div class="table-responsive">
                                 <table class="table table-custom">
-                                    <thead>
+              <thead>
                                         <tr style="background: #667eea; color: white;">
                                             <th style="border-radius: 10px 0 0 10px; padding: 15px;">
                                                 <i class="fas fa-hashtag me-1"></i> Đơn hàng
@@ -461,9 +408,6 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                 <i class="fas fa-box me-1"></i> Sản phẩm
                                             </th>
                                             <th style="padding: 15px;">
-                                                <i class="fas fa-credit-card me-1"></i> Thanh toán
-                                            </th>
-                                            <th style="padding: 15px;">
                                                 <i class="fas fa-money-bill me-1"></i> Tổng tiền
                                             </th>
                                             <th style="padding: 15px;">
@@ -471,19 +415,19 @@ while ($stat = $stats_result->fetch_assoc()) {
                                             </th>
                                             <th style="border-radius: 0 10px 10px 0; padding: 15px;">
                                                 <i class="fas fa-cogs me-1"></i> Thao tác
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
                                         <?php if (empty($orders)): ?>
                                             <tr>
-                                                <td colspan="8" class="text-center" style="border-radius: 10px;">
+                                                <td colspan="7" class="text-center" style="border-radius: 10px;">
                                                     <div class="py-4">
                                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                                         <h5 class="text-muted">Không có đơn hàng nào</h5>
                                                         <p class="text-muted">Chưa có dữ liệu đơn hàng để hiển thị</p>
-                                                    </div>
-                                                </td>
+                    </div>
+                  </td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($orders as $order): ?>
@@ -494,7 +438,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="customer-avatar me-3">
-                                                                <?php 
+                    <?php
                                                                     $name_parts = explode(' ', trim($order['full_name']));
                                                                     echo strtoupper(substr($name_parts[0], 0, 1));
                                                                     if (count($name_parts) > 1) {
@@ -517,44 +461,18 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <span class="badge bg-info"><?php echo $order['item_count']; ?> sản phẩm</span>
                                                     </td>
                                                     <td>
-                                                        <?php 
-                                                        $payment_icons = [
-                                                            'wallet' => 'fas fa-wallet',
-                                                            'vnpay' => 'fas fa-university', 
-                                                            'cash' => 'fas fa-money-bill-wave'
-                                                        ];
-                                                        $payment_names = [
-                                                            'wallet' => 'Ví AuraDisc',
-                                                            'vnpay' => 'VNPay',
-                                                            'cash' => 'Tiền mặt (COD)'
-                                                        ];
-                                                        $payment_colors = [
-                                                            'wallet' => 'primary',
-                                                            'vnpay' => 'info',
-                                                            'cash' => 'success'
-                                                        ];
-                                                        $payment_method = $order['payment_method'] ?? 'cash';
-                                                        ?>
-                                                        <span class="badge bg-<?php echo $payment_colors[$payment_method]; ?>">
-                                                            <i class="<?php echo $payment_icons[$payment_method]; ?> me-1"></i>
-                                                            <?php echo $payment_names[$payment_method]; ?>
-                                                        </span>
-                                                    </td>
-                                                    <td>
                                                         <div class="amount-text"><?php echo number_format($order['final_amount'], 0, '.', ','); ?>đ</div>
                                                         <?php if ($order['voucher_discount'] > 0): ?>
                                                             <div class="text-muted small">
                                                                 Giảm: -<?php echo number_format($order['voucher_discount'], 0, '.', ','); ?>đ
                                                             </div>
                                                         <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <form method="POST" style="display: inline;" id="stageForm_<?php echo $order['order_id']; ?>">
+                  </td>
+                  <td>
+                        <form method="POST" style="display: inline;">
                                                             <input type="hidden" name="action" value="update_stage">
                                                             <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
-                                                            <select name="stage_id" class="stage-dropdown" 
-                                                                    onchange="handleStageChange(this, <?php echo $order['order_id']; ?>, '<?php echo addslashes($order['payment_method']); ?>', <?php echo $order['final_amount']; ?>)"
-                                                                    <?php echo $order['stage_id'] == -1 ? 'disabled' : ''; ?>>
+                                                            <select name="stage_id" class="stage-dropdown" onchange="this.form.submit()">
                                                                 <?php foreach ($stages as $stage_id => $stage): ?>
                                                                     <option value="<?php echo $stage_id; ?>" 
                                                                             <?php echo $order['stage_id'] == $stage_id ? 'selected' : ''; ?>>
@@ -562,29 +480,26 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                                     </option>
                                                                 <?php endforeach; ?>
                                                             </select>
-                                                        </form>
+                        </form>
                                                         <div class="mt-2">
                                                             <span class="stage-badge" style="background-color: <?php echo $order['color_code']; ?>">
                                                                 <?php echo htmlspecialchars($order['stage_name']); ?>
-                                                                <?php if ($order['stage_id'] == -1): ?>
-                                                                    <i class="fas fa-lock ms-1" title="Đơn hàng đã hủy không thể sửa đổi"></i>
-                                                                <?php endif; ?>
                                                             </span>
-                                                        </div>
-                                                    </td>
+                    </div>
+                  </td>
                                                     <td>
                                                         <button class="btn btn-sm btn-primary" onclick="viewOrderDetail(<?php echo $order['order_id']; ?>)" title="Xem chi tiết">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
                                                     </td>
-                                                </tr>
-                                            <?php endforeach; ?>
+                </tr>
+                <?php endforeach; ?>
                                         <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Pagination -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
                             <?php if ($totalPages > 1): ?>
                                 <div class="d-flex justify-content-between align-items-center mt-4">
                                     <div class="text-muted">
@@ -598,8 +513,8 @@ while ($stat = $stats_result->fetch_assoc()) {
                                             <!-- Previous -->
                                             <li class="page-item <?php echo $currentPageNumber <= 1 ? 'disabled' : ''; ?>">
                                                 <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>">
-                                                    <i class="fas fa-chevron-left"></i>
-                                                </a>
+                <i class="fas fa-chevron-left"></i>
+              </a>
                                             </li>
                                             
                                             <!-- Page Numbers -->
@@ -611,84 +526,30 @@ while ($stat = $stats_result->fetch_assoc()) {
                                             ?>
                                                 <li class="page-item <?php echo $i == $currentPageNumber ? 'active' : ''; ?>">
                                                     <a class="page-link" href="<?php echo getUrlWithParams(['page' => $i]); ?>">
-                                                        <?php echo $i; ?>
-                                                    </a>
+                <?php echo $i; ?>
+              </a>
                                                 </li>
-                                            <?php endfor; ?>
-                                            
+              <?php endfor; ?>
+
                                             <!-- Next -->
                                             <li class="page-item <?php echo $currentPageNumber >= $totalPages ? 'disabled' : ''; ?>">
                                                 <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber + 1]); ?>">
-                                                    <i class="fas fa-chevron-right"></i>
-                                                </a>
+                <i class="fas fa-chevron-right"></i>
+              </a>
                                             </li>
                                         </ul>
                                     </nav>
                                 </div>
-                            <?php endif; ?>
+              <?php endif; ?>
                         </div>
-                    </div>
-                </div>
             </div>
-            
-            <!-- Footer -->
-            <?php include __DIR__.'/../../dashboard/footer.php'; ?>
+          </div>
         </div>
-        <!-- Content End -->
-    </div>
 
-    <!-- Cancel Order Modal -->
-    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="cancelOrderModalLabel">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Xác nhận hủy đơn hàng
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Cảnh báo!</strong> Hành động này không thể hoàn tác.
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <h6><i class="fas fa-receipt me-2"></i>Thông tin đơn hàng:</h6>
-                            <ul class="list-unstyled ms-3">
-                                <li><strong>Mã đơn hàng:</strong> <span id="cancel-order-id"></span></li>
-                                <li><strong>Phương thức thanh toán:</strong> <span id="cancel-payment-method"></span></li>
-                                <li><strong>Số tiền:</strong> <span id="cancel-amount"></span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-info" id="refund-info" style="display: none;">
-                        <i class="fas fa-wallet me-2"></i>
-                        <strong>Hoàn tiền:</strong> Số tiền <span id="refund-amount"></span> sẽ được hoàn lại vào ví khách hàng.
-                    </div>
-                    
-                    <div class="alert alert-secondary" id="cod-info" style="display: none;">
-                        <i class="fas fa-money-bill-wave me-2"></i>
-                        <strong>COD:</strong> Đơn hàng thanh toán khi nhận hàng, không cần hoàn tiền.
-                    </div>
-                    
-                    <p class="text-muted">
-                        Bạn có chắc chắn muốn hủy đơn hàng này không?
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i> Không, giữ đơn hàng
-                    </button>
-                    <button type="button" class="btn btn-danger" id="confirmCancelBtn">
-                        <i class="fas fa-trash-alt me-1"></i> Có, hủy đơn hàng
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- Footer -->
+        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
+      </div>
+      <!-- Content End -->
     </div>
 
     <!-- JavaScript -->
@@ -697,80 +558,13 @@ while ($stat = $stats_result->fetch_assoc()) {
     <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
     
     <script>
-        let currentOrderForm = null;
-        let currentOrderData = null;
-        
         function viewOrderDetail(orderId) {
             // Mở modal hoặc chuyển trang xem chi tiết
             window.open(`/WEB_MXH/admin/pages/order/order_detail/order_detail.php?id=${orderId}`, '_blank');
         }
         
-        function handleStageChange(selectElement, orderId, paymentMethod, amount) {
-            const newStageId = selectElement.value;
-            const form = document.getElementById(`stageForm_${orderId}`);
-            
-            // Nếu chọn stage hủy đơn hàng (-1), hiển thị popup xác nhận
-            if (newStageId == -1) {
-                // Reset về giá trị cũ để tránh thay đổi khi chưa xác nhận
-                selectElement.value = selectElement.getAttribute('data-original-value') || selectElement.options[0].value;
-                
-                // Lưu thông tin để sử dụng sau
-                currentOrderForm = form;
-                currentOrderData = {
-                    orderId: orderId,
-                    paymentMethod: paymentMethod,
-                    amount: amount
-                };
-                
-                // Cập nhật thông tin trong modal
-                document.getElementById('cancel-order-id').textContent = '#' + orderId;
-                
-                const paymentNames = {
-                    'wallet': 'Ví AuraDisc',
-                    'vnpay': 'VNPay',
-                    'cash': 'Tiền mặt (COD)'
-                };
-                document.getElementById('cancel-payment-method').textContent = paymentNames[paymentMethod] || paymentMethod;
-                document.getElementById('cancel-amount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-                
-                // Hiển thị thông tin hoàn tiền
-                if (paymentMethod === 'wallet' || paymentMethod === 'vnpay') {
-                    document.getElementById('refund-amount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-                    document.getElementById('refund-info').style.display = 'block';
-                    document.getElementById('cod-info').style.display = 'none';
-                } else {
-                    document.getElementById('refund-info').style.display = 'none';
-                    document.getElementById('cod-info').style.display = 'block';
-                }
-                
-                // Hiển thị modal
-                const modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
-                modal.show();
-                
-            } else {
-                // Cập nhật bình thường cho các trạng thái khác
-                form.submit();
-            }
-        }
-        
-        // Xử lý xác nhận hủy đơn hàng
-        document.getElementById('confirmCancelBtn').addEventListener('click', function() {
-            if (currentOrderForm && currentOrderData) {
-                // Cập nhật select về giá trị -1 và submit form
-                const select = currentOrderForm.querySelector('select[name="stage_id"]');
-                select.value = -1;
-                currentOrderForm.submit();
-            }
-        });
-        
-        // Lưu giá trị ban đầu của các select để có thể reset
-        document.addEventListener('DOMContentLoaded', function() {
-            const selects = document.querySelectorAll('.stage-dropdown');
-            selects.forEach(select => {
-                select.setAttribute('data-original-value', select.value);
-            });
-        });
 
+        
         function exportOrders() {
             // Xuất dữ liệu ra Excel
             const search = '<?php echo addslashes($search); ?>';
@@ -799,9 +593,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                     this.style.background = '#f8f9fa';
                     this.style.color = 'inherit';
                 }, 1000);
-            });
+          });
         });
-        
+
         // Search form enhancement
         const searchInput = document.querySelector('input[name="search"]');
         if (searchInput) {
@@ -812,5 +606,5 @@ while ($stat = $stats_result->fetch_assoc()) {
             });
         }
     </script>
-</body>
+  </body>
 </html> 

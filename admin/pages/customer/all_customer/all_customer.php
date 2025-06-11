@@ -411,10 +411,6 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
         </div>
       </div>
     </div>
-    
-    <!-- Footer Start -->
-    <?php include __DIR__.'/../../dashboard/footer.php'; ?>
-    <!-- Footer End -->
 
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

@@ -84,96 +84,224 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     
     <style>
-        .main-content {
-            margin-left: 0;
-            padding: 20px;
-            background: #1a1a1a;
-            min-height: 100vh;
-            color: #fff;
-        }
-        
-        .content-header {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            color: white;
-        }
-        
         .form-container {
-            background: #2d2d2d;
-            border-radius: 10px;
+            background: #ebecef;
+            border-radius: 15px;
             padding: 30px;
-            border: 1px solid #444;
+            max-width: 95%;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        .form-control {
-            background: #3d3d3d;
-            border: 1px solid #555;
-            color: #fff;
-        }
-        
-        .form-control:focus {
-            background: #3d3d3d;
-            border-color: #ff6b35;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        .form-group {
+            margin-bottom: 25px;
         }
         
         .form-label {
-            color: #fff;
-            font-weight: 500;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1rem;
+        }
+        
+        .form-control {
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            background: #fff;
+            border-color: #412d3b;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25);
+            outline: none;
+        }
+        
+        .form-control::placeholder {
+            color: #888;
+        }
+        
+        .form-select {
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-select:focus {
+            background: #fff;
+            border-color: #412d3b;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25);
+            outline: none;
+        }
+        
+        .form-select option {
+            background: #fff;
+            color: #333;
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            border: none;
-            padding: 12px 30px;
+            background: #412d3b;
+            border-color: #412d3b;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #fff;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #e55a2b, #e08420);
+            background: #2d1e26;
+            border-color: #2d1e26;
+            transform: translateY(-2px);
+            color: #fff;
         }
         
         .btn-secondary {
-            background: #6c757d;
-            border: none;
-            padding: 12px 30px;
+            background: #deccca;
+            border-color: #deccca;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #412d3b;
+        }
+        
+        .btn-secondary:hover {
+            background: #c9b5b0;
+            border-color: #c9b5b0;
+            transform: translateY(-2px);
+            color: #412d3b;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-weight: 500;
         }
         
         .alert-success {
-            background: #155724;
-            border-color: #c3e6cb;
-            color: #d4edda;
+            background: #D4EDDA;
+            border-color: #C3E6CB;
+            color: #155724;
         }
         
         .alert-danger {
-            background: #721c24;
-            border-color: #f5c6cb;
-            color: #f8d7da;
+            background: #F8D7DA;
+            border-color: #F5C6CB;
+            color: #721C24;
         }
         
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 8px;
-            border: 2px solid #444;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
-        .image-preview-container {
-            background: #3d3d3d;
+        .page-title {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .btn-back {
+            background: #deccca;
+            color: #412d3b;
+            padding: 10px 20px;
+            border: none;
             border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            border: 2px dashed #555;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            background: #c9b5b0;
+            color: #412d3b;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
         
         .required {
             color: #dc3545;
         }
         
-        .form-text {
-            color: #adb5bd;
+        .form-help {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            border: 2px solid #ddd;
+        }
+        
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+        
+        .col-md-6 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 0 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .form-container {
+                max-width: 90%;
+            }
         }
     </style>
 </head>
@@ -193,170 +321,217 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         ?>
         
-        <div class="container-fluid pt-4 px-4">
-            <!-- Header -->
-            <div class="bg-secondary rounded h-100 p-4 mb-4">
-                <h2 class="mb-2"><i class="fas fa-plus me-2"></i>Thêm Phụ Kiện Mới</h2>
-                <p class="mb-0">Thêm phụ kiện âm nhạc mới vào hệ thống</p>
-            </div>
-            
-            <!-- Messages -->
-            <?php if (!empty($success_message)): ?>
-            <div class="alert alert-success alert-dismissible fade show">
-                <i class="fas fa-check-circle"></i> <?php echo $success_message; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($error_message)): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="fas fa-exclamation-circle"></i> <?php echo $error_message; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <i class="fas fa-exclamation-triangle"></i> <strong>Lỗi:</strong>
-                <ul class="mb-0">
-                    <?php foreach ($errors as $error): ?>
-                    <li><?php echo $error; ?></li>
-                    <?php endforeach; ?>
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            <?php endif; ?>
-            
-            <!-- Add Form -->
-            <div class="form-container">
-                <h4 class="mb-4"><i class="fas fa-headphones"></i> Thông Tin Accessory</h4>
-                
-                <form method="POST" id="addAccessoryForm">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="mb-3">
-                                <label for="accessory_name" class="form-label">
-                                    Tên Accessory <span class="required">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="accessory_name" name="accessory_name" 
-                                       value="<?php echo htmlspecialchars($accessory_name ?? ''); ?>" 
-                                       placeholder="Nhập tên accessory..." required>
-                                <div class="form-text">Tên này sẽ hiển thị cho khách hàng</div>
+        <div class="container-fluid pt-4 px-2">
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="form-container">
+                        <!-- Header -->
+                        <div class="page-header">
+                            <h2 class="page-title">
+                                <i class="fas fa-plus-circle me-3"></i>Thêm Accessory Mới
+                            </h2>
+                            <a href="accessory_list.php" class="btn-back">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại
+                            </a>
+                        </div>
+                        
+                        <!-- Alert Messages -->
+                        <?php if (!empty($success_message)): ?>
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i> <?php echo $success_message; ?>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="description" class="form-label">
-                                    Mô Tả <span class="required">*</span>
-                                </label>
-                                <textarea class="form-control" id="description" name="description" rows="5" 
-                                          placeholder="Nhập mô tả chi tiết về accessory..." required><?php echo htmlspecialchars($description ?? ''); ?></textarea>
-                                <div class="form-text">Mô tả chi tiết về tính năng và đặc điểm của accessory</div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($error_message)): ?>
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle"></i> <?php echo $error_message; ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($errors)): ?>
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i> <strong>Lỗi:</strong>
+                                <ul class="mb-0">
+                                    <?php foreach ($errors as $error): ?>
+                                    <li><?php echo $error; ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <!-- Form -->
+                        <form method="POST" id="addAccessoryForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="accessory_name" class="form-label">
+                                            <i class="fas fa-tag me-2"></i>Tên Accessory <span class="required">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="accessory_name" 
+                                               name="accessory_name" 
+                                               value="<?php echo isset($accessory_name) ? htmlspecialchars($accessory_name) : ''; ?>"
+                                               placeholder="Nhập tên accessory"
+                                               required>
+                                        <div class="form-help">Tên này sẽ hiển thị cho khách hàng</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="price" class="form-label">
+                                            <i class="fas fa-dollar-sign me-2"></i>Giá <span class="required">*</span>
+                                        </label>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="price" 
+                                               name="price" 
+                                               value="<?php echo isset($price) ? $price : ''; ?>"
+                                               placeholder="0.00"
+                                               step="0.01"
+                                               min="0"
+                                               required>
+                                        <div class="form-help">Đơn vị: VNĐ</div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="price" class="form-label">
-                                            Giá ($) <span class="required">*</span>
-                                        </label>
-                                        <input type="number" class="form-control" id="price" name="price" 
-                                               value="<?php echo htmlspecialchars($price ?? ''); ?>" 
-                                               step="0.01" min="0" placeholder="0.00" required>
-                                        <div class="form-text">Giá bán của accessory</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
+                                    <div class="form-group">
                                         <label for="stock" class="form-label">
-                                            Số Lượng Tồn Kho <span class="required">*</span>
+                                            <i class="fas fa-boxes me-2"></i>Số Lượng Tồn Kho <span class="required">*</span>
                                         </label>
-                                        <input type="number" class="form-control" id="stock" name="stock" 
-                                               value="<?php echo htmlspecialchars($stock ?? ''); ?>" 
-                                               min="0" placeholder="0" required>
-                                        <div class="form-text">Số lượng hiện có trong kho</div>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="stock" 
+                                               name="stock" 
+                                               value="<?php echo isset($stock) ? $stock : ''; ?>"
+                                               placeholder="0"
+                                               min="0"
+                                               required>
+                                        <div class="form-help">Số lượng accessory có sẵn</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="image_url" class="form-label">
+                                            <i class="fas fa-image me-2"></i>URL Hình Ảnh
+                                        </label>
+                                        <input type="url" 
+                                               class="form-control" 
+                                               id="image_url" 
+                                               name="image_url" 
+                                               value="<?php echo isset($image_url) ? htmlspecialchars($image_url) : ''; ?>"
+                                               placeholder="https://example.com/image.jpg">
+                                        <div class="form-help">URL hình ảnh accessory (để trống sẽ dùng ảnh mặc định)</div>
+                                        <img id="image_preview" class="image-preview" alt="Preview">
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="image_url" class="form-label">URL Hình Ảnh</label>
-                                <input type="url" class="form-control" id="image_url" name="image_url" 
-                                       value="<?php echo htmlspecialchars($image_url ?? ''); ?>" 
-                                       placeholder="https://example.com/image.jpg">
-                                <div class="form-text">URL của hình ảnh accessory (để trống sẽ dùng ảnh mặc định)</div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-lg-4">
-                            <div class="image-preview-container">
-                                <h6 class="mb-3">Xem Trước Hình Ảnh</h6>
-                                <img id="imagePreview" src="https://via.placeholder.com/200x200/ff6b35/ffffff?text=Preview" 
-                                     alt="Preview" class="preview-image">
-                                <div class="mt-2">
-                                    <small class="text-muted">Hình ảnh sẽ hiển thị như thế này</small>
-                                </div>
+                            <div class="form-group">
+                                <label for="description" class="form-label">
+                                    <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
+                                </label>
+                                <textarea class="form-control" 
+                                          id="description" 
+                                          name="description" 
+                                          rows="6"
+                                          placeholder="Nhập mô tả chi tiết về accessory..."
+                                          required><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
+                                <div class="form-help">Mô tả đầy đủ về accessory, bao gồm thông tin về tính năng và đặc điểm</div>
                             </div>
                             
-                            <div class="mt-3 p-3" style="background: #3d3d3d; border-radius: 8px;">
-                                <h6><i class="fas fa-lightbulb"></i> Gợi Ý</h6>
-                                <ul class="small mb-0">
-                                    <li>Sử dụng hình ảnh chất lượng cao</li>
-                                    <li>Kích thước khuyến nghị: 400x400px</li>
-                                    <li>Format: JPG, PNG</li>
-                                    <li>Có thể dùng Unsplash.com cho ảnh mẫu</li>
-                                </ul>
+                            <div class="form-buttons">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Thêm Accessory
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-undo me-2"></i>Đặt Lại
+                                </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
-                    
-                    <hr style="border-color: #444;">
-                    
-                    <div class="d-flex justify-content-between">
-                        <a href="accessory_list.php" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Hủy
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Thêm Accessory
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
+        
+        <?php 
+        if (file_exists(__DIR__.'/../dashboard/footer.php')) {
+            include __DIR__.'/../dashboard/footer.php'; 
+        }
+        ?>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
+
 <script>
-    // Image preview functionality
-    document.getElementById('image_url').addEventListener('input', function() {
-        const imageUrl = this.value;
-        const preview = document.getElementById('imagePreview');
+    // Validate form trước khi submit
+    $('#addAccessoryForm').submit(function(e) {
+        const accessoryName = $('#accessory_name').val().trim();
+        const description = $('#description').val().trim();
+        const price = parseFloat($('#price').val());
+        const stock = parseInt($('#stock').val());
         
-        if (imageUrl) {
-            preview.src = imageUrl;
-            preview.onerror = function() {
-                this.src = 'https://via.placeholder.com/200x200/dc3545/ffffff?text=Error';
-            };
+        if (!accessoryName) {
+            alert('Vui lòng nhập tên accessory');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!description) {
+            alert('Vui lòng nhập mô tả');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (isNaN(price) || price <= 0) {
+            alert('Vui lòng nhập giá hợp lệ (lớn hơn 0)');
+            e.preventDefault();
+            return false;
+        }
+        
+        if (isNaN(stock) || stock < 0) {
+            alert('Vui lòng nhập số lượng tồn kho hợp lệ (không âm)');
+            e.preventDefault();
+            return false;
+        }
+        
+        return true;
+    });
+    
+    // Auto-resize textarea
+    $('textarea').on('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    // Image preview
+    $('#image_url').on('input', function() {
+        const url = $(this).val().trim();
+        const preview = $('#image_preview');
+        
+        if (url) {
+            preview.attr('src', url).show();
+            preview.on('error', function() {
+                $(this).hide();
+            });
         } else {
-            preview.src = 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Preview';
+            preview.hide();
         }
     });
     
-    // Form validation
-    document.getElementById('addAccessoryForm').addEventListener('submit', function(e) {
-        const price = parseFloat(document.getElementById('price').value);
-        const stock = parseInt(document.getElementById('stock').value);
-        
-        if (price <= 0) {
-            e.preventDefault();
-            alert('Giá phải lớn hơn 0');
-            return;
-        }
-        
-        if (stock < 0) {
-            e.preventDefault();
-            alert('Số lượng tồn kho không được âm');
-            return;
+    // Format price input
+    $('#price').on('input', function() {
+        let value = $(this).val();
+        if (value && !isNaN(value)) {
+            $(this).val(parseFloat(value).toFixed(2));
         }
     });
     
@@ -368,14 +543,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             bsAlert.close();
         });
     }, 5000);
-    
-    // Load initial image if provided
-    window.addEventListener('load', function() {
-        const imageUrl = document.getElementById('image_url').value;
-        if (imageUrl) {
-            document.getElementById('imagePreview').src = imageUrl;
-        }
-    });
 </script>
 </body>
 </html>

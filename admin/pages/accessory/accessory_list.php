@@ -74,7 +74,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Accessories - AuraDisc Admin</title>
     
-    <!-- CSS giống các trang khác -->
+    <!-- CSS -->
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -82,323 +82,341 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     
     <style>
-        /* Override theme colors for light design - KHÔNG ẢNH HƯỞNG SIDEBAR */
-        .content {
-            background: #ebecef !important;
+        .content { background: #f3f4f6 !important; }
+        .container-fluid { background: #f7f8f9; }
+        .header-section { 
+            background: #fff; 
+            border-radius: 18px; 
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem; 
+            margin-bottom: 1.5rem; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04); 
         }
-        
-        .content .bg-secondary {
-            background-color: #fff !important;
-            border: 1px solid #ddd !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-            color: #333 !important;
-        }
-        
-        .content h2, .content h5, .content p, .content .text-muted {
-            color: #333 !important;
-        }
-        
-        .content .badge {
-            color: #333 !important;
-        }
-        
-        /* Badge màu hồng nâu */
-        .content .badge.bg-primary {
-            background-color: #deccca !important;
-            color: #412d3b !important;
-        }
-        
-        .table-dark {
-            --bs-table-bg: #fff !important;
-            --bs-table-striped-bg: #f8f9fa !important;
-            color: #333 !important;
-            border-color: #ddd !important;
-        }
-        
-        .table-dark th, .table-dark td {
-            color: #333 !important;
-            border-color: #ddd !important;
-            text-align: center !important;
-            vertical-align: middle !important;
-        }
-        
-        .table-dark thead th {
-            background-color: #f8f9fa !important;
-            color: #333 !important;
-            font-weight: 600 !important;
-            text-align: center !important;
-        }
-        
-        /* BỎ HOVER EFFECT CHO DÒNG SẢN PHẨM */
-        .table-dark tbody tr:hover, .table-hover tbody tr:hover {
-            background-color: transparent !important;
-            color: inherit !important;
-        }
-        
-        .table-dark.table-hover tbody tr:hover td, 
-        .table-dark.table-hover tbody tr:hover th {
-            background-color: transparent !important;
-            color: inherit !important;
-        }
-        
-        .content .text-warning {
-            color: #856404 !important;
-        }
-        
-        .content .text-muted {
-            color: #6c757d !important;
-        }
-        
-        /* Button themes matching other pages */
-        .btn-primary {
-            background-color: #412d3b !important;
-            border-color: #412d3b !important;
-            color: white !important;
-        }
-        
-        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-            background-color: #2d1e26 !important;
-            border-color: #2d1e26 !important;
-            color: white !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        .btn-secondary {
-            background-color: #deccca !important;
-            border-color: #deccca !important;
-            color: #412d3b !important;
-        }
-        
-        .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
-            background-color: #c9b5b0 !important;
-            border-color: #c9b5b0 !important;
-            color: #412d3b !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        .btn-warning {
-            background-color: #deccca !important;
-            border-color: #deccca !important;
-            color: #412d3b !important;
-        }
-        
-        .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
-            background-color: #c9b5b0 !important;
-            border-color: #c9b5b0 !important;
-            color: #412d3b !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        .btn-danger {
-            background-color: #dc3545 !important;
-            border-color: #dc3545 !important;
-            color: white !important;
-        }
-        
-        .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
-            background-color: #c82333 !important;
-            border-color: #bd2130 !important;
-            color: white !important;
-            transform: translateY(-2px) !important;
-        }
-        
-        /* Form controls */
-        .form-control {
-            background-color: #fff !important;
-            border-color: #ddd !important;
-            color: #333 !important;
-        }
-        
-        .form-control:focus {
-            background-color: #fff !important;
-            border-color: #412d3b !important;
-            color: #333 !important;
-            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
-        }
-        
-        /* Alert styles */
-        .alert-success {
-            background-color: #d4edda !important;
-            border-color: #c3e6cb !important;
-            color: #155724 !important;
-        }
-        
-        .alert-danger {
-            background-color: #f8d7da !important;
-            border-color: #f5c6cb !important;
-            color: #721c24 !important;
-        }
-        
-        /* Pagination */
-        .page-link {
-            background-color: #fff !important;
-            border-color: #ddd !important;
-            color: #412d3b !important;
-        }
-        
-        .page-link:hover {
-            background-color: #deccca !important;
-            border-color: #c9b5b0 !important;
-            color: #412d3b !important;
-        }
-        
-        .page-item.active .page-link {
-            background-color: #412d3b !important;
-            border-color: #412d3b !important;
-            color: white !important;
-        }
-        
-        /* Original accessory-specific styles */
-        .accessory-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-        }
-        
-        .stock-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
+        .header-section h2 { 
+            color: #222; 
+            font-size: 1.5rem; 
             font-weight: 600;
+            margin-bottom: 0.7rem; 
+            margin-left: 0.1rem;
         }
-        
-        .stock-high { background: #28a745; color: white; }
-        .stock-medium { background: #ffc107; color: #000; }
-        .stock-low { background: #dc3545; color: white; }
-        
-        /* Stats cards - KÍCH THƯỚC CÂN ĐỐI */
-        .stat-card {
-            background: linear-gradient(135deg, #412d3b, #2d1e26) !important;
-            border: none !important;
-            border-radius: 12px !important;
-            padding: 20px 15px !important;
-            margin-bottom: 15px !important;
-            text-align: center !important;
-            box-shadow: 0 4px 12px rgba(65, 45, 59, 0.25) !important;
-            height: 120px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
+        .header-section p { 
+            color: #444; 
+            margin-bottom: 0; 
         }
-        
-        .stat-number {
-            font-size: 1.8rem !important;
-            font-weight: bold !important;
-            color: #fff !important;
-            margin-bottom: 5px !important;
-            line-height: 1.2 !important;
+        .stat-card { 
+            background: #fff; 
+            border: none; 
+            border-radius: 16px; 
+            padding: 1.2rem 1.5rem; 
+            margin-bottom: 1.5rem; 
+            text-align: center; 
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); 
+            height: 120px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            transition: transform 0.3s; 
         }
-        
-        .stat-label {
-            color: #deccca !important;
-            font-size: 0.75rem !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
-            font-weight: 500 !important;
-            line-height: 1.3 !important;
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
         }
-        
-        /* Special color for low stock */
-        .stat-card.low-stock .stat-number {
-            color: #ff6b6b !important;
+        .stat-number { 
+            font-size: 1.8rem; 
+            font-weight: bold; 
+            color: #222; 
+            margin-bottom: 5px; 
         }
-        
-        /* Search bar */
-        .search-bar {
-            background: #fff !important;
-            border-radius: 10px !important;
-            padding: 20px !important;
-            margin-bottom: 20px !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        .stat-label { 
+            color: #444; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 500; 
         }
-        
-        /* Accessories table */
-        .accessories-table {
-            background: #fff !important;
-            border-radius: 10px !important;
-            padding: 20px !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        .stat-card.low-stock .stat-number { 
+            color: #991b1b; 
         }
-        
-        /* Modal */
-        .modal-content {
-            background-color: #fff !important;
-            color: #333 !important;
+        .table-section { 
+            background: #fff; 
+            border-radius: 16px; 
+            padding: 1.2rem 1.5rem; 
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); 
         }
-        
-        .modal-header {
-            border-bottom-color: #ddd !important;
+        .search-bar { 
+            display: flex; 
+            gap: 1.5rem; 
+            margin-bottom: 1.5rem; 
         }
-        
-        .modal-footer {
-            border-top-color: #ddd !important;
+        .search-bar input { 
+            flex: 1; 
+            padding: 0.6rem 1rem; 
+            border: 2px solid #222; 
+            border-radius: 10px; 
+            font-size: 1rem; 
+            color: #444;
+            background: #fff; 
+            transition: border-color 0.2s; 
         }
-        
-        .modal-title {
-            color: #333 !important;
+        .search-bar input:focus { 
+            border-color: #7b61ff; 
+            outline: none; 
+            box-shadow: 0 0 0 2px #edeaff; 
         }
-        
-        /* ẨN MÔ TẢ TRONG TÊN SẢN PHẨM */
-        .product-description {
-            display: none !important;
+        .add-btn { 
+            background: #deccca; 
+            color: #412d3b; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 0.5rem 1.2rem; 
+            font-size: 1rem; 
+            font-weight: 500; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            transition: all 0.2s ease; 
+            text-decoration: none; 
         }
-        
-        /* Header section tích hợp với stats */
-        .header-stats-section {
-            background: #fff !important;
-            border-radius: 15px !important;
-            padding: 30px !important;
-            margin-bottom: 20px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        .add-btn i {
+            color: #412d3b;
+            font-size: 1.1rem;
         }
-        
-        /* Combined search and table */
-        .table-search-section {
-            background: #fff !important;
-            border-radius: 15px !important;
-            padding: 30px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        .add-btn:hover { 
+            background: #c9b5b0; 
+            color: #412d3b; 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15); 
         }
-        
-        /* Responsive adjustments */
+        .table { 
+            width: 100%; 
+            margin-bottom: 0; 
+            border-collapse: collapse; 
+            table-layout: fixed; 
+        }
+        .table th { 
+            background: #f9fafb; 
+            color: #222; 
+            font-weight: 700; 
+            padding: 1rem; 
+            text-align: center; 
+            vertical-align: middle; 
+            border-bottom: 2px solid #e5e7eb; 
+        }
+        .table td { 
+            padding: 1rem; 
+            text-align: center; 
+            vertical-align: middle; 
+            color: #222; 
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb; 
+        }
+        /* Thêm style cho các cột cụ thể */
+        .table th:nth-child(1), /* ID */
+        .table td:nth-child(1) {
+            width: 5%;
+        }
+        .table th:nth-child(2), /* Hình ảnh */
+        .table td:nth-child(2) {
+            width: 8%;
+        }
+        .table th:nth-child(3), /* Tên Accessory */
+        .table td:nth-child(3) {
+            width: 30%;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .table th:nth-child(4), /* Giá */
+        .table td:nth-child(4) {
+            width: 15%;
+        }
+        .table th:nth-child(5), /* Tồn kho */
+        .table td:nth-child(5) {
+            width: 12%;
+        }
+        .table th:nth-child(6), /* Ngày tạo */
+        .table td:nth-child(6) {
+            width: 15%;
+        }
+        .table th:nth-child(7), /* Thao tác */
+        .table td:nth-child(7) {
+            width: 15%;
+        }
+        .table tbody tr:hover { 
+            background-color: #f9fafb; 
+        }
+        .accessory-image { 
+            width: 44px; 
+            height: 44px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb; 
+            transition: transform 0.3s; 
+        }
+        .accessory-image:hover { 
+            transform: scale(1.1); 
+        }
+        .stock-badge { 
+            padding: 0.3em 1em; 
+            border-radius: 999px; 
+            font-size: 0.95em; 
+            font-weight: 500; 
+            display: inline-block; 
+        }
+        .stock-high { 
+            background: #dcfce7; 
+            color: #166534; 
+        }
+        .stock-medium { 
+            background: #fef3c7; 
+            color: #92400e; 
+        }
+        .stock-low { 
+            background: #fee2e2; 
+            color: #991b1b; 
+        }
+        .btn-group-sm .btn { 
+            padding: 0.5rem; 
+            font-size: 0.875rem; 
+            border-radius: 8px; 
+            transition: all 0.2s; 
+        }
+        .btn-warning { 
+            background: #deccca !important; 
+            border-color: #deccca !important; 
+            color: #412d3b !important; 
+        }
+        .btn-warning:hover { 
+            background: #c9b5b0 !important; 
+            border-color: #c9b5b0 !important; 
+            color: #412d3b !important; 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15); 
+        }
+        .btn-danger { 
+            background:rgb(255, 87, 87) !important; 
+            border-color: rgb(255, 172, 172) !important; 
+            color: #fff !important; 
+        }
+        .btn-danger:hover { 
+            background: #b91c1c !important; 
+            border-color: #b91c1c !important; 
+            color: #fff !important; 
+            transform: translateY(-1px); 
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2); 
+        }
+        .pagination { 
+            margin-top: 1.5rem; 
+            justify-content: center; 
+            gap: 0.5rem; 
+        }
+        .page-link { 
+            color: #222; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 10px; 
+            padding: 0.5rem 1rem; 
+            transition: all 0.2s; 
+            font-weight: 500; 
+            min-width: 2.5rem;
+            text-align: center;
+        }
+        .page-link:hover { 
+            background: #edeaff; 
+            border-color: #edeaff; 
+            color: #222; 
+            transform: translateY(-1px); 
+        }
+        .page-item.active .page-link { 
+            background: #7b61ff; 
+            border-color: #7b61ff; 
+            color: #fff; 
+        }
+        .modal-content { 
+            border-radius: 16px; 
+            border: none; 
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); 
+        }
+        .modal-header { 
+            border-bottom: 1px solid #e5e7eb; 
+            padding: 1.2rem 1.5rem; 
+            background: #f9fafb; 
+            border-radius: 16px 16px 0 0; 
+        }
+        .modal-body { 
+            padding: 1.2rem 1.5rem; 
+        }
+        .modal-footer { 
+            border-top: 1px solid #e5e7eb; 
+            padding: 1.2rem 1.5rem; 
+            background: #f9fafb; 
+            border-radius: 0 0 16px 16px; 
+        }
+        .alert { 
+            border-radius: 16px; 
+            border: none; 
+            padding: 1.2rem 1.5rem; 
+            margin-bottom: 1.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        .alert i { 
+            font-size: 1.1rem; 
+        }
+        .alert-success { 
+            background: #dcfce7; 
+            color: #166534; 
+        }
+        .alert-danger { 
+            background: #fee2e2; 
+            color: #991b1b; 
+        }
+        .empty-state { 
+            text-align: center; 
+            padding: 2.5rem 1.5rem; 
+        }
+        .empty-state i { 
+            font-size: 3rem; 
+            color: #6b7280; 
+            margin-bottom: 1rem; 
+        }
+        .empty-state h5 { 
+            color: #222; 
+            margin-bottom: 0.7rem; 
+        }
+        .empty-state p { 
+            color: #6b7280; 
+            margin-bottom: 1.5rem; 
+        }
         @media (max-width: 768px) {
-            .table-search-section .row {
-                flex-direction: column;
-                gap: 15px;
+            .search-bar { 
+                flex-direction: column; 
             }
-            
-            .table-search-section .col-md-6 {
-                flex: none;
-                width: 100%;
+            .stat-card { 
+                height: 100px; 
+                padding: 1rem; 
             }
-            
-            .table-search-section .d-flex.gap-2 {
-                flex-direction: column;
-                gap: 10px;
+            .stat-number { 
+                font-size: 1.5rem; 
             }
-            
-            .table-search-section form.d-flex {
-                width: 100%;
+            .stat-label { 
+                font-size: 0.7rem; 
             }
-            
-            .stat-card {
-                height: 100px !important;
-                padding: 15px 10px !important;
+            .table-responsive { 
+                margin: 0 -15px; 
             }
-            
-            .stat-number {
-                font-size: 1.5rem !important;
+            .table th, 
+            .table td { 
+                padding: 0.75rem; 
+                font-size: 0.9rem; 
             }
-            
-            .stat-label {
-                font-size: 0.7rem !important;
+            .btn-group-sm .btn { 
+                padding: 0.4rem 0.8rem; 
             }
         }
     </style>
 </head>
-
 <body>
 <div class="container-fluid position-relative d-flex p-0">
     <?php 
@@ -406,14 +424,12 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
         include __DIR__.'/../dashboard/sidebar.php'; 
     }
     ?>
-    
     <div class="content">
         <?php 
         if (file_exists(__DIR__.'/../dashboard/navbar.php')) {
             include __DIR__.'/../dashboard/navbar.php'; 
         }
         ?>
-        
         <div class="container-fluid pt-4 px-4">
             <?php if (isset($success_message)): ?>
             <div class="alert alert-success alert-dismissible fade show">
@@ -421,95 +437,37 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-            
             <?php if (isset($error_message)): ?>
             <div class="alert alert-danger alert-dismissible fade show">
                 <i class="fas fa-exclamation-circle"></i> <?php echo $error_message; ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
-            
-            <!-- Header + Stats Cards Section -->
-            <div class="header-stats-section">
-                <div class="row align-items-center mb-4">
-                    <div class="col-12">
-                        <h2 class="mb-2"><i class="fas fa-headphones me-2"></i>Quản Lý Accessories</h2>
-                        <p class="mb-0">Quản lý các phụ kiện âm nhạc và thiết bị audio</p>
+            <div class="header-section">
+                <h2><i class="fas fa-headphones me-2"></i>Quản Lý Accessories</h2>
+                <p>Quản lý các phụ kiện âm nhạc và thiết bị audio</p>
                     </div>
-                </div>
-                
-                <div class="row g-4">
+            <div class="row g-4 mb-4">
                     <?php
-                    $stats_sql = "SELECT 
-                        COUNT(*) as total_accessories,
-                        SUM(stock) as total_stock,
-                        AVG(price) as avg_price,
-                        COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock
-                        FROM accessories";
+                $stats_sql = "SELECT COUNT(*) as total_accessories, SUM(stock) as total_stock, AVG(price) as avg_price, COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock FROM accessories";
                     $stats_result = $conn->query($stats_sql);
                     $stats = $stats_result->fetch_assoc();
                     ?>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div>
-                            <div class="stat-label">Tổng Accessories</div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div>
-                            <div class="stat-label">Tổng Tồn Kho</div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card">
-                            <div class="stat-number">$<?php echo number_format($stats['avg_price'], 2); ?></div>
-                            <div class="stat-label">Giá Trung Bình</div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card low-stock">
-                            <div class="stat-number"><?php echo $stats['low_stock']; ?></div>
-                            <div class="stat-label">Sắp Hết Hàng</div>
-                        </div>
-                    </div>
-                </div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div><div class="stat-label">Tổng Accessories</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div><div class="stat-label">Tổng Tồn Kho</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number">$<?php echo number_format($stats['avg_price'], 2); ?></div><div class="stat-label">Giá Trung Bình</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card low-stock"><div class="stat-number"><?php echo $stats['low_stock']; ?></div><div class="stat-label">Sắp Hết Hàng</div></div></div>
             </div>
-        
-        <!-- Search + Table Section -->
-        <div class="table-search-section">
-            <!-- Search Bar -->
-            <div class="row align-items-center mb-4">
-                <div class="col-md-6">
-                    <h5 class="mb-0">
-                        <i class="fas fa-list"></i> Danh Sách Accessories 
-                        <span class="badge bg-primary"><?php echo $total_records; ?> items</span>
-                    </h5>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex gap-2">
+            <div class="table-section">
+                <div class="search-bar">
                         <form method="GET" class="d-flex flex-grow-1">
-                            <input type="text" class="form-control me-2" placeholder="Tìm kiếm accessories..." 
-                                   name="search" value="<?php echo htmlspecialchars($search); ?>">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                            <?php if (!empty($search)): ?>
-                            <a href="accessory_list.php" class="btn btn-secondary ms-2">
-                                <i class="fas fa-times"></i>
-                            </a>
-                            <?php endif; ?>
+                        <input type="text" class="form-control" placeholder="Tìm kiếm accessories..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                         </form>
-                        <a href="add_accessory.php" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Thêm
-                        </a>
-                    </div>
+                    <a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Accessory</a>
                 </div>
-            </div>
-            
             <?php if ($result->num_rows > 0): ?>
             <div class="table-responsive">
-                <table class="table table-dark">
+                    <table class="table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -525,104 +483,31 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                         <?php while ($accessory = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?php echo $accessory['accessory_id']; ?></td>
-                            <td>
-                                <img src="<?php echo htmlspecialchars($accessory['image_url']); ?>" 
-                                     alt="<?php echo htmlspecialchars($accessory['accessory_name']); ?>"
-                                     class="accessory-image"
-                                     onerror="this.src='https://via.placeholder.com/60x60/ff6b35/ffffff?text=N/A'">
-                            </td>
-                            <td>
-                                <strong><?php echo htmlspecialchars($accessory['accessory_name']); ?></strong>
-                                <br>
-                                <small class="text-muted product-description">
-                                    <?php echo htmlspecialchars(substr($accessory['description'], 0, 50)) . '...'; ?>
-                                </small>
-                            </td>
-                            <td>
-                                <span class="fw-bold text-warning">$<?php echo number_format($accessory['price'], 2); ?></span>
-                            </td>
-                            <td>
-                                <?php
-                                $stock = $accessory['stock'];
-                                $badge_class = 'stock-high';
-                                if ($stock < 5) $badge_class = 'stock-low';
-                                elseif ($stock < 15) $badge_class = 'stock-medium';
-                                ?>
-                                <span class="stock-badge <?php echo $badge_class; ?>">
-                                    <?php echo $stock; ?>
-                                </span>
-                            </td>
-                            <td>
-                                <small><?php echo date('d/m/Y H:i', strtotime($accessory['created_at'])); ?></small>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="edit_accessory.php?id=<?php echo $accessory['accessory_id']; ?>" 
-                                       class="btn btn-warning" title="Chỉnh sửa">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <button type="button" class="btn btn-danger" 
-                                            onclick="deleteAccessory(<?php echo $accessory['accessory_id']; ?>, '<?php echo htmlspecialchars($accessory['accessory_name']); ?>')"
-                                            title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
+                                <td><img src="<?php echo htmlspecialchars($accessory['image_url']); ?>" alt="<?php echo htmlspecialchars($accessory['accessory_name']); ?>" class="accessory-image" onerror="this.src='https://via.placeholder.com/60x60/ff6b35/ffffff?text=N/A'"></td>
+                                <td><strong><?php echo htmlspecialchars($accessory['accessory_name']); ?></strong></td>
+                                <td><span class="fw-bold text-warning">$<?php echo number_format($accessory['price'], 2); ?></span></td>
+                                <td><?php $stock = $accessory['stock']; $badge_class = 'stock-high'; if ($stock < 5) $badge_class = 'stock-low'; elseif ($stock < 15) $badge_class = 'stock-medium'; ?><span class="stock-badge <?php echo $badge_class; ?>"><?php echo $stock; ?></span></td>
+                                <td><small><?php echo date('d/m/Y H:i', strtotime($accessory['created_at'])); ?></small></td>
+                                <td><div class="btn-group btn-group-sm"><a href="edit_accessory.php?id=<?php echo $accessory['accessory_id']; ?>" class="btn btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a><button type="button" class="btn btn-danger" onclick="deleteAccessory(<?php echo $accessory['accessory_id']; ?>, '<?php echo htmlspecialchars($accessory['accessory_name']); ?>')" title="Xóa"><i class="fas fa-trash"></i></button></div></td>
                         </tr>
                         <?php endwhile; ?>
                     </tbody>
                 </table>
             </div>
-            
-            <!-- Pagination -->
             <?php if ($total_pages > 1): ?>
             <nav aria-label="Accessories pagination">
-                <ul class="pagination justify-content-center mt-4">
-                    <?php if ($page > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo $page-1; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>">
-                            <i class="fas fa-chevron-left"></i> Trước
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                    
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                        <a class="page-link" href="?page=<?php echo $i; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>">
-                            <?php echo $i; ?>
-                        </a>
-                    </li>
-                    <?php endfor; ?>
-                    
-                    <?php if ($page < $total_pages): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo $page+1; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>">
-                            Sau <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                    <?php endif; ?>
+                    <ul class="pagination">
+                        <?php if ($page > 1): ?><li class="page-item"><a class="page-link" href="?page=<?php echo $page-1; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>"><i class="fas fa-chevron-left"></i> Trước</a></li><?php endif; ?>
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?><li class="page-item <?php echo $i == $page ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $i; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>"><?php echo $i; ?></a></li><?php endfor; ?>
+                        <?php if ($page < $total_pages): ?><li class="page-item"><a class="page-link" href="?page=<?php echo $page+1; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>">Sau <i class="fas fa-chevron-right"></i></a></li><?php endif; ?>
                 </ul>
             </nav>
             <?php endif; ?>
-            
             <?php else: ?>
-            <div class="text-center py-5">
-                <i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i>
-                <h5 style="color: #333;">Không có accessories nào</h5>
-                <p style="color: #6c757d;">
-                    <?php if (!empty($search)): ?>
-                        Không tìm thấy accessories nào với từ khóa "<?php echo htmlspecialchars($search); ?>"
-                    <?php else: ?>
-                        Chưa có accessories nào trong hệ thống
-                    <?php endif; ?>
-                </p>
-                <a href="add_accessory.php" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Thêm Accessory Đầu Tiên
-                </a>
-            </div>
+                <div class="text-center py-5"><i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i><h5 style="color: #333;">Không có accessories nào</h5><p style="color: #6c757d; "><?php if (!empty($search)): ?>Không tìm thấy accessories nào với từ khóa "<?php echo htmlspecialchars($search); ?>"<?php else: ?>Chưa có accessories nào trong hệ thống<?php endif; ?></p><a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Accessory Đầu Tiên</a></div>
             <?php endif; ?>
+            </div>
         </div>
-        
         <?php 
         if (file_exists(__DIR__.'/../dashboard/footer.php')) {
             include __DIR__.'/../dashboard/footer.php'; 
@@ -630,43 +515,16 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
         ?>
     </div>
 </div>
-    
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xác Nhận Xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Bạn có chắc chắn muốn xóa accessory <strong id="accessoryName"></strong>?</p>
-                <p class="text-warning"><i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <form method="POST" style="display: inline;">
-                    <input type="hidden" name="accessory_id" id="deleteAccessoryId">
-                    <button type="submit" name="delete" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Xóa
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    
+<div class="modal fade" id="deleteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Xác Nhận Xóa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Bạn có chắc chắn muốn xóa accessory <strong id="accessoryName"></strong>?</p><p class="text-warning"><i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><form method="POST" style="display: inline;"><input type="hidden" name="accessory_id" id="deleteAccessoryId"><button type="submit" name="delete" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button></form></div></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
     <script>
         function deleteAccessory(id, name) {
             document.getElementById('deleteAccessoryId').value = id;
             document.getElementById('accessoryName').textContent = name;
             new bootstrap.Modal(document.getElementById('deleteModal')).show();
         }
-        
-        // Auto-hide alerts after 5 seconds
         setTimeout(function() {
             var alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
@@ -677,9 +535,4 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
     </script>
 </body>
 </html>
-
-<?php
-$stmt->close();
-$count_stmt->close();
-$conn->close();
-?> 
+<?php $stmt->close(); $count_stmt->close(); $conn->close(); ?> 
