@@ -551,7 +551,10 @@ $total_count = $week_count + $month_count;
     
     <!-- Include Footer -->
     <?php include 'includes/footer.php'; ?>
-    
+
+    <!-- Include Chat Widget -->
+    <?php include 'includes/chat-widget.php'; ?>
+
     <!-- Scripts -->
     <script src="assets/js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
@@ -563,6 +566,12 @@ $total_count = $week_count + $month_count;
 
     <!-- Search JS -->
     <script src="assets/js/custom-search.js"></script>
+
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="includes/chat-widget.css">
+
+    <!-- Chat Widget JS -->
+    <script src="includes/chat-widget.js"></script>
 
     <script>
         // Local search functionality for new arrivals page

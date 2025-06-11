@@ -226,5 +226,14 @@ if ($artist_id > 0) {
     <p><a href="products.php?genre_id=2&debug=1">🐛 Original products.php</a></p>
     <!-- Include Footer -->
     <?php include 'includes/footer.php'; ?>
+
+    <!-- Include Chat Widget -->
+    <?php include 'includes/chat-widget.php'; ?>
+
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="includes/chat-widget.css">
+
+    <!-- Chat Widget JS -->
+    <script src="includes/chat-widget.js"></script>
 </body>
 </html>

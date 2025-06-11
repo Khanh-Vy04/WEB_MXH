@@ -2763,5 +2763,14 @@ Bạn có muốn tiếp tục thanh toán?
 
     <!-- Include Footer -->
     <?php include 'includes/footer.php'; ?>
+
+    <!-- Include Chat Widget -->
+    <?php include 'includes/chat-widget.php'; ?>
+
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="includes/chat-widget.css">
+
+    <!-- Chat Widget JS -->
+    <script src="includes/chat-widget.js"></script>
 </body>
 </html>

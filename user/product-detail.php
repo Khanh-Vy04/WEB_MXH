@@ -803,6 +803,9 @@ if (!empty($reviews)) {
     <!-- Include Footer -->
     <?php include 'includes/footer.php'; ?>
 
+    <!-- Include Chat Widget -->
+    <?php include 'includes/chat-widget.php'; ?>
+
     <!-- Include all js compiled plugins -->
     <script src="assets/js/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
@@ -814,6 +817,12 @@ if (!empty($reviews)) {
 
     <!-- Search JS -->
     <script src="assets/js/custom-search.js"></script>
+
+    <!-- Chat Widget CSS -->
+    <link rel="stylesheet" href="includes/chat-widget.css">
+
+    <!-- Chat Widget JS -->
+    <script src="includes/chat-widget.js"></script>
 
     <script>
         // Quantity Controls
