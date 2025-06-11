@@ -197,6 +197,112 @@ $cart_count = getCartItemCount();
             transform: translateY(-1px);
         }
 
+        /* Out of Stock Styles */
+        .out-of-stock-item {
+            background: #f8f9fa !important;
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .out-of-stock-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(220, 53, 69, 0.1) 10px,
+                rgba(220, 53, 69, 0.1) 20px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .out-of-stock-item .cart-item-image {
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .out-of-stock-item .cart-item-name {
+            color: #6c757d !important;
+            text-decoration: line-through;
+        }
+
+        .out-of-stock-item .cart-item-price {
+            color: #6c757d !important;
+        }
+
+        .out-of-stock-item .quantity-controls {
+            opacity: 0.5;
+        }
+
+        .out-of-stock-item .quantity-btn:disabled,
+        .out-of-stock-item .quantity-input:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            border-color: #dee2e6;
+        }
+
+        .out-of-stock-item .item-checkbox:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .out-of-stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .out-of-stock-warning {
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffecec 100%);
+            border: 2px solid #dc3545;
+            border-radius: 12px;
+            margin: 20px 0;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        }
+
+        .warning-content {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            gap: 15px;
+        }
+
+        .warning-content i {
+            font-size: 2rem;
+            color: #dc3545;
+            flex-shrink: 0;
+        }
+
+        .warning-text strong {
+            color: #dc3545;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning-text p {
+            color: #721c24;
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
         .cart-summary {
             background: #f8f9fa;
             border-radius: 10px;
@@ -1150,9 +1256,11 @@ $cart_count = getCartItemCount();
             cartData.items.forEach(function(item) {
                 const subtotal = parseFloat(item.price) * parseInt(item.quantity);
                 const imageUrl = item.image_url || 'assets/images/default-product.jpg';
+                const isOutOfStock = parseInt(item.stock) <= 0;
+                const outOfStockClass = isOutOfStock ? 'out-of-stock-item' : '';
                 
                 html += `
-                    <tr data-cart-id="${item.cart_id}">
+                    <tr data-cart-id="${item.cart_id}" class="${outOfStockClass}">
                         <td style="text-align: center;">
                             <input type="checkbox" class="item-checkbox" 
                                    value="${item.cart_id}" 
@@ -1160,7 +1268,7 @@ $cart_count = getCartItemCount();
                                    data-quantity="${item.quantity}"
                                    data-subtotal="${subtotal}"
                                    onchange="updateSelectedTotal()" 
-                                   checked>
+                                   ${isOutOfStock ? 'disabled' : 'checked'}>
                         </td>
                         <td>
                             <div style="display: flex; align-items: center;">
@@ -1172,8 +1280,11 @@ $cart_count = getCartItemCount();
                                     <div class="cart-item-type">
                                         ${item.item_type === 'product' ? 'Album nhạc' : 'Phụ kiện'}
                                     </div>
-                                    <div style="color: #999; font-size: 0.8rem;">
-                                        Còn lại: ${item.stock} sản phẩm
+                                    <div style="color: ${isOutOfStock ? '#dc3545' : '#999'}; font-size: 0.8rem; font-weight: ${isOutOfStock ? '600' : 'normal'};">
+                                        ${isOutOfStock ? 
+                                            '<i class="fa fa-times-circle"></i> Đã hết hàng' : 
+                                            `Còn lại: ${item.stock} sản phẩm`
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -1183,20 +1294,21 @@ $cart_count = getCartItemCount();
                             <div class="quantity-controls">
                                 <button class="quantity-btn" 
                                         onclick="updateQuantity(${item.cart_id}, ${item.quantity - 1})"
-                                        ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                                        ${isOutOfStock || item.quantity <= 1 ? 'disabled' : ''}>-</button>
                                 <input type="number" class="quantity-input" value="${item.quantity}" 
                                        min="1" max="${item.stock}" 
                                        onchange="updateQuantity(${item.cart_id}, this.value)"
-                                       onkeypress="if(event.key==='Enter') updateQuantity(${item.cart_id}, this.value)">
+                                       onkeypress="if(event.key==='Enter') updateQuantity(${item.cart_id}, this.value)"
+                                       ${isOutOfStock ? 'disabled' : ''}>
                                 <button class="quantity-btn" 
                                         onclick="updateQuantity(${item.cart_id}, ${item.quantity + 1})"
-                                        ${item.quantity >= item.stock ? 'disabled' : ''}>+</button>
+                                        ${isOutOfStock || item.quantity >= item.stock ? 'disabled' : ''}>+</button>
                             </div>
                         </td>
                         <td class="cart-item-price">${formatVND(subtotal)}</td>
                         <td>
                             <button class="remove-btn" onclick="removeItem(${item.cart_id})" 
-                                    title="Xóa sản phẩm">
+                                    title="${isOutOfStock ? 'Xóa sản phẩm hết hàng' : 'Xóa sản phẩm'}">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
@@ -1266,10 +1378,36 @@ $cart_count = getCartItemCount();
 
             container.html(html);
             
+            // Add out of stock warning if any
+            addOutOfStockWarning(cartData.items);
+            
             // Auto calculate selected total after displaying items
             setTimeout(function() {
                 updateSelectedTotal();
             }, 100);
+        }
+        
+        function addOutOfStockWarning(items) {
+            // Remove existing warning first
+            $('.out-of-stock-warning').remove();
+            
+            const outOfStockItems = items.filter(item => parseInt(item.stock) <= 0);
+            
+            if (outOfStockItems.length > 0) {
+                const warningHTML = `
+                    <div class="out-of-stock-warning">
+                        <div class="warning-content">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <div class="warning-text">
+                                <strong>Có ${outOfStockItems.length} sản phẩm đã hết hàng trong giỏ hàng</strong>
+                                <p>Những sản phẩm này không thể thanh toán. Vui lòng xóa khỏi giỏ hàng hoặc chờ nhập hàng.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                $('.cart-summary').before(warningHTML);
+            }
         }
 
         function displayEmptyCart() {
@@ -1375,7 +1513,7 @@ $cart_count = getCartItemCount();
         }
 
         function proceedToCheckout() {
-            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked:not(:disabled)');
             
             if (!cartData.items || cartData.items.length === 0) {
                 showErrorMessage('Giỏ hàng trống, không thể thanh toán');
@@ -1383,21 +1521,36 @@ $cart_count = getCartItemCount();
             }
             
             if (selectedCheckboxes.length === 0) {
-                showErrorMessage('Vui lòng chọn ít nhất 1 sản phẩm để thanh toán');
+                showErrorMessage('Vui lòng chọn ít nhất 1 sản phẩm có hàng để thanh toán');
                 return;
             }
             
-            // Collect selected items
+            // Collect selected items (only in-stock items)
             const selectedItems = [];
             selectedCheckboxes.forEach(checkbox => {
                 const cartId = checkbox.value;
                 const item = cartData.items.find(item => item.cart_id == cartId);
-                if (item) {
+                
+                // Double check stock availability
+                if (item && parseInt(item.stock) > 0) {
                     selectedItems.push(item);
                 }
             });
             
-            console.log('🛒 Selected items for checkout:', selectedItems);
+            // Final check for out of stock items
+            if (selectedItems.length === 0) {
+                showErrorMessage('Không có sản phẩm còn hàng để thanh toán');
+                return;
+            }
+            
+            // Check if any selected item is out of stock
+            const outOfStockItems = selectedItems.filter(item => parseInt(item.stock) <= 0);
+            if (outOfStockItems.length > 0) {
+                showErrorMessage('Một số sản phẩm đã hết hàng, vui lòng xóa khỏi giỏ hàng');
+                return;
+            }
+            
+            console.log('🛒 Selected items for checkout (in-stock only):', selectedItems);
             console.log('🎫 Selected voucher:', selectedVoucher);
             
             // Calculate final amount
@@ -1670,20 +1823,24 @@ Bạn có muốn tiếp tục thanh toán?
 
         function updateSelectedTotal() {
             console.log('📊 Updating selected total');
-            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked:not(:disabled)');
             const selectAllCheckbox = document.getElementById('select-all-checkbox');
-            const totalCheckboxes = document.querySelectorAll('.item-checkbox');
+            const totalCheckboxes = document.querySelectorAll('.item-checkbox:not(:disabled)');
             
             let selectedTotal = 0;
             let selectedCount = 0;
             
             selectedCheckboxes.forEach(checkbox => {
-                const subtotal = parseFloat(checkbox.dataset.subtotal);
-                selectedTotal += subtotal;
-                selectedCount++;
+                // Double check the item is not out of stock
+                const row = checkbox.closest('tr');
+                if (!row.classList.contains('out-of-stock-item')) {
+                    const subtotal = parseFloat(checkbox.dataset.subtotal);
+                    selectedTotal += subtotal;
+                    selectedCount++;
+                }
             });
             
-            // Update select all checkbox state
+            // Update select all checkbox state (only for in-stock items)
             if (selectAllCheckbox) {
                 if (selectedCount === 0) {
                     selectAllCheckbox.indeterminate = false;
@@ -1703,7 +1860,7 @@ Bạn có muốn tiếp tục thanh toán?
             // Update payment total considering voucher
             updatePaymentTotal(selectedTotal);
             
-            console.log('✅ Selected:', selectedCount, 'items, Total:', formatVND(selectedTotal));
+            console.log('✅ Selected:', selectedCount, 'items (in-stock only), Total:', formatVND(selectedTotal));
         }
 
         function updatePaymentTotal(selectedTotal) {
