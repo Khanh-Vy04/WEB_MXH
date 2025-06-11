@@ -62,7 +62,7 @@ app.post('/send-verification', async (req, res) => {
                     </h2>
                     
                     <p style="color: #666666; line-height: 1.6; margin: 0 0 20px 0; font-size: 16px;">
-                      Kính chào quý quản trị viên,
+                      Kính chào quý khách hàng,
                     </p>
                     
                     <p style="color: #666666; line-height: 1.6; margin: 0 0 25px 0; font-size: 16px;">

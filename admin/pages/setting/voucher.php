@@ -325,7 +325,7 @@ $vouchers_to_show = array_slice($sample_vouchers, $start, $per_page);
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://kit.fontawesome.com/4e9c2b1c2e.js" crossorigin="anonymous"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
 <script>
 // Fill modal with voucher data when Edit is clicked
 $(document).on('click', '.edit-voucher-btn', function() {

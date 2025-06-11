@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$currentPage = 'product';
+$currentPage = 'product_list';
 
 // Debug đường dẫn hiện tại
 echo "<script>console.log('Current directory: " . addslashes(__DIR__) . "');</script>";
@@ -330,7 +330,7 @@ function getUrlWithParams($params) {
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
 <script src="product_list.js"></script>
 <script>
 // Đơn giản hóa - để Bootstrap tự xử lý dropdown như các trang admin khác

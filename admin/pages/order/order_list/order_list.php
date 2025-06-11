@@ -10,13 +10,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $order_id = (int)$_POST['order_id'];
         $new_stage_id = (int)$_POST['stage_id'];
         
-        $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
-        $update_stmt->bind_param("ii", $new_stage_id, $order_id);
+        // Kiểm tra đơn hàng hiện tại có phải đã hủy không
+        $check_query = "SELECT stage_id, buyer_id, final_amount, payment_method FROM orders WHERE order_id = ?";
+        $check_stmt = $conn->prepare($check_query);
+        $check_stmt->bind_param("i", $order_id);
+        $check_stmt->execute();
+        $current_order = $check_stmt->get_result()->fetch_assoc();
         
-        if ($update_stmt->execute()) {
-            $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
+        if (!$current_order) {
+            $error_message = "Không tìm thấy đơn hàng #{$order_id}";
+        } else if ($current_order['stage_id'] == -1) {
+            $error_message = "Đơn hàng #{$order_id} đã bị hủy, không thể sửa đổi!";
         } else {
-            $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
+            // Nếu chuyển sang trạng thái hủy (-1), thực hiện hoàn tiền
+            if ($new_stage_id == -1) {
+                $conn->begin_transaction();
+                try {
+                    // Cập nhật trạng thái đơn hàng
+                    $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
+                    $update_stmt->bind_param("ii", $new_stage_id, $order_id);
+                    
+                    if (!$update_stmt->execute()) {
+                        throw new Exception("Không thể cập nhật trạng thái đơn hàng");
+                    }
+                    
+                    // Hoàn tiền nếu thanh toán bằng ví hoặc VNPay (đã thanh toán trước)
+                    if ($current_order['payment_method'] === 'wallet' || $current_order['payment_method'] === 'vnpay') {
+                        $refund_amount = $current_order['final_amount'];
+                        $buyer_id = $current_order['buyer_id'];
+                        
+                        // Cộng tiền vào ví user
+                        $refund_query = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
+                        $refund_stmt = $conn->prepare($refund_query);
+                        $refund_stmt->bind_param("di", $refund_amount, $buyer_id);
+                        
+                        if (!$refund_stmt->execute()) {
+                            throw new Exception("Không thể hoàn tiền vào ví");
+                        }
+                        
+                        $success_message = "Đã hủy đơn hàng #{$order_id} và hoàn tiền " . number_format($refund_amount, 0, '.', ',') . "đ vào ví khách hàng!";
+                    } else {
+                        $success_message = "Đã hủy đơn hàng #{$order_id} thành công! (COD - không cần hoàn tiền)";
+                    }
+                    
+                    $conn->commit();
+                } catch (Exception $e) {
+                    $conn->rollback();
+                    $error_message = "Lỗi hủy đơn hàng: " . $e->getMessage();
+                }
+            } else {
+                // Cập nhật bình thường
+                $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
+                $update_stmt->bind_param("ii", $new_stage_id, $order_id);
+                
+                if ($update_stmt->execute()) {
+                    $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
+                } else {
+                    $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
+                }
+            }
         }
     }
 }
@@ -79,6 +131,7 @@ $orders_query = "
         o.final_amount,
         o.voucher_discount,
         o.stage_id,
+        o.payment_method,
         u.user_id,
         u.username,
         u.full_name,
@@ -408,6 +461,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                 <i class="fas fa-box me-1"></i> Sản phẩm
                                             </th>
                                             <th style="padding: 15px;">
+                                                <i class="fas fa-credit-card me-1"></i> Thanh toán
+                                            </th>
+                                            <th style="padding: 15px;">
                                                 <i class="fas fa-money-bill me-1"></i> Tổng tiền
                                             </th>
                                             <th style="padding: 15px;">
@@ -421,7 +477,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                                     <tbody>
                                         <?php if (empty($orders)): ?>
                                             <tr>
-                                                <td colspan="7" class="text-center" style="border-radius: 10px;">
+                                                <td colspan="8" class="text-center" style="border-radius: 10px;">
                                                     <div class="py-4">
                                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                                         <h5 class="text-muted">Không có đơn hàng nào</h5>
@@ -461,6 +517,30 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <span class="badge bg-info"><?php echo $order['item_count']; ?> sản phẩm</span>
                                                     </td>
                                                     <td>
+                                                        <?php 
+                                                        $payment_icons = [
+                                                            'wallet' => 'fas fa-wallet',
+                                                            'vnpay' => 'fas fa-university', 
+                                                            'cash' => 'fas fa-money-bill-wave'
+                                                        ];
+                                                        $payment_names = [
+                                                            'wallet' => 'Ví AuraDisc',
+                                                            'vnpay' => 'VNPay',
+                                                            'cash' => 'Tiền mặt (COD)'
+                                                        ];
+                                                        $payment_colors = [
+                                                            'wallet' => 'primary',
+                                                            'vnpay' => 'info',
+                                                            'cash' => 'success'
+                                                        ];
+                                                        $payment_method = $order['payment_method'] ?? 'cash';
+                                                        ?>
+                                                        <span class="badge bg-<?php echo $payment_colors[$payment_method]; ?>">
+                                                            <i class="<?php echo $payment_icons[$payment_method]; ?> me-1"></i>
+                                                            <?php echo $payment_names[$payment_method]; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td>
                                                         <div class="amount-text"><?php echo number_format($order['final_amount'], 0, '.', ','); ?>đ</div>
                                                         <?php if ($order['voucher_discount'] > 0): ?>
                                                             <div class="text-muted small">
@@ -469,10 +549,12 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        <form method="POST" style="display: inline;">
+                                                        <form method="POST" style="display: inline;" id="stageForm_<?php echo $order['order_id']; ?>">
                                                             <input type="hidden" name="action" value="update_stage">
                                                             <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
-                                                            <select name="stage_id" class="stage-dropdown" onchange="this.form.submit()">
+                                                            <select name="stage_id" class="stage-dropdown" 
+                                                                    onchange="handleStageChange(this, <?php echo $order['order_id']; ?>, '<?php echo addslashes($order['payment_method']); ?>', <?php echo $order['final_amount']; ?>)"
+                                                                    <?php echo $order['stage_id'] == -1 ? 'disabled' : ''; ?>>
                                                                 <?php foreach ($stages as $stage_id => $stage): ?>
                                                                     <option value="<?php echo $stage_id; ?>" 
                                                                             <?php echo $order['stage_id'] == $stage_id ? 'selected' : ''; ?>>
@@ -484,6 +566,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <div class="mt-2">
                                                             <span class="stage-badge" style="background-color: <?php echo $order['color_code']; ?>">
                                                                 <?php echo htmlspecialchars($order['stage_name']); ?>
+                                                                <?php if ($order['stage_id'] == -1): ?>
+                                                                    <i class="fas fa-lock ms-1" title="Đơn hàng đã hủy không thể sửa đổi"></i>
+                                                                <?php endif; ?>
                                                             </span>
                                                         </div>
                                                     </td>
@@ -552,19 +637,140 @@ while ($stat = $stats_result->fetch_assoc()) {
         <!-- Content End -->
     </div>
 
+    <!-- Cancel Order Modal -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Xác nhận hủy đơn hàng
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Cảnh báo!</strong> Hành động này không thể hoàn tác.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h6><i class="fas fa-receipt me-2"></i>Thông tin đơn hàng:</h6>
+                            <ul class="list-unstyled ms-3">
+                                <li><strong>Mã đơn hàng:</strong> <span id="cancel-order-id"></span></li>
+                                <li><strong>Phương thức thanh toán:</strong> <span id="cancel-payment-method"></span></li>
+                                <li><strong>Số tiền:</strong> <span id="cancel-amount"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info" id="refund-info" style="display: none;">
+                        <i class="fas fa-wallet me-2"></i>
+                        <strong>Hoàn tiền:</strong> Số tiền <span id="refund-amount"></span> sẽ được hoàn lại vào ví khách hàng.
+                    </div>
+                    
+                    <div class="alert alert-secondary" id="cod-info" style="display: none;">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        <strong>COD:</strong> Đơn hàng thanh toán khi nhận hàng, không cần hoàn tiền.
+                    </div>
+                    
+                    <p class="text-muted">
+                        Bạn có chắc chắn muốn hủy đơn hàng này không?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Không, giữ đơn hàng
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                        <i class="fas fa-trash-alt me-1"></i> Có, hủy đơn hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
     
     <script>
+        let currentOrderForm = null;
+        let currentOrderData = null;
+        
         function viewOrderDetail(orderId) {
             // Mở modal hoặc chuyển trang xem chi tiết
             window.open(`/WEB_MXH/admin/pages/order/order_detail/order_detail.php?id=${orderId}`, '_blank');
         }
         
-
+        function handleStageChange(selectElement, orderId, paymentMethod, amount) {
+            const newStageId = selectElement.value;
+            const form = document.getElementById(`stageForm_${orderId}`);
+            
+            // Nếu chọn stage hủy đơn hàng (-1), hiển thị popup xác nhận
+            if (newStageId == -1) {
+                // Reset về giá trị cũ để tránh thay đổi khi chưa xác nhận
+                selectElement.value = selectElement.getAttribute('data-original-value') || selectElement.options[0].value;
+                
+                // Lưu thông tin để sử dụng sau
+                currentOrderForm = form;
+                currentOrderData = {
+                    orderId: orderId,
+                    paymentMethod: paymentMethod,
+                    amount: amount
+                };
+                
+                // Cập nhật thông tin trong modal
+                document.getElementById('cancel-order-id').textContent = '#' + orderId;
+                
+                const paymentNames = {
+                    'wallet': 'Ví AuraDisc',
+                    'vnpay': 'VNPay',
+                    'cash': 'Tiền mặt (COD)'
+                };
+                document.getElementById('cancel-payment-method').textContent = paymentNames[paymentMethod] || paymentMethod;
+                document.getElementById('cancel-amount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+                
+                // Hiển thị thông tin hoàn tiền
+                if (paymentMethod === 'wallet' || paymentMethod === 'vnpay') {
+                    document.getElementById('refund-amount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+                    document.getElementById('refund-info').style.display = 'block';
+                    document.getElementById('cod-info').style.display = 'none';
+                } else {
+                    document.getElementById('refund-info').style.display = 'none';
+                    document.getElementById('cod-info').style.display = 'block';
+                }
+                
+                // Hiển thị modal
+                const modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+                modal.show();
+                
+            } else {
+                // Cập nhật bình thường cho các trạng thái khác
+                form.submit();
+            }
+        }
         
+        // Xử lý xác nhận hủy đơn hàng
+        document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+            if (currentOrderForm && currentOrderData) {
+                // Cập nhật select về giá trị -1 và submit form
+                const select = currentOrderForm.querySelector('select[name="stage_id"]');
+                select.value = -1;
+                currentOrderForm.submit();
+            }
+        });
+        
+        // Lưu giá trị ban đầu của các select để có thể reset
+        document.addEventListener('DOMContentLoaded', function() {
+            const selects = document.querySelectorAll('.stage-dropdown');
+            selects.forEach(select => {
+                select.setAttribute('data-original-value', select.value);
+            });
+        });
+
         function exportOrders() {
             // Xuất dữ liệu ra Excel
             const search = '<?php echo addslashes($search); ?>';

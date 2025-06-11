@@ -71,17 +71,14 @@ if (isLoggedIn()) {
                         </li>
                         <?php else: ?>
                             <li class="user-menu-item">
-                                <a href="/WEB_MXH/index.php" class="user-menu-link">
+                                <a href="/WEB_MXH/login.php" class="user-menu-link">
                                     <i class="fa fa-sign-in"></i>
-                                    <span>Đăng nhập</span>
+                                    <span>Đăng nhập/Đăng ký
+                                        
+                                    </span>
                                 </a>
                             </li>
-                            <li class="user-menu-item">
-                                <a href="/WEB_MXH/index.php#register" class="user-menu-link">
-                                    <i class="fa fa-user-plus"></i>
-                                    <span>Đăng ký</span>
-                                </a>
-                            </li>
+                           
                         <?php endif; ?>
                     </ul>
                 </li><!--/.user dropdown-->
@@ -517,7 +514,7 @@ if (isLoggedIn()) {
                     <h3 style="margin-bottom: 20px; color: #333;">Cần Đăng Nhập</h3>
                     <p style="margin-bottom: 25px; color: #666;">${message}</p>
                     <div style="display: flex; gap: 15px; justify-content: center;">
-                        <a href="/WEB_MXH/index.php" class="btn" style="
+                        <a href="/WEB_MXH/login.php" class="btn" style="
                             background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
                             color: white;
                             padding: 12px 20px;

@@ -333,6 +333,10 @@ if (isset($_POST['add_voucher'])) {
         </div>
         
         </div> <!-- container-fluid pt-4 px-4 -->
+        
+        <!-- Footer Start -->
+        <?php include __DIR__.'/../dashboard/footer.php'; ?>
+        <!-- Footer End -->
     </div> <!-- content -->
 </div> <!-- container-fluid position-relative d-flex p-0 -->
 

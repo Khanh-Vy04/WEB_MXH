@@ -78,7 +78,7 @@ function processPayment() {
         }
         
         // 2. Tạo order trong bảng orders với payment_method
-        $stage_id = ($paymentMethod === 'cash') ? 0 : 1; // COD = 0 (chờ xác nhận), khác = 1 (đã thanh toán)
+        $stage_id = 0; // Mặc định tất cả đơn hàng đều có stage_id = 0 (chờ xác nhận)
         
         // Debug log for order creation
         error_log("Order Debug - UserID: {$user_id}, Total: {$selectedTotal}, Discount: {$discount}, Final: {$finalAmount}, Method: {$paymentMethod}, Stage: {$stage_id}");

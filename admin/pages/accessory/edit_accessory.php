@@ -389,7 +389,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
 <script>
     // Image preview functionality
     document.getElementById('image_url').addEventListener('input', function() {
