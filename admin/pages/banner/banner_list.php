@@ -28,8 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $stmt->bind_param("i", $banner_id);
                     
                     if ($stmt->execute()) {
-                        $message = "Xóa banner thành công!";
-                        $messageType = "success";
+                        // Redirect to avoid form resubmission
+                        $redirect_url = $_SERVER['PHP_SELF'];
+                        if (!empty($_GET)) {
+                            $redirect_url .= '?' . http_build_query($_GET);
+                        }
+                        header("Location: $redirect_url");
+                        exit();
                     } else {
                         $message = "Lỗi khi xóa banner: " . $conn->error;
                         $messageType = "error";
@@ -54,9 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $update_stmt->bind_param("ii", $newStatus, $banner_id);
                         
                         if ($update_stmt->execute()) {
-                            $statusText = $newStatus == 1 ? 'kích hoạt' : 'vô hiệu hóa';
-                            $message = "Đã $statusText banner thành công!";
-                            $messageType = "success";
+                            // Redirect to avoid form resubmission
+                            $redirect_url = $_SERVER['PHP_SELF'];
+                            if (!empty($_GET)) {
+                                $redirect_url .= '?' . http_build_query($_GET);
+                            }
+                            header("Location: $redirect_url");
+                            exit();
                         } else {
                             $message = "Lỗi khi cập nhật trạng thái: " . $conn->error;
                             $messageType = "error";
@@ -143,10 +152,38 @@ $end = min($start + $rowsPerPage, $totalRows);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
+        /* Strong footer positioning fix */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        .container-fluid.position-relative.d-flex.p-0 {
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        .content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .content > .container-fluid.pt-4.px-4:first-of-type {
+            flex: 1;
+        }
+        
+        /* Target footer specifically */
+        .content > .container-fluid.pt-4.px-4:last-of-type {
+            margin-top: auto;
+        }
+        
         .banner-container {
-            background: #191C24;
+            background: #F5F5F5;
             border-radius: 10px;
             padding: 25px;
+            border: 1px solid #E0E0E0;
         }
         
         .header-section {
@@ -159,7 +196,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .page-title {
-            color: #fff;
+            color: #333;
             font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
@@ -175,19 +212,19 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .search-box {
-            background: #2C3E50;
-            border: 1px solid #34495E;
+            background: #FFFFFF;
+            border: 1px solid #DDD;
             border-radius: 8px;
             padding: 10px 15px;
-            color: #fff;
+            color: #333;
             width: 300px;
             max-width: 100%;
         }
         
         .search-box:focus {
             outline: none;
-            border-color: #3498DB;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #deccca;
+            box-shadow: 0 0 0 2px rgba(222, 204, 202, 0.2);
         }
         
         .btn-group {
@@ -197,16 +234,16 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .entries-select {
-            background: #2C3E50;
-            border: 1px solid #34495E;
-            color: #fff;
+            background: #FFFFFF;
+            border: 1px solid #DDD;
+            color: #333;
             padding: 8px 12px;
             border-radius: 5px;
         }
         
         .btn-add {
-            background: #27AE60;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
@@ -216,35 +253,39 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .btn-add:hover {
-            background: #229954;
-            color: white;
+            background: #c9b5b0;
+            color: #412d3b;
             text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15);
         }
         
         .banner-table {
             width: 100%;
-            background: #2C3E50;
+            background: #FFFFFF;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #E0E0E0;
         }
         
         .banner-table th {
-            background: #34495E;
-            color: #BDC3C7;
+            background: #F8F9FA;
+            color: #333;
             padding: 15px;
             text-align: left;
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            font-size: 1rem;
+            border-bottom: 2px solid #412d3b;
+            white-space: nowrap;
         }
         
         .banner-table td {
             padding: 15px;
-            color: #ECF0F1;
-            border-bottom: 1px solid #34495E;
+            color: #333;
+            border-bottom: 1px solid #E0E0E0;
             vertical-align: middle;
+            background: #FFFFFF;
         }
         
         .banner-table tr:last-child td {
@@ -252,7 +293,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .banner-table tr:hover {
-            background: #34495E;
+            background: #F8F9FA;
         }
         
         .banner-preview {
@@ -260,12 +301,12 @@ $end = min($start + $rowsPerPage, $totalRows);
             height: 60px;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid #34495E;
+            border: 2px solid #DDD;
         }
         
         .banner-title {
             font-weight: 600;
-            color: #3498DB;
+            color: #333;
             font-size: 1.1rem;
             margin-bottom: 5px;
         }
@@ -276,7 +317,7 @@ $end = min($start + $rowsPerPage, $totalRows);
             line-height: 1.4;
         }
         
-        .status-badge {
+        .badge {
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -284,13 +325,13 @@ $end = min($start + $rowsPerPage, $totalRows);
             text-transform: uppercase;
         }
         
-        .status-active {
-            background: #27AE60;
+        .bg-success {
+            background-color: #28a745 !important;
             color: white;
         }
         
-        .status-inactive {
-            background: #E74C3C;
+        .bg-danger {
+            background-color: #dc3545 !important;
             color: white;
         }
         
@@ -299,9 +340,9 @@ $end = min($start + $rowsPerPage, $totalRows);
             gap: 8px;
         }
         
-        .btn-action {
+        .btn {
             padding: 8px 12px;
-            border: none;
+            border: 1px solid;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
@@ -312,33 +353,58 @@ $end = min($start + $rowsPerPage, $totalRows);
             gap: 5px;
         }
         
-        .btn-edit {
-            background: #3498DB;
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
             color: white;
         }
         
-        .btn-edit:hover {
-            background: #2980B9;
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
             color: white;
             text-decoration: none;
         }
         
-        .btn-toggle {
-            background: #F39C12;
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: #212529;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
             color: white;
         }
         
-        .btn-toggle:hover {
-            background: #E67E22;
-        }
-        
-        .btn-delete {
-            background: #E74C3C;
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
             color: white;
         }
         
-        .btn-delete:hover {
-            background: #C0392B;
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            color: white;
         }
         
         .pagination-container {
@@ -351,7 +417,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .pagination-info {
-            color: #BDC3C7;
+            color: #666;
             font-size: 0.9rem;
         }
         
@@ -362,22 +428,25 @@ $end = min($start + $rowsPerPage, $totalRows);
         
         .pagination a, .pagination span {
             padding: 8px 12px;
-            background: #34495E;
-            color: #BDC3C7;
+            background: #FFFFFF;
+            color: #333;
             text-decoration: none;
             border-radius: 5px;
+            border: 1px solid #DDD;
             transition: all 0.3s;
         }
         
         .pagination a:hover {
-            background: #3498DB;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             text-decoration: none;
+            border-color: #deccca;
         }
         
         .pagination .current {
-            background: #3498DB;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
+            border-color: #deccca;
         }
         
         .alert {
@@ -401,7 +470,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         
         .no-data {
             text-align: center;
-            color: #BDC3C7;
+            color: #666;
             padding: 40px;
             font-style: italic;
         }
@@ -454,7 +523,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Header -->
                             <div class="header-section">
                                 <h2 class="page-title">
-                                    <i class="fas fa-images me-3"></i>Quản Lý Banner
+                                    <i class="fas fa-images me-3"></i>Banner Management
                                 </h2>
                             </div>
                             
@@ -471,7 +540,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     <input type="text" 
                                            name="search" 
                                            class="search-box"
-                                           placeholder="Tìm kiếm banner..." 
+                                           placeholder="Search banner..." 
                                            value="<?php echo htmlspecialchars($search); ?>">
                                 </form>
                                 
@@ -487,7 +556,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     </form>
                                     
                                     <a href="add_banner.php" class="btn-add">
-                                        <i class="fas fa-plus me-2"></i>Thêm Banner
+                                        <i class="fas fa-plus me-2"></i>Add New Banner
                                     </a>
                                 </div>
                             </div>
@@ -498,11 +567,11 @@ $end = min($start + $rowsPerPage, $totalRows);
                                 <thead>
                                     <tr>
                                         <th style="width: 80px;">ID</th>
-                                        <th style="width: 150px;">Hình ảnh</th>
-                                        <th>Thông tin</th>
-                                        <th style="width: 100px;">Thứ tự</th>
-                                        <th style="width: 100px;">Trạng thái</th>
-                                        <th style="width: 200px;">Hành động</th>
+                                        <th style="width: 150px;">Image</th> 
+                                        <th style="width: 300px;">Information</th>
+                                        <th style="width: 120px; text-align: left; padding-left: 20px;">Display Order</th>
+                                        <th style="width: 100px;">Status</th>
+                                        <th style="width: 200px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -519,43 +588,38 @@ $end = min($start + $rowsPerPage, $totalRows);
                                             <div class="banner-title">
                                                 <?php echo htmlspecialchars($banner['banner_title'] ?: 'Không có tiêu đề'); ?>
                                             </div>
-                                            <div class="banner-description">
-                                                <?php echo htmlspecialchars($banner['banner_description'] ?: 'Không có mô tả'); ?>
-                                            </div>
-                                            <small style="color: #7F8C8D;">
-                                                URL: <?php echo htmlspecialchars(substr($banner['banner_url'], 0, 50)) . (strlen($banner['banner_url']) > 50 ? '...' : ''); ?>
-                                            </small>
                                         </td>
-                                        <td>
+                                        <td style="text-align: left; padding-left: 20px;">
                                             <span style="font-weight: 600; color: #3498DB;">
                                                 <?php echo $banner['display_order']; ?>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="status-badge <?php echo $banner['is_active'] ? 'status-active' : 'status-inactive'; ?>">
-                                                <?php echo $banner['is_active'] ? 'Hoạt động' : 'Tạm dừng'; ?>
-                                            </span>
+                                            <?php if($banner['is_active']): ?>
+                                                <span class="badge bg-success">Active</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-danger">Inactive</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="edit_banner.php?id=<?php echo $banner['banner_id']; ?>" class="btn-action btn-edit">
-                                                    <i class="fas fa-edit"></i> Sửa
+                                                <a href="edit_banner.php?id=<?php echo $banner['banner_id']; ?>" class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                                 
-                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn thay đổi trạng thái banner này?')">
+                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to change the status of this banner?')">
                                                     <input type="hidden" name="action" value="toggle_status">
                                                     <input type="hidden" name="banner_id" value="<?php echo $banner['banner_id']; ?>">
-                                                    <button type="submit" class="btn-action btn-toggle">
-                                                        <i class="fas fa-toggle-<?php echo $banner['is_active'] ? 'on' : 'off'; ?>"></i>
-                                                        <?php echo $banner['is_active'] ? 'Tắt' : 'Bật'; ?>
+                                                    <button type="submit" class="btn btn-sm <?php echo $banner['is_active'] ? 'btn-warning' : 'btn-success'; ?>" title="<?php echo $banner['is_active'] ? 'Deactivate' : 'Activate'; ?>">
+                                                        <i class="fas <?php echo $banner['is_active'] ? 'fa-pause' : 'fa-play'; ?>"></i>
                                                     </button>
                                                 </form>
                                                 
-                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa banner này?')">
+                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this banner?')">
                                                     <input type="hidden" name="action" value="delete">
                                                     <input type="hidden" name="banner_id" value="<?php echo $banner['banner_id']; ?>">
-                                                    <button type="submit" class="btn-action btn-delete">
-                                                        <i class="fas fa-trash"></i> Xóa
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                             </div>
@@ -568,7 +632,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Pagination -->
                             <div class="pagination-container">
                                 <div class="pagination-info">
-                                    Hiển thị <?php echo $start + 1; ?> đến <?php echo $end; ?> trong tổng số <?php echo $totalRows; ?> banner
+                                    Showing <?php echo $start + 1; ?> to <?php echo $end; ?> of <?php echo $totalRows; ?> banners
                                 </div>
                                 
                                 <?php if ($totalPages > 1): ?>

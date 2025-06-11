@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 $currentPage = 'genre';
 
 // Kết nối database
-$config_path = '../../config/database.php';
+$config_path = '../../../config/database.php';
 if (!file_exists($config_path)) {
     die("Cannot find database config file");
 }
@@ -84,11 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .form-container {
-            background: #191C24;
+            background: #F5F5F5;
             border-radius: 15px;
             padding: 30px;
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
+            border: 1px solid #E0E0E0;
         }
         
         .form-group {
@@ -96,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-label {
-            color: #fff;
+            color: #333;
             font-weight: 600;
             margin-bottom: 10px;
             display: block;
@@ -104,9 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-control {
-            background: #2C3E50;
-            border: 2px solid #34495E;
-            color: #fff;
+            background: #FFFFFF;
+            border: 2px solid #DDD;
+            color: #333;
             border-radius: 8px;
             padding: 15px;
             font-size: 1rem;
@@ -114,20 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-control:focus {
-            background: #34495E;
-            border-color: #3498DB;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            background: #FFFFFF;
+            border-color: #deccca;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(222, 204, 202, 0.25);
             outline: none;
         }
         
         .form-control::placeholder {
-            color: #BDC3C7;
+            color: #888;
         }
         
         .btn-primary {
-            background: #3498DB;
-            border-color: #3498DB;
+            background: #deccca;
+            border-color: #deccca;
+            color: #412d3b;
             padding: 15px 30px;
             font-weight: 600;
             font-size: 1rem;
@@ -136,14 +138,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .btn-primary:hover {
-            background: #2980B9;
-            border-color: #2980B9;
+            background: #c9b5b0;
+            border-color: #c9b5b0;
+            color: #412d3b;
             transform: translateY(-2px);
         }
         
         .btn-secondary {
-            background: #6C757D;
-            border-color: #6C757D;
+            background: #deccca;
+            border-color: #deccca;
+            color: #412d3b;
             padding: 15px 30px;
             font-weight: 600;
             font-size: 1rem;
@@ -152,8 +156,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .btn-secondary:hover {
-            background: #5A6268;
-            border-color: #5A6268;
+            background: #c9b5b0;
+            border-color: #c9b5b0;
+            color: #412d3b;
             transform: translateY(-2px);
         }
         
@@ -186,15 +191,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .page-title {
-            color: #fff;
+            color: #333;
             font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
         }
         
         .btn-back {
-            background: #6C757D;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
@@ -204,8 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .btn-back:hover {
-            background: #5A6268;
-            color: white;
+            background: #c9b5b0;
+            color: #412d3b;
             text-decoration: none;
             transform: translateY(-2px);
         }
@@ -222,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         .form-help {
-            color: #BDC3C7;
+            color: #666;
             font-size: 0.9rem;
             margin-top: 5px;
         }
@@ -231,6 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             .form-container {
                 padding: 20px;
                 margin: 0 15px;
+                max-width: calc(100% - 30px);
             }
             
             .page-header {
@@ -272,10 +278,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Header -->
                             <div class="page-header">
                                 <h2 class="page-title">
-                                    <i class="fas fa-plus-circle me-3"></i>Thêm Dòng Nhạc Mới
+                                    <i class="fas fa-plus-circle me-3"></i>Add New Genre
                                 </h2>
                                 <a href="genre_list.php" class="btn-back">
-                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                    <i class="fas fa-arrow-left me-2"></i>Back
                                 </a>
                             </div>
                             
@@ -290,38 +296,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <form method="POST" id="addGenreForm">
                                 <div class="form-group">
                                     <label for="genre_name" class="form-label">
-                                        <i class="fas fa-music me-2"></i>Tên Dòng Nhạc <span class="required">*</span>
+                                        <i class="fas fa-music me-2"></i>Genre Name <span class="required">*</span>
                                     </label>
                                     <input type="text" 
                                            class="form-control" 
                                            id="genre_name" 
                                            name="genre_name" 
                                            value="<?php echo isset($genre_name) ? htmlspecialchars($genre_name) : ''; ?>"
-                                           placeholder="Nhập tên dòng nhạc (VD: Rock, Pop, Jazz...)"
+                                           placeholder="Enter the name of the music genre (e.g., Rock, Pop, Jazz...)."
                                            maxlength="100"
                                            required>
-                                    <div class="form-help">Tối đa 100 ký tự</div>
+                                    <div class="form-help">Maximum 100 characters</div>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="description" class="form-label">
-                                        <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
+                                        <i class="fas fa-align-left me-2"></i>Description <span class="required">*</span>
                                     </label>
                                     <textarea class="form-control" 
                                               id="description" 
                                               name="description" 
                                               rows="6"
-                                              placeholder="Nhập mô tả chi tiết về dòng nhạc này..."
+                                              placeholder="Enter a detailed description of this music genre..."
                                               required><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
-                                    <div class="form-help">Mô tả đặc điểm, phong cách và các thông tin liên quan đến dòng nhạc</div>
+                                    <div class="form-help">Describe the characteristics, style, and related information of the music genre.</div>
                                 </div>
                                 
                                 <div class="form-buttons">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Thêm Dòng Nhạc
+                                        <i class="fas fa-save me-2"></i>Add Genre
                                     </button>
                                     <button type="reset" class="btn btn-secondary">
-                                        <i class="fas fa-undo me-2"></i>Đặt Lại
+                                        <i class="fas fa-undo me-2"></i>Reset
                                     </button>
                                 </div>
                             </form>

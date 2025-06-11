@@ -228,7 +228,7 @@ function getUrlWithParams($params) {
                                             <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
                                         </select>
                                     </div>
-                                    <a href="/WEB_MXH/admin/pages/artist/add_artist.php" class="add-btn"><i class="fas fa-plus"></i> Add Artist</a>
+                                    <a href="/WEB_MXH/admin/pages/artist/add_artist.php" class="add-btn"><i class="fas fa-plus"></i> Add New Artist</a>
                                 </div>
                             </div>
 

@@ -76,7 +76,7 @@ $currentPageNumber = max(1, min($currentPageNumber, $totalPages));
 $offset = ($currentPageNumber - 1) * $rowsPerPage;
 
 // Lấy dữ liệu với phân trang
-$sql = "SELECT * FROM genres $where_clause ORDER BY genre_id DESC LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM genres $where_clause ORDER BY genre_id ASC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 
 if (!empty($params)) {
@@ -116,9 +116,10 @@ $end = min($start + $rowsPerPage, $totalRows);
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .genres-container {
-            background: #191C24;
+            background: #F5F5F5;
             border-radius: 10px;
             padding: 25px;
+            border: 1px solid #E0E0E0;
         }
         
         .header-section {
@@ -131,7 +132,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .page-title {
-            color: #fff;
+            color: #333;
             font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
@@ -147,19 +148,19 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .search-box {
-            background: #2C3E50;
-            border: 1px solid #34495E;
+            background: #FFFFFF;
+            border: 1px solid #DDD;
             border-radius: 8px;
             padding: 10px 15px;
-            color: #fff;
+            color: #333;
             width: 300px;
             max-width: 100%;
         }
         
         .search-box:focus {
             outline: none;
-            border-color: #3498DB;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            border-color: #deccca;
+            box-shadow: 0 0 0 2px rgba(222, 204, 202, 0.2);
         }
         
         .btn-group {
@@ -169,16 +170,16 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .entries-select {
-            background: #2C3E50;
-            border: 1px solid #34495E;
-            color: #fff;
+            background: #FFFFFF;
+            border: 1px solid #DDD;
+            color: #333;
             padding: 8px 12px;
             border-radius: 5px;
         }
         
         .btn-add {
-            background: #27AE60;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
@@ -188,34 +189,59 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .btn-add:hover {
-            background: #229954;
-            color: white;
+            background: #c9b5b0;
+            color: #412d3b;
             text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15);
         }
         
         .genres-table {
             width: 100%;
-            background: #2C3E50;
+            max-width: 1200px;
+            background: #FFFFFF;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #E0E0E0;
+            margin: 0 auto;
+            table-layout: fixed;
         }
         
         .genres-table th {
-            background: #34495E;
-            color: #BDC3C7;
+            background: #F8F9FA;
+            color: #333;
             padding: 15px;
             text-align: left;
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            font-size: 1rem;
+            border-bottom: 2px solid #412d3b;
+        }
+        
+        .genres-table th:nth-child(3) {
+            text-align: left;
+            padding-left: 150px;
+        }
+        
+        .genres-table th:nth-child(4) {
+            text-align: left;
+            padding-left: 25px;
+        }
+        
+        .genres-table td:nth-child(3) {
+            text-align: justify;
+        }
+        
+        .genres-table td:nth-child(4) {
+            text-align: left;
+            padding-left: 25px;
         }
         
         .genres-table td {
             padding: 15px;
-            color: #ECF0F1;
-            border-bottom: 1px solid #34495E;
+            color: #333;
+            border-bottom: 1px solid #E0E0E0;
+            background: #FFFFFF;
         }
         
         .genres-table tr:last-child td {
@@ -223,17 +249,17 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .genres-table tr:hover {
-            background: #34495E;
+            background: #F8F9FA;
         }
         
         .genre-name {
             font-weight: 600;
-            color: #3498DB;
+            color: #333;
             font-size: 1.1rem;
         }
         
         .genre-description {
-            color: #BDC3C7;
+            color: #666;
             line-height: 1.5;
             max-width: 400px;
         }
@@ -244,35 +270,44 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .btn-edit {
-            background: #F39C12;
-            color: white;
+            background: #deccca !important;
+            border-color: #deccca !important;
+            color: #412d3b !important;
             padding: 6px 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 0.85rem;
             transition: all 0.3s;
         }
         
         .btn-edit:hover {
-            background: #E67E22;
-            color: white;
+            background: #c9b5b0 !important;
+            border-color: #c9b5b0 !important;
+            color: #412d3b !important;
             text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15);
         }
         
         .btn-delete {
-            background: #E74C3C;
-            color: white;
+            background: rgb(255, 87, 87) !important;
+            border-color: rgb(255, 172, 172) !important;
+            color: #fff !important;
             padding: 6px 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s;
         }
         
         .btn-delete:hover {
-            background: #C0392B;
+            background: #b91c1c !important;
+            border-color: #b91c1c !important;
+            color: #fff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
         }
         
         .pagination-section {
@@ -285,7 +320,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .entries-info {
-            color: #BDC3C7;
+            color: #666;
             font-size: 0.9rem;
         }
         
@@ -295,20 +330,20 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .page-btn {
-            background: #2C3E50;
-            color: #BDC3C7;
+            background: #FFFFFF;
+            color: #333;
             padding: 8px 12px;
-            border: 1px solid #34495E;
+            border: 1px solid #DDD;
             text-decoration: none;
             border-radius: 5px;
             transition: all 0.3s;
         }
         
         .page-btn:hover, .page-btn.active {
-            background: #3498DB;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             text-decoration: none;
-            border-color: #3498DB;
+            border-color: #deccca;
         }
         
         .alert {
@@ -332,7 +367,7 @@ $end = min($start + $rowsPerPage, $totalRows);
         
         .no-data {
             text-align: center;
-            color: #BDC3C7;
+            color: #666;
             padding: 40px;
             font-style: italic;
         }
@@ -380,7 +415,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Header -->
                             <div class="header-section">
                                 <h2 class="page-title">
-                                    <i class="fas fa-music me-3"></i>Quản Lý Dòng Nhạc
+                                    <i class="fas fa-music me-3"></i>Genre Management
                                 </h2>
                             </div>
                             
@@ -397,7 +432,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     <input type="text" 
                                            name="search" 
                                            class="search-box"
-                                           placeholder="Tìm kiếm dòng nhạc..." 
+                                           placeholder="Search music genre..." 
                                            value="<?php echo htmlspecialchars($search); ?>">
                                 </form>
                                 
@@ -412,8 +447,8 @@ $end = min($start + $rowsPerPage, $totalRows);
                                         </select>
                                     </form>
                                     
-                                    <a href="add_genre.php" class="btn-add">
-                                        <i class="fas fa-plus me-2"></i>Thêm Dòng Nhạc
+                                    <a href="/WEB_MXH/admin/pages/genre/add_genre.php" class="btn-add">
+                                        <i class="fas fa-plus me-2"></i>Add New Genre
                                     </a>
                                 </div>
                             </div>
@@ -424,9 +459,9 @@ $end = min($start + $rowsPerPage, $totalRows);
                                 <thead>
                                     <tr>
                                         <th style="width: 80px;">ID</th>
-                                        <th style="width: 200px;">Tên Dòng Nhạc</th>
-                                        <th>Mô Tả</th>
-                                        <th style="width: 150px;">Hành Động</th>
+                                        <th style="width: 200px;">Genre</th>
+                                        <th style="width: 400px;">Description</th>
+                                        <th style="width: 120px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -444,13 +479,13 @@ $end = min($start + $rowsPerPage, $totalRows);
                                         <td>
                                             <div class="action-buttons">
                                                 <a href="edit_genre.php?id=<?php echo $genre['genre_id']; ?>" class="btn-edit">
-                                                    <i class="fas fa-edit me-1"></i>Sửa
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa dòng nhạc này?')">
                                                     <input type="hidden" name="action" value="delete">
                                                     <input type="hidden" name="genre_id" value="<?php echo $genre['genre_id']; ?>">
                                                     <button type="submit" class="btn-delete">
-                                                        <i class="fas fa-trash me-1"></i>Xóa
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                             </div>

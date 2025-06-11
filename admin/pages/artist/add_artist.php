@@ -96,43 +96,76 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .form-container {
-            background: #191C24;
+            background: #F5F5F5;
             border-radius: 10px;
             padding: 30px;
+            border: 1px solid #E0E0E0;
         }
         .form-group {
             margin-bottom: 20px;
         }
         .form-label {
-            color: #fff;
+            color: #333;
             font-weight: 600;
             margin-bottom: 8px;
             display: block;
         }
         .form-control {
-            background: #2C3E50;
-            border: 1px solid #34495E;
-            color: #fff;
+            background: #FFFFFF;
+            border: 1px solid #DDD;
+            color: #333;
             border-radius: 5px;
             padding: 12px 15px;
         }
         .form-control:focus {
-            background: #34495E;
-            border-color: #3498DB;
-            color: #fff;
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            background: #FFFFFF;
+            border-color: #deccca;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(222, 204, 202, 0.25);
         }
         .btn-primary {
-            background: #3498DB;
-            border-color: #3498DB;
+            background: #deccca;
+            border-color: #deccca;
+            color: #412d3b;
             padding: 12px 30px;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: #c9b5b2;
+            border-color: #c9b5b2;
+            color: #412d3b;
+            transform: translateY(-1px);
+        }
+        .btn-primary:active,
+        .btn-primary:focus,
+        .btn-primary.active {
+            background: #c9b5b2 !important;
+            border-color: #c9b5b2 !important;
+            color: #412d3b !important;
+            box-shadow: none !important;
         }
         .btn-secondary {
-            background: #6C757D;
-            border-color: #6C757D;
+            background: #deccca;
+            border-color: #deccca;
+            color: #412d3b;
             padding: 12px 30px;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background: #c9b5b2;
+            border-color: #c9b5b2;
+            color: #412d3b;
+            transform: translateY(-1px);
+        }
+        .btn-secondary:active,
+        .btn-secondary:focus,
+        .btn-secondary.active {
+            background: #c9b5b2 !important;
+            border-color: #c9b5b2 !important;
+            color: #412d3b !important;
+            box-shadow: none !important;
         }
         .alert {
             border-radius: 5px;
@@ -152,20 +185,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .image-preview {
             max-width: 200px;
             max-height: 200px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin-top: 10px;
+            border: 2px solid #ddd;
             display: none;
+        }
+        .image-preview-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 2px dashed #ddd;
+            margin-bottom: 20px;
+            margin-top: 35px;
         }
         .form-check {
             margin-top: 10px;
         }
         .form-check-input {
-            background: #2C3E50;
-            border-color: #34495E;
+            background: #FFFFFF;
+            border: 2px solid #DDD;
+            width: 20px;
+            height: 20px;
+        }
+        .form-check-input:checked {
+            background: #deccca;
+            border-color: #deccca;
+        }
+        .form-check-input:checked::before {
+            content: "✓";
+            color: #412d3b;
+            font-weight: bold;
+            font-size: 12px;
+            position: absolute;
+            top: 1px;
+            left: 3px;
+        }
+        .form-check-input:focus {
+            border-color: #deccca;
+            box-shadow: 0 0 0 0.2rem rgba(222, 204, 202, 0.25);
         }
         .form-check-label {
-            color: #fff;
+            color: #333;
             margin-left: 8px;
+        }
+        .text-white {
+            color: #333 !important;
+        }
+        .text-muted {
+            color: #666 !important;
+        }
+        #noImageText {
+            color: #666;
         }
     </style>
 </head>
@@ -191,10 +262,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="form-container">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="text-white mb-0">
-                                    <i class="fas fa-plus-circle me-2"></i>Thêm Nghệ Sĩ Mới
+                                    <i class="fas fa-plus-circle me-2"></i>Add New Artist
                                 </h4>
                                 <a href="artist_list.php" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                    <i class="fas fa-arrow-left me-2"></i>Back
                                 </a>
                             </div>
                             
@@ -209,33 +280,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="col-md-8">
                                         <div class="form-group">
                                             <label for="artist_name" class="form-label">
-                                                <i class="fas fa-user me-2"></i>Tên Nghệ Sĩ *
+                                                <i class="fas fa-user me-2"></i>Artist Name *
                                             </label>
                                             <input type="text" 
                                                    class="form-control" 
                                                    id="artist_name" 
                                                    name="artist_name" 
                                                    value="<?php echo isset($artist_name) ? htmlspecialchars($artist_name) : ''; ?>"
-                                                   placeholder="Nhập tên nghệ sĩ..."
+                                                   placeholder="Enter the name of the artist..."    
                                                    maxlength="255"
                                                    required>
                                         </div>
                                         
                                         <div class="form-group">
                                             <label for="bio" class="form-label">
-                                                <i class="fas fa-file-alt me-2"></i>Tiểu Sử *
+                                                <i class="fas fa-file-alt me-2"></i>Biography *
                                             </label>
                                             <textarea class="form-control" 
                                                       id="bio" 
                                                       name="bio" 
                                                       rows="6"
-                                                      placeholder="Nhập tiểu sử nghệ sĩ..."
+                                                      placeholder="Enter the biography of the artist..."
                                                       required><?php echo isset($bio) ? htmlspecialchars($bio) : ''; ?></textarea>
                                         </div>
                                         
                                         <div class="form-group">
                                             <label for="image_url" class="form-label">
-                                                <i class="fas fa-image me-2"></i>URL Hình Ảnh *
+                                                <i class="fas fa-image me-2"></i>Image URL *
                                             </label>
                                             <input type="url" 
                                                    class="form-control" 
@@ -253,29 +324,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                        type="checkbox" 
                                                        id="status" 
                                                        name="status" 
-                                                       value="1"
-                                                       <?php echo (!isset($status) || $status == 1) ? 'checked' : ''; ?>>
+                                                       value="1">
                                                 <label class="form-check-label" for="status">
-                                                    <i class="fas fa-check-circle me-2"></i>Kích hoạt nghệ sĩ
+                                                    <p>Activate artist</p>
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <i class="fas fa-eye me-2"></i>Xem Trước Hình Ảnh
-                                            </label>
-                                            <div class="text-center">
-                                                <img id="imagePreview" 
-                                                     class="image-preview" 
-                                                     src="" 
-                                                     alt="Preview">
-                                                <div id="noImageText" class="text-muted mt-3">
-                                                    <i class="fas fa-image fa-3x mb-2"></i>
-                                                    <p>Nhập URL để xem trước</p>
-                                                </div>
+                                        <div class="image-preview-container">
+                                            <h6 class="mb-3" style="color: #333; font-weight: 600;">
+                                                <i class="fas fa-eye me-2"></i>Preview Image
+                                            </h6>
+                                            <img id="imagePreview" 
+                                                 class="image-preview" 
+                                                 src="" 
+                                                 alt="Preview"
+                                                 onerror="this.src='https://via.placeholder.com/200x200/dc3545/ffffff?text=Error'">
+                                            <div id="noImageText" class="mt-3">
+                                                <i class="fas fa-image fa-3x mb-2" style="color: #666;"></i>
+                                                <p style="color: #666;">Enter URL to preview</p>
                                             </div>
                                         </div>
                                     </div>
@@ -283,10 +352,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-primary me-3">
-                                        <i class="fas fa-save me-2"></i>Thêm Nghệ Sĩ
+                                        <i class="fas fa-save me-2"></i>Add Artist
                                     </button>
                                     <button type="reset" class="btn btn-secondary">
-                                        <i class="fas fa-undo me-2"></i>Đặt Lại
+                                        <i class="fas fa-undo me-2"></i>Reset
                                     </button>
                                 </div>
                             </form>
