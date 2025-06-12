@@ -42,12 +42,43 @@ if ($result->num_rows > 0) {
     <!-- Footer CSS -->
     <link rel="stylesheet" href="assets/css/footer.css">
 
+    
+
     <style>
+        .main-content {
+            padding-top: 40px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
         .accessory-card {
-            background: white;
+            background: #f7f8f9;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -58,71 +89,74 @@ if ($result->num_rows > 0) {
         }
         
         .accessory-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
 
         .accessory-image {
             width: 100%;
-            height: 250px;
+            height: 220px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
 
         .accessory-card:hover .accessory-image {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .accessory-info {
-            padding: 25px;
+            padding: 20px;
             text-align: center;
         }
         
         .accessory-title {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         
         .accessory-price {
-            font-size: 1.3rem;
-            color: #ff6b35;
+            font-size: 1.15rem;
+            color: #deccca;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         
         .accessory-description {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-bottom: 15px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.6;
+            line-height: 1.5;
         }
         
         .stock-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            top: 15px;
+            right: 15px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 600;
+            background-color: #412D3B;
+            color: #FFFFFF;
         }
         
-        .stock-high { background: #28a745; color: white; }
-        .stock-medium { background: #ffc107; color: #000; }
-        .stock-low { background: #dc3545; color: white; }
+        .stock-high { background: #deccca; color: #412D3B ; }
+        .stock-medium { background: #deccca; color: #412D3B ;}
+        .stock-low { background: #deccca; color: #412D3B }
         
-        .btn-add-to-cart {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        .btn-add-to-cart,
+        .btn-view-product {
+            background: #412D3B;
             color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
+            padding: 8px 20px;
+            border-radius: 20px;
             font-weight: 500;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -131,10 +165,12 @@ if ($result->num_rows > 0) {
             text-align: center;
         }
         
-        .btn-add-to-cart:hover {
+        .btn-add-to-cart:hover,
+        .btn-view-product:hover {
+            background: #deccca;
+            color: #412d3b;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-            color: white;
+            box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4);
             text-decoration: none;
         }
         
@@ -143,27 +179,6 @@ if ($result->num_rows > 0) {
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
-        }
-        
-        .btn-view-product {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .btn-view-product:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-            color: white;
-            text-decoration: none;
         }
         
         .accessory-card.hidden {
@@ -177,31 +192,70 @@ if ($result->num_rows > 0) {
             }
         }
 
-        .stats-container {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            padding: 30px;
-            border-radius: 15px;
-            margin: 0 auto 40px;
-            max-width: 800px;
+        .page-header {
+            background: #412D3B;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
-        .stat-item {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-number {
+        .page-header h1 {
             font-size: 2.5rem;
             font-weight: 700;
+            margin-bottom: 15px;
             color: white;
         }
 
-        .stat-label {
-            color: rgba(255,255,255,0.9);
-            font-size: 1rem;
-            margin-top: 5px;
+        .page-header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0;
+        }
+
+        .page-header i {
+            margin-right: 10px;
+            color: #deccca;
+        }
+
+        /* Custom styles for Navbar */
+        /* nav.navbar.bootsnav {
+            background-color: #412D3B !important;
+            border-bottom: none !important;
+        }
+
+        nav.navbar.bootsnav ul.nav > li > a {
+            color: #FFFFFF !important;
+        }
+
+        nav.navbar.bootsnav ul.nav li.active > a {
+            color: #deccca !important; /* Màu highlight cho trang Accessories đang active */
+        }
+
+        nav.navbar.bootsnav .navbar-brand {
+            color: #deccca !important;
+        }
+
+        .attr-nav > ul > li > a {
+            color: #FFFFFF !important;
+        }
+
+        .attr-nav > ul > li > a span.badge {
+            background-color: #deccca !important; /* Màu badge giỏ hàng */
+            color: #FFFFFF !important;
+        }
+
+        .attr-nav > ul > li.dropdown ul.dropdown-menu {
+            background-color: #fff !important;
+        }
+
+        .user-menu-link, .dropdown-item {
+            color: #333 !important;
+        }
+
+        .user-menu-link:hover, .dropdown-item:hover {
+            background-color: #f8f9fa !important;
+            color: #412D3B !important;
         }
     </style>
 </head>
@@ -212,16 +266,16 @@ if ($result->num_rows > 0) {
 
     <div class="main-content">
         <!-- Page Header -->
-        <div class="page-header">
+        <!-- <div class="page-header">
             <div class="container">
                 <h1><i class="fa fa-headphones"></i> Phụ Kiện Âm Nhạc</h1>
                 <p>Khám phá bộ sưu tập phụ kiện âm nhạc chất lượng cao của chúng tôi</p>
             </div>
-        </div>
+        </div> -->
 
         <div class="container">
             <!-- Thống kê -->
-            <div class="stats-container">
+            <!-- <div class="stats-container">
                 <div class="stat-item">
                     <span class="stat-number"><?php echo count($accessories); ?></span>
                     <div class="stat-label">Phụ kiện</div>
@@ -230,7 +284,7 @@ if ($result->num_rows > 0) {
                     <span class="stat-number"><?php echo array_sum(array_column($accessories, 'stock')); ?></span>
                     <div class="stat-label">Tồn kho</div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Tìm kiếm -->
             <div class="search-container">
@@ -240,7 +294,7 @@ if ($result->num_rows > 0) {
 
             <!-- Danh sách phụ kiện -->
             <?php if (count($accessories) > 0): ?>
-            <div class="grid-container grid-3" id="accessoriesGrid">
+            <div class="grid-container" id="accessoriesGrid">
                 <?php foreach ($accessories as $accessory): ?>
                 <div class="accessory-card fade-in" data-name="<?php echo strtolower($accessory['accessory_name']); ?>">
                     <div class="position-relative">
