@@ -92,95 +92,82 @@ $total_count = $week_count + $month_count;
     <!-- Footer CSS -->
     <link rel="stylesheet" href="assets/css/footer.css">
 
-    <!-- Custom Navbar CSS -->
-    <link rel="stylesheet" href="assets/css/custom_navbar.css">
-
     <style>
-        .new-arrivals-header {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            padding: 80px 0 40px;
-            margin-top: -1px;
+        .main-content {
+            padding-top: 100px;
         }
-        
-        .stats-bar {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px 0;
-            margin-top: 30px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 40px 0;
         }
-        
-        .stats-item {
-            text-align: center;
-            color: white;
+
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
-        
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            display: block;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        
-        .stats-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .section-divider {
-            background: #ff6b35;
-            color: white;
-            padding: 15px 0;
-            margin: 40px 0 30px;
-            text-align: center;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(1, 1fr);
+            }
         }
         
         .product-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            background: #f7f8f9; /* Synchronized with accessories.php */
+            border-radius: 20px; /* Synchronized with accessories.php */
             overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Synchronized with accessories.php */
             transition: all 0.3s ease;
             position: relative;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
         }
         
         .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-5px); /* Synchronized with accessories.php */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* Synchronized with accessories.php */
         }
         
         .product-image {
             width: 100%;
-            height: 200px;
+            height: 220px; /* Synchronized with accessories.php */
             object-fit: cover;
             transition: transform 0.3s ease;
         }
         
         .product-card:hover .product-image {
-            transform: scale(1.05);
+            transform: scale(1.03); /* Synchronized with accessories.php */
         }
         
         .product-info {
             padding: 20px;
+            text-align: center; /* Synchronized with accessories.php */
         }
         
         .product-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem; /* Synchronized with accessories.php */
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 8px; /* Synchronized with accessories.php */
+            min-height: 30px; /* Synchronized with accessories.php */
+            line-height: 1.2; /* Synchronized with accessories.php */
+            /* Removed: white-space: nowrap; overflow: hidden; text-overflow: ellipsis; */
         }
         
         .product-artist {
-            color: #ff6b35;
+            color: #412D3B; /* Synchronized with accessories.php price/stock color */
             font-weight: 500;
             margin-bottom: 5px;
         }
@@ -192,10 +179,10 @@ $total_count = $week_count + $month_count;
         }
         
         .product-price {
-            font-size: 1.3rem;
+            font-size: 1.15rem; /* Synchronized with accessories.php */
             font-weight: bold;
-            color: #ff6b35;
-            margin-bottom: 15px;
+            color: #412D3B; /* Synchronized with accessories.php */
+            margin-bottom: 0px; /* Synchronized with accessories.php */
         }
         
         .product-date {
@@ -206,71 +193,27 @@ $total_count = $week_count + $month_count;
         
         .new-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            top: 15px; /* Synchronized with accessories.php */
+            right: 15px; /* Synchronized with accessories.php */
+            padding: 4px 8px; /* Synchronized with accessories.php */
+            border-radius: 12px; /* Synchronized with accessories.php */
+            font-size: 0.75rem; /* Synchronized with accessories.php */
             font-weight: 600;
-            text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background: #deccca; /* Synchronized with accessories.php */
+            color: #412D3B; /* Synchronized with accessories.php */
+            box-shadow: none; /* Removed */
         }
         
         .week-badge {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            animation: pulse 2s infinite;
+            background: #deccca; /* Synchronized with accessories.php */
+            animation: none; /* Removed animation */
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        /* Removed @keyframes pulse */
         
-        .btn-add-cart {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .btn-add-cart:hover {
-            background: linear-gradient(135deg, #e55a2b, #e08420);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-        }
-        
-        .btn-view-product {
-            display: block;
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .btn-view-product:hover {
-            background: linear-gradient(135deg, #e55a2b, #e08420);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        .btn-add-cart,
+        .btn-view-product { /* Combined and removed styles */
+            display: none; /* Hide the button */
         }
         
         .no-products {
@@ -325,8 +268,8 @@ $total_count = $week_count + $month_count;
 
         .search-box:focus {
             outline: none;
-            border-color: #ff6b35;
-            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.2);
+            border-color: #412D3B; /* Reverted to accessories.php style */
+            box-shadow: 0 4px 20px rgba(255, 107, 53, 0.2); /* Reverted to accessories.php style */
         }
 
         .search-icon {
@@ -334,13 +277,12 @@ $total_count = $week_count + $month_count;
             right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: #ff6b35;
+            color: #412D3B; /* Reverted to accessories.php style */
             font-size: 18px;
         }
 
         /* Product card hidden state */
-        .product-card.hidden,
-        .col-md-3.hidden {
+        .product-card.hidden {
             display: none;
         }
 
@@ -353,6 +295,14 @@ $total_count = $week_count + $month_count;
             border-radius: 10px;
             color: #666;
         }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 
@@ -366,89 +316,46 @@ $total_count = $week_count + $month_count;
     </div>
     <!-- Navigation End -->
 
-    <!-- Breadcrumb -->
-    <!-- <div class="page-breadcrumb">
+    <div class="main-content">
+        <!-- Header Section -->
+        <?php /* Removed Header Section and Stats Bar */ ?>
+
         <div class="container">
-            <ol class="breadcrumb">
-                <li><a href="index.php">Home</a></li>
-                <li class="active">New Arrivals</li>
-            </ol>
-        </div>
-    </div> -->
-    
-    <!-- Header Section -->
-    <div class="new-arrivals-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="text-center">
-                        <h1><i class="fa fa-star"></i> New Arrivals</h1>
-                        <p class="lead">Khám phá những album và đĩa nhạc mới nhất tại AuraDisc</p>
-                        
-                        <!-- Stats Bar -->
-                        <div class="stats-bar">
-                            <div class="row">
-                                <div class="col-md-4 col-sm-4">
-                                    <div class="stats-item">
-                                        <span class="stats-number"><?php echo $week_count; ?></span>
-                                        <span class="stats-label">Sản phẩm trong tuần</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4">
-                                    <div class="stats-item">
-                                        <span class="stats-number"><?php echo $month_count; ?></span>
-                                        <span class="stats-label">Sản phẩm trong tháng</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-sm-4">
-                                    <div class="stats-item">
-                                        <span class="stats-number"><?php echo $total_count; ?></span>
-                                        <span class="stats-label">Tổng sản phẩm mới</span>
-                                    </div>
-                                </div>
-                            </div>
+            <!-- Tìm kiếm -->
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm sản phẩm mới...">
+                <i class="fa fa-search search-icon"></i>
+            </div>
+
+            <!-- Filter results message -->
+            <div id="filterResults" class="filter-results" style="display: none;">
+                <i class="fa fa-filter"></i> <span id="filterCount">0</span> sản phẩm được tìm thấy
+            </div>
+            
+            <!-- Sản phẩm mới trong tuần -->
+            <?php if ($week_count > 0): ?>
+            <div class="section-divider">
+                <i class="fa fa-fire"></i> Sản phẩm mới trong tuần
+            </div>
+            
+            <div class="grid-container" id="weekProductsGrid">
+                <?php 
+                $week_products->data_seek(0); // Reset pointer
+                while ($product = $week_products->fetch_assoc()): 
+                    $created_date = new DateTime($product['created_at']);
+                    $days_ago = $current_date->diff($created_date)->days;
+                ?>
+                <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="product-card fade-in" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
+                    <div class="position-relative">
+                        <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
+                             alt="<?php echo htmlspecialchars($product['product_name']); ?>"
+                             class="product-image"
+                             onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
+
+                        <div class="new-badge week-badge">
+                            <?php echo $days_ago; ?> ngày trước
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Tìm kiếm -->
-        <div class="search-container">
-            <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm sản phẩm mới...">
-            <i class="fa fa-search search-icon"></i>
-        </div>
-
-        <!-- Filter results message -->
-        <div id="filterResults" class="filter-results" style="display: none;">
-            <i class="fa fa-filter"></i> <span id="filterCount">0</span> sản phẩm được tìm thấy
-        </div>
-        <!-- Sản phẩm mới trong tuần -->
-        <?php if ($week_count > 0): ?>
-        <div class="section-divider">
-            <i class="fa fa-fire"></i> Sản phẩm mới trong tuần
-        </div>
-        
-        <div class="row">
-            <?php 
-            $week_products->data_seek(0); // Reset pointer
-            while ($product = $week_products->fetch_assoc()): 
-                $created_date = new DateTime($product['created_at']);
-                $days_ago = $current_date->diff($created_date)->days;
-            ?>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="product-card" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
-                    <div class="new-badge week-badge">
-                        <?php echo $days_ago; ?> ngày trước
-                    </div>
-                    
-                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
-                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
-                         class="product-image"
-                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
-
                     <div class="product-info">
                         <h3 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h3>
                         
@@ -468,44 +375,37 @@ $total_count = $week_count + $month_count;
                             $<?php echo number_format($product['price'], 2); ?>
                         </div>
                         
-                        <div class="product-date">
-                            <i class="fa fa-calendar"></i> <?php echo $created_date->format('d/m/Y H:i'); ?>
-                        </div>
-                        
-                        <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
-                            <i class="fa fa-eye"></i> Xem sản phẩm
-                        </a>
+                        <?php /* Removed product-date */ ?>
                     </div>
-                </div>
+                </a>
+                <?php endwhile; ?>
             </div>
-            <?php endwhile; ?>
-        </div>
-        <?php endif; ?>
-        
-        <!-- Sản phẩm mới trong tháng -->
-        <?php if ($month_count > 0): ?>
-        <div class="section-divider">
-            <i class="fa fa-clock-o"></i> Sản phẩm mới trong tháng
-        </div>
-        
-        <div class="row">
-            <?php 
-            $month_products->data_seek(0); // Reset pointer
-            while ($product = $month_products->fetch_assoc()): 
-                $created_date = new DateTime($product['created_at']);
-                $days_ago = $current_date->diff($created_date)->days;
-            ?>
-            <div class="col-md-3 col-sm-6 col-xs-12">
-                <div class="product-card" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
-                    <div class="new-badge">
-                        <?php echo $days_ago; ?> ngày trước
-                    </div>
-                    
-                    <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
-                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
-                         class="product-image"
-                         onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
+            <?php endif; ?>
+            
+            <!-- Sản phẩm mới trong tháng -->
+            <?php if ($month_count > 0): ?>
+            <div class="section-divider">
+                <i class="fa fa-clock-o"></i> Sản phẩm mới trong tháng
+            </div>
+            
+            <div class="grid-container" id="monthProductsGrid">
+                <?php 
+                $month_products->data_seek(0); // Reset pointer
+                while ($product = $month_products->fetch_assoc()): 
+                    $created_date = new DateTime($product['created_at']);
+                    $days_ago = $current_date->diff($created_date)->days;
+                ?>
+                <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="product-card fade-in" data-name="<?php echo strtolower($product['product_name']); ?>" data-artist="<?php echo strtolower($product['artist_name'] ?? ''); ?>" data-genre="<?php echo strtolower($product['genre_name'] ?? ''); ?>">
+                    <div class="position-relative">
+                        <img src="<?php echo !empty($product['image_url']) ? htmlspecialchars($product['image_url']) : 'https://via.placeholder.com/300x200/ff6b35/ffffff?text=No+Image'; ?>"
+                             alt="<?php echo htmlspecialchars($product['product_name']); ?>"
+                             class="product-image"
+                             onerror="this.src='https://via.placeholder.com/300x200/ff6b35/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
 
+                        <div class="new-badge">
+                            <?php echo $days_ago; ?> ngày trước
+                        </div>
+                    </div>
                     <div class="product-info">
                         <h3 class="product-title"><?php echo htmlspecialchars($product['product_name']); ?></h3>
                         
@@ -525,31 +425,25 @@ $total_count = $week_count + $month_count;
                             $<?php echo number_format($product['price'], 2); ?>
                         </div>
                         
-                        <div class="product-date">
-                            <i class="fa fa-calendar"></i> <?php echo $created_date->format('d/m/Y H:i'); ?>
-                        </div>
-                        
-                        <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
-                            <i class="fa fa-eye"></i> Xem sản phẩm
-                        </a>
+                        <?php /* Removed product-date */ ?>
                     </div>
-                </div>
+                </a>
+                <?php endwhile; ?>
             </div>
-            <?php endwhile; ?>
+            <?php endif; ?>
+            
+            <!-- Không có sản phẩm nào -->
+            <?php if ($total_count == 0): ?>
+            <div class="no-products">
+                <i class="fa fa-inbox"></i>
+                <h3>Chưa có sản phẩm mới</h3>
+                <p>Hiện tại chưa có sản phẩm nào được thêm trong 30 ngày qua.</p>
+                <a href="products.php" class="btn-add-cart" style="width: auto; margin-top: 20px;">
+                    <i class="fa fa-eye"></i> Xem tất cả sản phẩm
+                </a>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
-        
-        <!-- Không có sản phẩm nào -->
-        <?php if ($total_count == 0): ?>
-        <div class="no-products">
-            <i class="fa fa-inbox"></i>
-            <h3>Chưa có sản phẩm mới</h3>
-            <p>Hiện tại chưa có sản phẩm nào được thêm trong 30 ngày qua.</p>
-            <a href="products.php" class="btn-add-cart" style="width: auto; margin-top: 20px;">
-                <i class="fa fa-eye"></i> Xem tất cả sản phẩm
-            </a>
-        </div>
-        <?php endif; ?>
     </div>
     
     <!-- Include Footer -->
@@ -596,11 +490,9 @@ $total_count = $week_count + $month_count;
                                genreName.includes(searchTerm);
 
                 if (searchTerm === '' || isMatch) {
-                    card.parentElement.classList.remove('hidden');
                     card.classList.remove('hidden');
                     visibleCount++;
                 } else {
-                    card.parentElement.classList.add('hidden');
                     card.classList.add('hidden');
                 }
             });
@@ -620,33 +512,26 @@ $total_count = $week_count + $month_count;
         function updateSectionVisibility() {
             // Check week section
             const weekSection = document.querySelector('.section-divider:first-of-type');
-            const weekProducts = document.querySelectorAll('.week-badge');
+            const weekProducts = document.querySelectorAll('#weekProductsGrid .product-card'); // Target within specific grid
             let weekVisible = 0;
 
-            weekProducts.forEach(badge => {
-                const card = badge.closest('.product-card');
-                if (card && !card.classList.contains('hidden')) {
+            weekProducts.forEach(card => {
+                if (!card.classList.contains('hidden')) {
                     weekVisible++;
                 }
             });
 
             if (weekSection) {
-                const weekContainer = weekSection.nextElementSibling;
                 if (weekVisible === 0) {
                     weekSection.style.display = 'none';
-                    if (weekContainer) weekContainer.style.display = 'none';
                 } else {
                     weekSection.style.display = 'block';
-                    if (weekContainer) weekContainer.style.display = 'block';
                 }
             }
 
             // Check month section
             const monthSection = document.querySelector('.section-divider:last-of-type');
-            const allProducts = document.querySelectorAll('.product-card[data-name]');
-            const monthProducts = Array.from(allProducts).filter(card =>
-                !card.querySelector('.week-badge')
-            );
+            const monthProducts = document.querySelectorAll('#monthProductsGrid .product-card'); // Target within specific grid
             let monthVisible = 0;
 
             monthProducts.forEach(card => {
@@ -656,13 +541,10 @@ $total_count = $week_count + $month_count;
             });
 
             if (monthSection) {
-                const monthContainer = monthSection.nextElementSibling;
                 if (monthVisible === 0) {
                     monthSection.style.display = 'none';
-                    if (monthContainer) monthContainer.style.display = 'none';
                 } else {
                     monthSection.style.display = 'block';
-                    if (monthContainer) monthContainer.style.display = 'block';
                 }
             }
         }

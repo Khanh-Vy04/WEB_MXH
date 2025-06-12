@@ -46,73 +46,118 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="../includes/common.css">
     
 <style>
+        .main-content {
+            padding-top: 40px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
         .artist-card {
-            background: white;
+            background: #f7f8f9; /* Synchronized with accessories.php */
             border-radius: 20px;
-    overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Synchronized with accessories.php */
             transition: all 0.3s ease;
-            cursor: pointer;
+            /* cursor: pointer; removed as card will be a link */
             position: relative;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
         }
         
         .artist-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-}
+            transform: translateY(-5px); /* Synchronized with accessories.php */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* Synchronized with accessories.php */
+        }
 
         .artist-image {
             width: 100%;
-            height: 250px;
+            height: 220px; /* Synchronized with accessories.php */
             object-fit: cover;
             transition: transform 0.3s ease;
-}
+        }
 
         .artist-card:hover .artist-image {
-            transform: scale(1.05);
-}
+            transform: scale(1.03); /* Synchronized with accessories.php */
+        }
 
         .artist-info {
             padding: 25px;
-            text-align: center;
+            text-align: center; /* Synchronized with accessories.php */
         }
         
         .artist-name {
             font-size: 1.4rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 8px; /* Synchronized with accessories.php */
+            min-height: 30px; /* Synchronized with accessories.php */
+            line-height: 1.2; /* Synchronized with accessories.php */
         }
         
         .product-count {
-            color: #666;
+            color: #412D3B; /* Synchronized with accessories.php (stock badge/price) */
             font-size: 1rem;
-            margin-bottom: 15px;
-}
+            margin-bottom: 0px; /* Synchronized with accessories.php */
+        }
 
         .view-products-btn {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #412D3B; /* Synchronized with accessories.php */
             color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
+            padding: 8px 20px; /* Synchronized with accessories.php */
+            border-radius: 20px; /* Synchronized with accessories.php */
             font-weight: 500;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-}
+            width: 100%; /* Synchronized with accessories.php */
+            text-align: center; /* Synchronized with accessories.php */
+        }
 
         .view-products-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-            color: white;
-    text-decoration: none;
+            transform: translateY(-2px); /* Synchronized with accessories.php */
+            box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php */
+            color: #412d3b; /* Synchronized with accessories.php */
+            background: #deccca; /* Synchronized with accessories.php */
+            text-decoration: none;
         }
         
         .artist-card.hidden {
             display: none;
-}
-</style>
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -121,25 +166,11 @@ if ($result->num_rows > 0) {
 
     <div class="main-content">
         <!-- Page Header -->
-        <div class="page-header">
-            <div class="container">
-                <h1><i class="fa fa-microphone"></i> Nghệ Sĩ</h1>
-                <p>Khám phá các nghệ sĩ tài năng và album của họ</p>
-            </div>
-        </div>
+        <?php /* Removed original Page Header */ ?>
 
         <div class="container">
             <!-- Thống kê -->
-            <div class="stats-container">
-                <div class="stat-item">
-                    <span class="stat-number"><?php echo count($artists); ?></span>
-                    <div class="stat-label">Nghệ sĩ</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number"><?php echo array_sum(array_column($artists, 'product_count')); ?></span>
-                    <div class="stat-label">Sản phẩm</div>
-                </div>
-            </div>
+            <?php /* Removed original Stats Container */ ?>
 
             <!-- Tìm kiếm -->
             <div class="search-container">
@@ -149,9 +180,9 @@ if ($result->num_rows > 0) {
 
             <!-- Danh sách nghệ sĩ -->
             <?php if (count($artists) > 0): ?>
-            <div class="grid-container grid-3" id="artistsGrid">
+            <div class="grid-container" id="artistsGrid">
                 <?php foreach ($artists as $artist): ?>
-                <div class="artist-card fade-in" data-name="<?php echo strtolower($artist['artist_name']); ?>">
+                <a href="../products.php?artist_id=<?php echo $artist['artist_id']; ?>" class="artist-card fade-in" data-name="<?php echo strtolower($artist['artist_name']); ?>">
                     <img src="<?php echo htmlspecialchars($artist['image_url']); ?>" 
                          class="artist-image" 
                          alt="<?php echo htmlspecialchars($artist['artist_name']); ?>"
@@ -164,15 +195,9 @@ if ($result->num_rows > 0) {
                             <?php echo $artist['product_count']; ?> sản phẩm
                         </p>
                         
-                        <?php if ($artist['product_count'] > 0): ?>
-                        <a href="../products.php?artist_id=<?php echo $artist['artist_id']; ?>" class="view-products-btn">
-                            <i class="fa fa-eye"></i> Xem sản phẩm
-                        </a>
-                        <?php else: ?>
-                        <span class="text-muted">Chưa có sản phẩm</span>
-                        <?php endif; ?>
+                        <?php /* Removed conditional button/text for product_count */ ?>
                     </div>
-                </div>
+                </a>
                 <?php endforeach; ?>
             </div>
             <?php else: ?>

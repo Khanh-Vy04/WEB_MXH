@@ -113,25 +113,20 @@ if ($result->num_rows > 0) {
             font-size: 1.25rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            min-height: 30px;
+            line-height: 1.2;
         }
         
         .accessory-price {
             font-size: 1.15rem;
-            color: #deccca;
+            color: #412D3B;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 0px;
         }
         
         .accessory-description {
-            color: #666;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.5;
+            /* Removed this block entirely */
         }
         
         .stock-badge {
@@ -142,8 +137,8 @@ if ($result->num_rows > 0) {
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
-            background-color: #412D3B;
-            color: #FFFFFF;
+            background-color: #deccca;
+            color: #412D3B;
         }
         
         .stock-high { background: #deccca; color: #412D3B ; }
@@ -296,7 +291,7 @@ if ($result->num_rows > 0) {
             <?php if (count($accessories) > 0): ?>
             <div class="grid-container" id="accessoriesGrid">
                 <?php foreach ($accessories as $accessory): ?>
-                <div class="accessory-card fade-in" data-name="<?php echo strtolower($accessory['accessory_name']); ?>">
+                <a href="product-detail.php?type=accessory&id=<?php echo $accessory['accessory_id']; ?>" class="accessory-card fade-in" data-name="<?php echo strtolower($accessory['accessory_name']); ?>">
                     <div class="position-relative">
                         <img src="<?php echo htmlspecialchars($accessory['image_url']); ?>" 
                              alt="<?php echo htmlspecialchars($accessory['accessory_name']); ?>"
@@ -323,21 +318,13 @@ if ($result->num_rows > 0) {
                             $<?php echo number_format($accessory['price'], 2); ?>
                         </div>
                         
-                        <p class="accessory-description">
-                            <?php echo htmlspecialchars($accessory['description']); ?>
-                        </p>
-                        
                         <?php if ($stock <= 0): ?>
                             <button class="btn btn-add-to-cart" disabled>
                                 <i class="fa fa-times"></i> Hết Hàng
                             </button>
-                        <?php else: ?>
-                            <a href="product-detail.php?type=accessory&id=<?php echo $accessory['accessory_id']; ?>" class="btn btn-view-product">
-                                <i class="fa fa-eye"></i> Xem sản phẩm
-                            </a>
                         <?php endif; ?>
                     </div>
-                </div>
+                </a>
                 <?php endforeach; ?>
             </div>
             <?php else: ?>

@@ -45,45 +45,61 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="../includes/common.css">
     
     <style>
+        .main-content {
+            padding-top: 40px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 40px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
         .genre-card {
-            background: white;
+            background: #f7f8f9; /* Changed from white */
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
-            cursor: pointer;
+            /* cursor: pointer; removed, as the whole card will be a link */
             position: relative;
             height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
         }
         
         .genre-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
         
         .genre-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: linear-gradient(135deg, #412D3B 0%,rgb(255, 236, 234) 100%); /* Added gradient */
+            color: white; /* Changed to white */
             padding: 30px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
-        }
-        
-        .genre-header:before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
-            animation: float 20s infinite linear;
-        }
-        
-        @keyframes float {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
         
         .genre-icon {
@@ -104,12 +120,14 @@ if ($result->num_rows > 0) {
         .genre-count {
             font-size: 1rem;
             opacity: 0.9;
+            color: white; /* Added color for product count */
             position: relative;
             z-index: 2;
         }
         
         .genre-info {
             padding: 25px;
+            text-align: center; /* Centered text like accessory-info */
         }
         
         .genre-description {
@@ -117,18 +135,15 @@ if ($result->num_rows > 0) {
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 20px;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            text-align: justify; /* Căn đều 2 bên */
         }
         
         .view-products-btn {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: #412D3B; /* Updated background */
+            color: white; /* Updated color */
             border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
+            padding: 8px 20px; /* Updated padding */
+            border-radius: 20px; /* Updated border-radius */
             font-weight: 500;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -139,8 +154,9 @@ if ($result->num_rows > 0) {
         
         .view-products-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-            color: white;
+            box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4); /* Updated hover shadow */
+            color: #412d3b; /* Updated hover text color */
+            background: #deccca; /* Updated hover background */
             text-decoration: none;
         }
         
@@ -148,15 +164,16 @@ if ($result->num_rows > 0) {
             display: none;
         }
         
-        /* Genre specific colors */
-        .genre-card:nth-child(8n+1) .genre-header { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); }
-        .genre-card:nth-child(8n+2) .genre-header { background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%); }
-        .genre-card:nth-child(8n+3) .genre-header { background: linear-gradient(135deg, #ffa726 0%, #ff8c42 100%); }
-        .genre-card:nth-child(8n+4) .genre-header { background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%); }
-        .genre-card:nth-child(8n+5) .genre-header { background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%); }
-        .genre-card:nth-child(8n+6) .genre-header { background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%); }
-        .genre-card:nth-child(8n+7) .genre-header { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); }
-        .genre-card:nth-child(8n+8) .genre-header { background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%); }
+        /* Removed genre specific colors */
+        /* .genre-card:nth-child(8n+1) .genre-header { background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); } */
+        /* ... other nth-child rules ... */
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -166,25 +183,11 @@ if ($result->num_rows > 0) {
 
     <div class="main-content">
         <!-- Page Header -->
-        <div class="page-header">
-            <div class="container">
-                <h1><i class="fa fa-tags"></i> Thể Loại Nhạc</h1>
-                <p>Khám phá các thể loại nhạc đa dạng và phong phú</p>
-            </div>
-        </div>
+        <?php /* Removed original Page Header */ ?>
 
         <div class="container">
             <!-- Thống kê -->
-            <div class="stats-container">
-                <div class="stat-item">
-                    <span class="stat-number"><?php echo count($genres); ?></span>
-                    <div class="stat-label">Thể loại</div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number"><?php echo array_sum(array_column($genres, 'product_count')); ?></span>
-                    <div class="stat-label">Sản phẩm</div>
-                </div>
-            </div>
+            <?php /* Removed original Stats Container */ ?>
 
             <!-- Tìm kiếm -->
             <div class="search-container">
@@ -194,23 +197,23 @@ if ($result->num_rows > 0) {
 
             <!-- Danh sách thể loại -->
             <?php if (count($genres) > 0): ?>
-            <div class="grid-container grid-3" id="genresGrid">
+            <div class="grid-container" id="genresGrid">
                 <?php 
                 $genre_icons = [
                     'Rock' => 'fa fa-music',
-                    'Pop' => 'fa fa-star',
+                    'Pop' => 'fa fa-music',
                     'Jazz' => 'fa fa-music',
                     'Classical' => 'fa fa-music',
-                    'Electronic' => 'fa fa-headphones',
-                    'Hip Hop' => 'fa fa-microphone',
+                    'Electronic' => 'fa fa-music',
+                    'Hip Hop' => 'fa fa-music',
                     'Country' => 'fa fa-music',
-                    'R&B' => 'fa fa-heart'
+                    'R&B' => 'fa fa-music'
                 ];
                 
                 foreach ($genres as $genre): 
                     $icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
                 ?>
-                <div class="genre-card fade-in" data-name="<?php echo strtolower($genre['genre_name']); ?>">
+                <a href="../products.php?genre_id=<?php echo $genre['genre_id']; ?>" class="genre-card fade-in" data-name="<?php echo strtolower($genre['genre_name']); ?>">
                     <div class="genre-header">
                         <div class="genre-icon">
                             <i class="<?php echo $icon; ?>"></i>
@@ -226,16 +229,8 @@ if ($result->num_rows > 0) {
                         <p class="genre-description">
                             <?php echo htmlspecialchars($genre['description']); ?>
                         </p>
-                        
-                        <?php if ($genre['product_count'] > 0): ?>
-                        <a href="../products.php?genre_id=<?php echo $genre['genre_id']; ?>" class="view-products-btn">
-                            <i class="fa fa-eye"></i> Xem sản phẩm
-                        </a>
-                        <?php else: ?>
-                        <div class="text-center text-muted">Chưa có sản phẩm</div>
-                        <?php endif; ?>
                     </div>
-                </div>
+                </a>
                 <?php endforeach; ?>
             </div>
             <?php else: ?>

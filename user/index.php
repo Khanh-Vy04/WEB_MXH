@@ -137,35 +137,55 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 
         <style>
             .artist-card {
-                background: white;
-                border-radius: 15px;
+                background: #f7f8f9; /* Synchronized with accessories.php */
+                border-radius: 20px; /* Synchronized with accessories.php */
                 overflow: hidden;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Synchronized with accessories.php */
                 margin-bottom: 30px;
                 transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+                height: 100%;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeIn 0.5s ease forwards;
+                display: flex; /* Make artist-card a flex container */
+                flex-direction: column; /* Stack children vertically */
             }
             
             .artist-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                transform: translateY(-5px); /* Synchronized with accessories.php */
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* Synchronized with accessories.php */
             }
             
             .artist-image {
                 width: 100%;
-                height: 250px;
+                height: 220px; /* Synchronized with accessories.php */
                 object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            
+            .artist-card:hover .artist-image {
+                transform: scale(1.03); /* Synchronized with accessories.php */
             }
             
             .artist-info {
                 padding: 20px;
                 text-align: center;
+                flex-grow: 1; /* Allow artist-info to grow and fill available space */
+                display: flex; /* Make artist-info a flex container */
+                flex-direction: column; /* Stack children vertically */
+                justify-content: center; /* Center content vertically */
             }
             
             .artist-name {
-                font-size: 1.5rem;
+                font-size: 1.25rem;
                 font-weight: 600;
-                margin-bottom: 10px;
+                margin-bottom: 8px;
                 color: #333;
+                min-height: 30px;
+                line-height: 1.2;
+                text-align: center;
             }
             
             .artist-bio {
@@ -176,35 +196,49 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
+                height: 70px; /* Fixed height for consistent card height */
+                text-align: center;
             }
 
             .genre-card {
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-                border-radius: 15px;
-                padding: 25px;
-                color: white;
-                margin-bottom: 30px;
+                background: #f7f8f9;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+                transform: translateY(-5px);
+                z-index: 2;
                 transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
             }
             
             .genre-card:hover {
                 transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             }
             
             .genre-name {
-                font-size: 1.8rem;
-                font-weight: 700;
-                margin-bottom: 15px;
+                font-size: 1.25rem; /* Synchronized with product/artist names */
+                font-weight: 600;
+                margin-bottom: 8px; /* Synchronized with product/artist names */
+                color: #333; /* Text color for light background */
+                min-height: 30px; /* Synchronized with product/artist names */
+                line-height: 1.2; /* Synchronized with product/artist names */
             }
             
             .genre-description {
                 font-size: 0.9rem;
-                opacity: 0.9;
+                opacity: 1; /* Ensure full visibility on light background */
+                color: #666; /* Text color for light background */
                 display: -webkit-box;
                 -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
+                height: 70px; /* Ensures consistent height for 3 lines of text and uniform card size */
+                flex-grow: 1; /* Allow description to grow and fill available space */
             }
 
             .section-title {
@@ -231,23 +265,33 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .product-card {
-                background: white;
-                border-radius: 15px;
+                background: #f7f8f9; /* Synchronized with accessories.php */
+                border-radius: 20px; /* Synchronized with accessories.php */
                 overflow: hidden;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Synchronized with accessories.php */
                 margin-bottom: 30px;
                 transition: all 0.3s ease;
+                position: relative;
+                height: 100%;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeIn 0.5s ease forwards;
             }
             
             .product-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                transform: translateY(-5px); /* Synchronized with accessories.php */
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* Synchronized with accessories.php */
             }
             
             .product-image {
                 width: 100%;
-                height: 250px;
+                height: 220px; /* Synchronized with accessories.php */
                 object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+            
+            .product-card:hover .product-image {
+                transform: scale(1.03); /* Synchronized with accessories.php */
             }
             
             .product-info {
@@ -256,40 +300,43 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
             
             .product-name {
-                font-size: 1.3rem;
+                font-size: 1.25rem; /* Synchronized with accessories.php title size */
                 font-weight: 600;
-                margin-bottom: 10px;
+                margin-bottom: 8px; /* Synchronized with accessories.php title margin */
                 color: #333;
+                min-height: 30px; /* Synchronized with accessories.php */
+                line-height: 1.2; /* Synchronized with accessories.php */
             }
             
             .product-price {
-                color: #ff6b35;
-                font-size: 1.2rem;
+                color: #412D3B; /* Synchronized with accessories.php price color */
+                font-size: 1.15rem; /* Synchronized with accessories.php price size */
                 font-weight: 700;
-                margin-bottom: 15px;
+                margin-bottom: 0px; /* Synchronized with accessories.php price margin */
             }
             
             .btn-view-more {
                 display: inline-block;
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                background: #412D3B; /* Synchronized with accessories.php button background */
                 color: white;
                 padding: 12px 30px;
                 border-radius: 25px;
                 text-decoration: none;
                 font-weight: 500;
-                margin-top: 30px;
+                margin-top: 70px; /* Adjusted to create more space */
                 transition: all 0.3s ease;
             }
             
             .btn-view-more:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-                color: white;
+                transform: none; /* Removed all transformations to prevent shrinking/movement */
+                box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php button shadow */
+                color: #412D3B; /* Changed to dark color for better contrast on light background */
+                background: #deccca;
             }
 
             .btn-view-product {
                 display: inline-block;
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                background: #412D3B; /* Synchronized with accessories.php button background */
                 color: white;
                 padding: 10px 20px;
                 border-radius: 20px;
@@ -308,9 +355,10 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             
             .btn-view-product:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
-                color: white;
+                box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php button shadow */
+                color: #deccca; /* Synchronized with accessories.php button hover color */
                 text-decoration: none;
+                background: #deccca;
             }
 
             /* Voucher Styles */
@@ -342,8 +390,8 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .voucher-card.owned {
-                background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-                border-color: #ffd700;
+                background: #deccca; /* Synchronized with accessories.php light theme */
+                border-color: #deccca;
             }
 
             .voucher-card.owned:before {
@@ -353,12 +401,12 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 237, 78, 0.1) 100%);
+                background: linear-gradient(135deg, rgba(222, 204, 202, 0.1) 0%, rgba(222, 204, 202, 0.1) 100%); /* Adjusted opacity */
                 z-index: 1;
             }
 
             .voucher-header {
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                background: #412D3B; /* Synchronized with accessories.php dark theme */
                 color: white;
                 padding: 20px;
                 text-align: center;
@@ -366,7 +414,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .voucher-card.owned .voucher-header {
-                background: linear-gradient(135deg, #ffa000 0%, #ff8f00 100%);
+                background: #412D3B; /* Synchronized with accessories.php dark theme */
             }
 
             .voucher-type {
@@ -421,14 +469,14 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 
             .voucher-code {
                 background: #f8f9fa;
-                border: 2px dashed #ff6b35;
+                border: 2px dashed #412D3B; /* Synchronized with accessories.php dark theme */
                 border-radius: 8px;
                 padding: 10px;
                 text-align: center;
                 margin-bottom: 15px;
                 font-family: 'Courier New', monospace;
                 font-weight: 600;
-                color: #ff6b35;
+                color: #412D3B; /* Synchronized with accessories.php dark theme */
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -449,7 +497,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .condition i {
-                color: #ff6b35;
+                color: #412D3B; /* Synchronized with accessories.php dark theme */
                 width: 14px;
             }
 
@@ -477,14 +525,14 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .btn-claim-voucher {
-                background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                background: #412D3B; /* Synchronized with accessories.php button background */
                 color: white;
-                box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+                box-shadow: 0 4px 15px rgba(65, 45, 59, 0.3); /* Synchronized with accessories.php button shadow */
             }
 
             .btn-claim-voucher:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+                box-shadow: 0 6px 20px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php button shadow */
             }
 
             .btn-claim-voucher:active {
@@ -492,18 +540,21 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .btn-claimed {
-                background: #28a745;
-                color: white;
+                background: #412D3B !important;
+                color: #deccca !important;
                 cursor: default;
-                opacity: 0.8;
+                opacity: 1;
+                border: 2px solid #412D3B;
+                font-weight: 600;
+                transition: all 0.3s;
             }
 
             .owned-badge {
                 position: absolute;
                 top: 15px;
                 right: 15px;
-                background: #ffd700;
-                color: #333;
+                background: #deccca; /* Synchronized with accessories.php light theme */
+                color: #412D3B; /* Synchronized with accessories.php dark theme */
                 width: 40px;
                 height: 40px;
                 border-radius: 50%;
@@ -511,7 +562,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 align-items: center;
                 justify-content: center;
                 font-size: 1.2rem;
-                box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+                box-shadow: 0 4px 10px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php button shadow */
                 z-index: 3;
                 animation: pulse 2s infinite;
             }
@@ -535,7 +586,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .voucher-prev, .voucher-next {
-                background: rgba(255, 107, 53, 0.9);
+                background: rgba(65, 45, 59, 0.9); /* Synchronized with accessories.php dark theme */
                 color: white;
                 border: none;
                 width: 50px;
@@ -552,17 +603,17 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             .voucher-prev:hover, .voucher-next:hover {
-                background: rgba(255, 107, 53, 1);
+                background: rgba(65, 45, 59, 1); /* Synchronized with accessories.php dark theme */
                 transform: scale(1.1);
                 box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             }
 
             .voucher-prev {
-                left: -25px;
+                left: -60px !important; /* hoặc -50px, tuỳ bạn thấy hợp lý */
             }
 
             .voucher-next {
-                right: -25px;
+                right: -60px !important; /* hoặc -50px, tuỳ bạn thấy hợp lý */
             }
 
             /* Owl Carousel Custom Styles for Vouchers */
@@ -575,7 +626,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 display: inline-block;
                 width: 12px;
                 height: 12px;
-                background: rgba(255, 107, 53, 0.3);
+                background: rgba(65, 45, 59, 0.3); /* Synchronized with accessories.php dark theme */
                 border-radius: 50%;
                 margin: 0 5px;
                 cursor: pointer;
@@ -583,7 +634,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
 
             #voucherSlider .owl-dot.active {
-                background: #ff6b35;
+                background: #412D3B; /* Synchronized with accessories.php dark theme */
                 transform: scale(1.3);
             }
 
@@ -616,11 +667,11 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 }
                 
                 .voucher-prev {
-                    left: -10px;
+                    left: -100px !important;
                 }
                 
                 .voucher-next {
-                    right: -10px;
+                    right: -30px !important;
                 }
                 
                 .voucher-prev, .voucher-next {
@@ -636,6 +687,170 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 .voucher-name {
                     font-size: 1.1rem;
                 }
+            }
+
+            /* Ensure equal height for cards in grids */
+            .products-grid, .artists-grid, .genres-grid {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: stretch; /* Stretches items to fit the height of the tallest item in the row */
+            }
+            
+            .products-grid > .col-md-3, .products-grid > .col-sm-6,
+            .artists-grid > .col-md-3, .artists-grid > .col-sm-6,
+            .genres-grid > .col-md-3, .genres-grid > .col-sm-6 {
+                display: flex; /* Makes the column a flex container for its direct child (the card) */
+            }
+
+            .product-card, .artist-card, .genre-card {
+                /* ... existing code ... */
+                height: 100%; /* Ensures the card itself stretches to the full height of its flex container */
+            }
+
+            .genres-grid { /* New style for the row containing genre cards */
+                display: flex;
+                flex-wrap: wrap;
+                align-items: stretch; /* Ensures all items in the row stretch to the same height */
+            }
+            
+            .genre-card {
+                background: #f7f8f9;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+                transform: translateY(-5px);
+                z-index: 2;
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
+            }
+            
+            .genre-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            }
+            
+            .genre-name {
+                font-size: 1.25rem; /* Synchronized with product/artist names */
+                font-weight: 600;
+                margin-bottom: 8px; /* Synchronized with product/artist names */
+                color: #333; /* Text color for light background */
+                min-height: 30px; /* Synchronized with product/artist names */
+                line-height: 1.2; /* Synchronized with product/artist names */
+            }
+            
+            .genre-description {
+                font-size: 0.9rem;
+                opacity: 1; /* Ensure full visibility on light background */
+                color: #666; /* Text color for light background */
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                height: 70px; /* Ensures consistent height for 3 lines of text and uniform card size */
+                flex-grow: 1; /* Allow description to grow and fill available space */
+            }
+
+            /* --- START: Genres Section CSS from genres.php (Đồng bộ UI genre card) --- */
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 30px;
+                padding: 40px 0;
+            }
+            @media (max-width: 1200px) {
+                .grid-container { grid-template-columns: repeat(3, 1fr);}
+            }
+            @media (max-width: 992px) {
+                .grid-container { grid-template-columns: repeat(2, 1fr);}
+            }
+            @media (max-width: 768px) {
+                .grid-container { grid-template-columns: repeat(1, 1fr);}
+            }
+            .genre-card {
+                background: #f7f8f9;
+                border-radius: 24px;
+                overflow: hidden;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+                transform: translateY(-5px);
+                z-index: 2;
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
+            }
+            .genre-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            }
+            .genre-header {
+                background: linear-gradient(120deg, #412D3B 0%, #e9dedb 100%);
+                color: #fff;
+                padding: 40px 0 20px 0;
+                text-align: center;
+                border-top-left-radius: 24px;
+                border-top-right-radius: 24px;
+                position: relative;
+            }
+            .genre-icon {
+                font-size: 3rem;
+                margin-bottom: 10px;
+                display: block;
+            }
+            .genre-name {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-bottom: 8px;
+                color: #444;
+                letter-spacing: 0.5px;
+            }
+            .genre-count {
+                font-size: 1rem;
+                color: #fff;
+                opacity: 0.85;
+                margin-bottom: 0;
+            }
+            .genre-info {
+                padding: 24px 20px 28px 20px;
+                flex: 1;
+                display: flex;
+                align-items: flex-start;
+            }
+            .genre-description {
+                color: #444;
+                font-size: 1rem;
+                line-height: 1.6;
+                text-align: left;
+                margin: 0;
+                word-break: break-word;
+            }
+            @keyframes fadeIn {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            /* --- END: Genres Section CSS from genres.php --- */
+
+            #banner-slider {
+                margin-top: 78px;
+            }
+            @media (max-width: 768px) {
+                #banner-slider {
+                    margin-top: 60px;
+                }
+            }
+
+            .genre-card .genre-icon {
+                transition: transform 0.3s;
+            }
+            .genre-card:hover .genre-icon {
+                transform: scale(1.03);
             }
         </style>
 
@@ -725,14 +940,13 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 		<section id="new-arrivals" class="section-padding">
 			<div class="container">
 				<div class="section-title">
-					<h2>Sản Phẩm Mới</h2>
-					<p>Khám phá những album mới nhất từ các nghệ sĩ hàng đầu</p>
+					<h2>New Arrivals</h2>
 				</div>
 				
-					<div class="row">
+					<div class="row products-grid">
 					<?php foreach ($new_products as $product): ?>
 					<div class="col-md-3 col-sm-6">
-						<div class="product-card">
+						<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="product-card">
 							<img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
 								 alt="<?php echo htmlspecialchars($product['product_name']); ?>"
 								 class="product-image"
@@ -740,14 +954,11 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 							<div class="product-info">
 								<h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
 								<div class="product-price"><?php echo number_format($product['price']); ?>₫</div>
-								<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
-									<i class="fa fa-eye"></i> Xem sản phẩm
-								</a>
-									</div>
-									</div>
-								</div>
-					<?php endforeach; ?>
 							</div>
+						</a>
+					</div>
+					<?php endforeach; ?>
+					</div>
 				
 				<div class="text-center">
 					<a href="new-arrivals.php" class="btn-view-more">Xem tất cả</a>
@@ -762,13 +973,12 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 		<section id="artists" class="artists section-padding">
 			<div class="container">
 				<div class="section-title">
-					<h2>Nghệ Sĩ Nổi Bật</h2>
-					<p>Khám phá những nghệ sĩ tài năng và các tác phẩm âm nhạc độc đáo của họ</p>
+					<h2>Featured Artists</h2>
 				</div>
-					<div class="row">
+					<div class="row artists-grid">
 					<?php foreach ($artists as $artist): ?>
 					<div class="col-md-3 col-sm-6">
-						<div class="artist-card">
+						<a href="Artists/artist-detail.php?id=<?php echo $artist['artist_id']; ?>" class="artist-card">
 							<img src="<?php echo htmlspecialchars($artist['image_url']); ?>" 
 								 alt="<?php echo htmlspecialchars($artist['artist_name']); ?>"
 								 class="artist-image"
@@ -776,9 +986,9 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 							<div class="artist-info">
 								<h3 class="artist-name"><?php echo htmlspecialchars($artist['artist_name']); ?></h3>
 								<p class="artist-bio"><?php echo htmlspecialchars($artist['bio']); ?></p>
-								</div>
 							</div>
-						</div>
+						</a>
+					</div>
 					<?php endforeach; ?>
 								</div>
 				<div class="text-center">
@@ -792,23 +1002,38 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 		<section id="genres" class="genres section-padding">
 			<div class="container">
 				<div class="section-title">
-					<h2>Dòng Nhạc</h2>
-					<p>Khám phá các dòng nhạc đa dạng và phong phú</p>
+					<h2>Genres</h2>
 				</div>
-					<div class="row">
-					<?php foreach ($genres as $genre): ?>
-					<div class="col-md-3 col-sm-6">
-						<div class="genre-card">
-							<h3 class="genre-name"><?php echo htmlspecialchars($genre['genre_name']); ?></h3>
-							<p class="genre-description"><?php echo htmlspecialchars($genre['description']); ?></p>
-								</div>
-								</div>
-					<?php endforeach; ?>
-							</div>
+				<div class="grid-container" id="genresGrid">
+				<?php 
+				$genre_icons = [
+					'Rock' => 'fa fa-music',
+					'Pop' => 'fa fa-music',
+					'Jazz' => 'fa fa-music',
+					'Classical' => 'fa fa-music',
+					'Electronic' => 'fa fa-music',
+					'Hip Hop' => 'fa fa-music',
+					'Country' => 'fa fa-music',
+					'R&B' => 'fa fa-music'
+				];
+				foreach ($genres as $genre): 
+					$icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
+				?>
+					<a href="genre/genres-detail.php?id=<?php echo $genre['genre_id']; ?>" class="genre-card">
+						<div class="genre-header">
+							<span class="genre-icon"><i class="<?php echo $icon; ?>"></i></span>
+							<div class="genre-name"><?php echo htmlspecialchars($genre['genre_name']); ?></div>
+						</div>
+						<div class="genre-info">
+							<div class="genre-description"><?php echo htmlspecialchars($genre['description']); ?></div>
+						</div>
+					</a>
+				<?php endforeach; ?>
+				</div>
 				<div class="text-center">
 					<a href="genres.php" class="btn-view-more">Xem tất cả dòng nhạc</a>
-						</div>
-								</div>
+				</div>
+			</div>
 		</section><!--/.genres-->
 		<!--genres end -->
 
@@ -817,8 +1042,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 		<section id="vouchers" class="vouchers section-padding" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
 			<div class="container">
 				<div class="section-title">
-					<h2>Voucher Khuyến Mãi</h2>
-					<p>Nhận ngay các voucher hấp dẫn để tiết kiệm chi phí mua sắm</p>
+					<h2>Vouchers</h2>
 				</div>
 				
 				<div class="voucher-slider-wrapper">
@@ -905,42 +1129,6 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 		<?php endif; ?>
 		<!--vouchers end -->
 
-		<!-- clients strat -->
-		<section id="clients"  class="clients">
-			<div class="container">
-				<div class="owl-carousel owl-theme" id="client">
-						<div class="item">
-							<a href="#">
-								<img src="assets/images/clients/c1.png" alt="brand-image" />
-							</a>
-						</div><!--/.item-->
-						<div class="item">
-							<a href="#">
-								<img src="assets/images/clients/c2.png" alt="brand-image" />
-							</a>
-						</div><!--/.item-->
-						<div class="item">
-							<a href="#">
-								<img src="assets/images/clients/c3.png" alt="brand-image" />
-							</a>
-						</div><!--/.item-->
-						<div class="item">
-							<a href="#">
-								<img src="assets/images/clients/c4.png" alt="brand-image" />
-							</a>
-						</div><!--/.item-->
-						<div class="item">
-							<a href="#">
-								<img src="assets/images/clients/c5.png" alt="brand-image" />
-							</a>
-						</div><!--/.item-->
-					</div><!--/.owl-carousel-->
-
-			</div><!--/.container-->
-
-		</section><!--/.clients-->	
-		<!-- clients end -->
-
 		<!-- Include Footer -->
 		<?php include 'includes/footer.php'; ?>
 		
@@ -982,64 +1170,53 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         .top-area {
             position: relative;
             z-index: 999;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #412D3B !important; /* Synchronized with accessories.php dark theme */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
         
         /* Index page navigation styling - white text with glow effect */
         .navbar-nav > li > a {
-            color: #fff !important;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
-                         0 0 20px rgba(255, 255, 255, 0.6),
-                         0 0 30px rgba(255, 255, 255, 0.4);
+            color: #FFFFFF !important;
+            text-shadow: none; /* Removed glow effect */
             font-weight: 600;
             transition: all 0.3s ease;
         }
         
         .navbar-nav > li > a:hover {
-            color: #ff6b35 !important;
-            text-shadow: 0 0 15px rgba(255, 107, 53, 0.8),
-                         0 0 25px rgba(255, 107, 53, 0.6),
-                         0 0 35px rgba(255, 107, 53, 0.4);
+            color: #deccca !important; /* Synchronized with accessories.php light theme */
+            text-shadow: none; /* Removed glow effect */
             transform: translateY(-2px);
         }
         
         /* Navigation icons styling */
         .navbar-nav > li > a i {
-            color: #fff !important;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8),
-                         0 0 16px rgba(255, 255, 255, 0.6);
+            color: #FFFFFF !important;
+            text-shadow: none; /* Removed glow effect */
             transition: all 0.3s ease;
         }
         
         .navbar-nav > li > a:hover i {
-            color: #ff6b35 !important;
-            text-shadow: 0 0 12px rgba(255, 107, 53, 0.8),
-                         0 0 20px rgba(255, 107, 53, 0.6);
+            color: #deccca !important; /* Synchronized with accessories.php light theme */
+            text-shadow: none; /* Removed glow effect */
             transform: scale(1.1);
         }
         
         /* Brand logo styling */
         .navbar-brand {
-            color: #fff !important;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
-                         0 0 25px rgba(255, 255, 255, 0.6);
+            color: #FFFFFF !important;
+            text-shadow: none; /* Removed glow effect */
             font-weight: bold;
             transition: all 0.3s ease;
         }
         
         .navbar-brand:hover {
-            color: #ff6b35 !important;
-            text-shadow: 0 0 20px rgba(255, 107, 53, 0.8),
-                         0 0 30px rgba(255, 107, 53, 0.6);
+            color: #deccca !important; /* Synchronized with accessories.php light theme */
+            text-shadow: none; /* Removed glow effect */
         }
         
         /* Navigation background with gradient overlay */
-        .top-area {
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.9), rgba(247, 147, 30, 0.8)) !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
+        /* Removed original top-area gradient, now using solid color */
         
         /* Mobile menu button styling */
         .navbar-toggle {
@@ -1053,7 +1230,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         /* Dropdown menu styling for index page */
         .dropdown-menu {
-            background: rgba(255, 107, 53, 0.95) !important;
+            background: #412D3B !important; /* Synchronized with accessories.php dark theme */
             border: none;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
             backdrop-filter: blur(10px);
@@ -1061,14 +1238,14 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         .dropdown-menu > li > a {
             color: #fff !important;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            text-shadow: none; /* Removed glow effect */
             transition: all 0.3s ease;
         }
         
         .dropdown-menu > li > a:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: rgba(255, 255, 255, 0.2) !important; /* Light transparent overlay */
             color: #fff !important;
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+            text-shadow: none; /* Removed glow effect */
         }
         
         /* Search box styling */
@@ -1076,7 +1253,6 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             background: rgba(255, 255, 255, 0.2) !important;
             border: 2px solid rgba(255, 255, 255, 0.3) !important;
             color: #fff !important;
-            placeholder-color: rgba(255, 255, 255, 0.7);
         }
         
         .navbar-form input::placeholder {
@@ -1090,24 +1266,20 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         }
         
         /* Animation for navigation items */
-        @keyframes navGlow {
-            0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
-            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8); }
-            100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8); }
-        }
+        /* Removed @keyframes navGlow */
         
         .navbar-nav > li > a {
-            animation: navGlow 3s ease-in-out infinite;
+            animation: none; /* Removed animation */
         }
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .navbar-nav > li > a {
-                text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+                text-shadow: none;
             }
             
             .top-area {
-                background: linear-gradient(135deg, rgba(255, 107, 53, 0.95), rgba(247, 147, 30, 0.9)) !important;
+                background: #412D3B !important; /* Synchronized with accessories.php dark theme */
             }
         }
         
@@ -1152,7 +1324,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 107, 53, 0.8), rgba(247, 147, 30, 0.6));
+            background: linear-gradient(135deg, rgba(65, 45, 59, 0.8), rgba(65, 45, 59, 0.6)); /* Synchronized with accessories.php dark theme */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1211,7 +1383,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         .btn-banner.btn-primary {
             background: #fff;
-            color: #ff6b35;
+            color: #412D3B; /* Synchronized with accessories.php dark theme */
             border: 2px solid #fff;
         }
         
@@ -1231,7 +1403,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         .btn-banner.btn-secondary:hover {
             background: #fff;
-            color: #ff6b35;
+            color: #412D3B; /* Synchronized with accessories.php dark theme */
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
@@ -1263,7 +1435,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         #bannerCarousel .carousel-control span {
             font-size: 24px;
             color: #fff;
-            background: rgba(255, 107, 53, 0.8);
+            background: rgba(65, 45, 59, 0.8); /* Synchronized with accessories.php dark theme */
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -1274,7 +1446,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         }
         
         #bannerCarousel .carousel-control:hover span {
-            background: rgba(255, 107, 53, 1);
+            background: rgba(65, 45, 59, 1); /* Synchronized with accessories.php dark theme */
             transform: scale(1.1);
         }
         
@@ -1294,8 +1466,8 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         }
         
         #bannerCarousel .carousel-indicators li.active {
-            background: #ff6b35;
-            border-color: #ff6b35;
+            background: #412D3B; /* Synchronized with accessories.php dark theme */
+            border-color: #412D3B; /* Synchronized with accessories.php dark theme */
             transform: scale(1.2);
         }
         
