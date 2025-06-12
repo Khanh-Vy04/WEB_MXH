@@ -243,12 +243,12 @@ function getUrlWithParams($params) {
             </div>
             <!-- Table Section -->
             <div class="table-section" style="background: #fff; border-radius: 16px; padding: 1.2rem 1.5rem; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);">
-                <div class="search-bar" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div class="search-bar">
                     <form method="GET" class="d-flex flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="search" value="<?php echo htmlspecialchars($search); ?>" style="flex: 1; padding: 0.6rem 1rem; border: 2px solid #222; border-radius: 10px; font-size: 1rem; color: #444; background: #fff; transition: border-color 0.2s;">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                     </form>
-                    <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn" style="background: #deccca; color: #412d3b; border: none; border-radius: 10px; padding: 0.5rem 1.2rem; font-size: 1rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; text-decoration: none;">
-                        <i class="fas fa-plus" style="color: #412d3b; font-size: 1.1rem;"></i> Thêm Sản Phẩm
+                    <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn">
+                        <i class="fas fa-plus"></i> Thêm Sản Phẩm
                     </a>
                 </div>
                 <script>console.log('Rendering product table...');</script>
@@ -287,7 +287,7 @@ function getUrlWithParams($params) {
                                 $low_stock_tag = ''; 
                                 if ($stock < 5) { 
                                     $badge_class = 'badge-stock-out'; 
-                                    $low_stock_tag = ' <small class="text-danger fw-bold">(Sắp hết!)</small>'; 
+                                    $low_stock_tag = ' <small class="text-danger fw-bold"></small>'; 
                                 } elseif ($stock < 15) { 
                                     $badge_class = 'badge-stock-medium'; 
                                 } 

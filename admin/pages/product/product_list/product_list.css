@@ -129,6 +129,8 @@
   gap: 0.5rem;
   transition: all 0.2s ease;
   text-decoration: none;
+  min-height: 44px;
+  height: auto;
 }
 .product-action-bar .add-btn i {
   color: #412d3b;
@@ -347,4 +349,135 @@ td.product-cell {
 .dropdown-item i {
   margin-right: 0.5rem;
   width: 16px;
+}
+
+/* Điều chỉnh độ rộng các cột trong bảng */
+table th:nth-child(3), /* Cột thể loại */
+table td:nth-child(3) {
+  width: 100px;
+  min-width: 100px;
+}
+
+table th:nth-child(4), /* Cột tồn kho */
+table td:nth-child(4) {
+  width: 80px;
+  min-width: 80px;
+}
+
+table th:nth-child(7), /* Cột trạng thái */
+table td:nth-child(7) {
+  width: 140px;
+  min-width: 140px;
+}
+
+table th:nth-child(8), /* Cột thao tác */
+table td:nth-child(8) {
+  width: 80px;
+  min-width: 80px;
+}
+
+/* Đảm bảo badge trạng thái không bị xuống dòng */
+.badge-status-inactive,
+.badge-status-active,
+.badge-status-scheduled {
+  white-space: nowrap;
+  display: inline-block;
+  padding: 0.35em 0.7em;
+  font-size: 0.9rem;
+}
+
+/* Đảm bảo nội dung các ô không bị xuống dòng */
+table td:nth-child(3), /* Cột thể loại */
+table td:nth-child(4) {
+  /* Cột tồn kho */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+/* Thêm tooltip khi hover vào nội dung bị cắt */
+table td:nth-child(3):hover,
+table td:nth-child(4):hover {
+  position: relative;
+}
+
+table td:nth-child(3):hover::after,
+table td:nth-child(4):hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Style cho thanh tìm kiếm và nút thêm */
+.search-bar {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.search-bar input,
+.add-btn {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 2px solid #222;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  color: #444;
+  background: #fff;
+  transition: border-color 0.2s;
+  min-height: 44px;
+  line-height: 1.5;
+  outline: none;
+  margin-top: 16px;
+}
+
+.search-bar input:focus {
+  border-color: #7b61ff;
+  outline: none;
+  box-shadow: 0 0 0 2px #edeaff;
+}
+
+.add-btn {
+  background: #deccca;
+  color: #412d3b;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  min-height: 44px;
+  height: auto;
+}
+
+.add-btn i {
+  color: #412d3b;
+  font-size: 1.1rem;
+}
+
+.add-btn:hover {
+  background: #c9b5b0;
+  color: #412d3b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15);
 }
