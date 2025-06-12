@@ -82,10 +82,15 @@ if (isset($_POST['register'])) {
     $fullname = trim($_POST['reg_fullname']);
     $gender = $_POST['reg_gender'];
     $phone = trim($_POST['reg_phone']);
+    $address = trim($_POST['reg_address']);
     
     // Validate input
-    if (empty($username) || empty($password) || empty($email) || empty($fullname) || empty($gender) || empty($phone)) {
+    if (empty($username) || empty($password) || empty($email) || empty($fullname) || empty($gender) || empty($phone) || empty($address)) {
         $register_error = "Vui lòng điền đầy đủ thông tin!";
+    } 
+    // Validate số điện thoại Việt Nam
+    elseif (!preg_match('/^(0|\+84)[0-9]{9}$/', $phone)) {
+        $register_error = "Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại Việt Nam (10 số bắt đầu bằng 0 hoặc +84 theo sau 9 số).";
     } else {
         try {
             // Kiểm tra username và email đã tồn tại chưa
@@ -108,14 +113,14 @@ if (isset($_POST['register'])) {
                 // Thêm user mới với role_id = 2 (user thường)
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 
-                $sql = "INSERT INTO users (role_id, username, password, email, full_name, gender, phone) 
-                        VALUES (2, ?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO users (role_id, username, password, email, full_name, gender, phone, address) 
+                        VALUES (2, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
                 if (!$stmt) {
                     throw new Exception("Lỗi prepare statement: " . $conn->error);
                 }
                 
-                $stmt->bind_param("ssssss", $username, $hashed_password, $email, $fullname, $gender, $phone);
+                $stmt->bind_param("sssssss", $username, $hashed_password, $email, $fullname, $gender, $phone, $address);
                 
                 if ($stmt->execute()) {
                     $register_success = "Đăng ký thành công! Vui lòng đăng nhập.";
@@ -330,6 +335,18 @@ if (isset($_POST['register'])) {
                                autocomplete="tel" 
                                placeholder="Số điện thoại" 
                                required>
+                        <div id="phone-error" class="text-danger small" style="display: none;">
+                            Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại Việt Nam (10 số bắt đầu bằng 0 hoặc +84 theo sau 9 số).
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" 
+                               class="form-control" 
+                               name="reg_address" 
+                               id="reg_address"
+                               autocomplete="street-address" 
+                               placeholder="Địa chỉ" 
+                               required>
                     </div>
                     <button type="submit" name="register" class="btn btn-auth">
                         <i class="fas fa-user-plus me-2"></i> Đăng ký
@@ -340,5 +357,35 @@ if (isset($_POST['register'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Kiểm tra số điện thoại real-time
+        document.getElementById('reg_phone').addEventListener('input', function() {
+            const phone = this.value.trim();
+            const phoneError = document.getElementById('phone-error');
+            const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+            
+            if (phone && !phoneRegex.test(phone)) {
+                phoneError.style.display = 'block';
+                this.classList.add('is-invalid');
+            } else {
+                phoneError.style.display = 'none';
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        // Kiểm tra khi submit form
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('reg_phone').value.trim();
+            const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+            
+            if (!phoneRegex.test(phone)) {
+                e.preventDefault();
+                document.getElementById('phone-error').style.display = 'block';
+                document.getElementById('reg_phone').classList.add('is-invalid');
+                document.getElementById('reg_phone').focus();
+            }
+        });
+    </script>
 </body>
 </html> 
