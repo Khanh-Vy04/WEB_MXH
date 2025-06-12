@@ -37,7 +37,7 @@
                                 <i class="fa fa-microphone me-2"></i>Nghệ sĩ
                             </a>
                             <a href="/WEB_MXH/admin/pages/genre/genre_list.php" class="dropdown-item <?php if(isset($currentPage) && strpos($currentPage, 'genre') === 0) echo 'active'; ?>">
-                                <i class="fa fa-tags me-2"></i>Thể loại
+                                <i class="fa fa-tags me-2"></i>Dòng Nhạc
                             </a>
                         </div>
                     </div>

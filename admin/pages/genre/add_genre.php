@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Add Genre</title>
+    <title>Thêm Dòng Nhạc</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
@@ -278,10 +278,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Header -->
                             <div class="page-header">
                                 <h2 class="page-title">
-                                    <i class="fas fa-plus-circle me-3"></i>Add New Genre
+                                    <i class="fas fa-plus-circle me-3"></i>Thêm Dòng Nhạc Mới
                                 </h2>
                                 <a href="genre_list.php" class="btn-back">
-                                    <i class="fas fa-arrow-left me-2"></i>Back
+                                    <i class="fas fa-arrow-left me-2"></i>Quay Lại
                                 </a>
                             </div>
                             
@@ -296,38 +296,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <form method="POST" id="addGenreForm">
                                 <div class="form-group">
                                     <label for="genre_name" class="form-label">
-                                        <i class="fas fa-music me-2"></i>Genre Name <span class="required">*</span>
+                                        <i class="fas fa-music me-2"></i>Tên Dòng Nhạc <span class="required">*</span>
                                     </label>
                                     <input type="text" 
                                            class="form-control" 
                                            id="genre_name" 
                                            name="genre_name" 
                                            value="<?php echo isset($genre_name) ? htmlspecialchars($genre_name) : ''; ?>"
-                                           placeholder="Enter the name of the music genre (e.g., Rock, Pop, Jazz...)."
+                                           placeholder="Nhập tên dòng nhạc (VD: Rock, Pop, Jazz...)."
                                            maxlength="100"
                                            required>
-                                    <div class="form-help">Maximum 100 characters</div>
+                                    <div class="form-help">Tối đa 100 ký tự</div>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="description" class="form-label">
-                                        <i class="fas fa-align-left me-2"></i>Description <span class="required">*</span>
+                                        <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
                                     </label>
                                     <textarea class="form-control" 
                                               id="description" 
                                               name="description" 
                                               rows="6"
-                                              placeholder="Enter a detailed description of this music genre..."
+                                              placeholder="Nhập mô tả chi tiết về dòng nhạc này..."
                                               required><?php echo isset($description) ? htmlspecialchars($description) : ''; ?></textarea>
-                                    <div class="form-help">Describe the characteristics, style, and related information of the music genre.</div>
+                                    <div class="form-help">Mô tả đặc điểm, phong cách và thông tin liên quan của dòng nhạc.</div>
                                 </div>
                                 
                                 <div class="form-buttons">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Add Genre
+                                        <i class="fas fa-save me-2"></i>Thêm Dòng Nhạc
                                     </button>
                                     <button type="reset" class="btn btn-secondary">
-                                        <i class="fas fa-undo me-2"></i>Reset
+                                        <i class="fas fa-undo me-2"></i>Đặt Lại
                                     </button>
                                 </div>
                             </form>

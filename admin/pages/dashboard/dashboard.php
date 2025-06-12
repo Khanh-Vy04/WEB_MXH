@@ -225,23 +225,34 @@ try {
     <!-- Template Stylesheet -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     
-    <!-- Custom Dashboard Styles -->
+    <!-- Custom Dashboard Styles - Brand Colors -->
     <style>
         .dashboard-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             border-radius: 15px;
             color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(65, 45, 59, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
         }
         
         .dashboard-card h6 {
             font-weight: 600;
             font-size: 1.1rem;
+            color: white !important;
         }
         
         .dashboard-card p {
             font-weight: 500;
             opacity: 0.9;
+            color: white !important;
+        }
+        
+        .dashboard-card .text-warning {
+            color: #deccca !important;
         }
         
         .chart-container {
@@ -251,7 +262,7 @@ try {
         }
         
         .chart-container h6 {
-            color: #333;
+            color: #412d3b;
             font-weight: 600;
         }
         
@@ -263,8 +274,8 @@ try {
         }
         
         .table-custom th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
+            color: white !important;
             font-weight: 600;
             border: none;
         }
@@ -282,8 +293,60 @@ try {
         }
         
         .messages-widget h6 {
-            color: #333;
+            color: #412d3b;
             font-weight: 600;
+        }
+        
+        .bg-light {
+            background: linear-gradient(135deg, rgba(222,204,202,0.3) 0%, rgba(222,204,202,0.1) 100%) !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
+            border: none;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #6c4a57 0%, #412d3b 100%);
+            transform: translateY(-1px);
+            color: white !important;
+        }
+        
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+        }
+        
+        .text-primary {
+            color: #412d3b !important;
+        }
+        
+        .export-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, #6c4a57 0%, #412d3b 100%);
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .export-btn i {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -350,6 +413,34 @@ try {
                 </div>
             </div>
             <!-- Week Selector End -->
+            
+            <!-- Export Section Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="export-section">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6 class="mb-2" style="color: #412d3b;">
+                                        <i class="fas fa-file-csv me-2" style="color: #28a745;"></i>
+                                        Xuất báo cáo CSV
+                                    </h6>
+                                    <p class="text-muted mb-0">
+                                        Tạo file CSV chứa dữ liệu thống kê cho tuần được chọn (có thể mở bằng Excel)
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                                                            <button type="button" class="export-btn" onclick="exportDashboardExcel()">
+                                        <i class="fas fa-download"></i>
+                                        Xuất CSV báo cáo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Export Section End -->
             
             <!-- Sale & Revenue Start -->
             <div class="container-fluid pt-4 px-4">
@@ -430,7 +521,7 @@ try {
                 <div class="table-custom text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <h6 class="mb-0">Đơn hàng gần đây</h6>
-                        <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary btn-sm">
+                        <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary btn-sm" style="color: white !important;">
                             <i class="fas fa-eye me-2"></i>Xem tất cả
                         </a>
                     </div>
@@ -469,7 +560,7 @@ try {
                                             <td>
                                                 <a class="btn btn-sm btn-primary" 
                                                    href="/WEB_MXH/admin/pages/order/order_detail/order_detail.php?id=<?php echo $order['order_id']; ?>" 
-                                                   target="_blank">Chi tiết</a>
+                                                   target="_blank" style="color: white !important;">Chi tiết</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -488,8 +579,8 @@ try {
                         <div class="messages-widget h-100 rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <h6 class="mb-0">Tin nhắn gần đây</h6>
-                                <a href="/WEB_MXH/admin/pages/customer_support/message/message.php" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-comments me-2"></i>Xem tất cả
+                                <a href="/WEB_MXH/admin/pages/customer_support/message/message.php" class="btn btn-primary btn-sm" style="color: white !important;">
+                                    <i class="fas fa-comments me-2"></i>Xem tất cả tin nhắn
                                 </a>
                             </div>
                             <?php if (empty($recent_messages)): ?>
@@ -500,7 +591,7 @@ try {
                                 <?php foreach ($recent_messages as $index => $message): ?>
                                     <div class="d-flex align-items-center <?php echo $index < count($recent_messages) - 1 ? 'border-bottom' : ''; ?> py-3">
                                         <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center" 
-                                             style="width: 40px; height: 40px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; font-weight: bold;">
+                                             style="width: 40px; height: 40px; background: linear-gradient(45deg, #412d3b, #6c4a57); color: white; font-weight: bold;">
                                             <?php 
                                                 if ($message['full_name']) {
                                                     $name_parts = explode(' ', trim($message['full_name']));
@@ -602,9 +693,11 @@ try {
                         labels: topProductsData.map(item => item.item_name + ' (' + item.item_type + ')'),
                         datasets: [{
                             backgroundColor: [
-                                "rgba(235, 22, 22, .7)",
-                                "rgba(235, 22, 22, .6)",
-                                "rgba(235, 22, 22, .5)"
+                                "rgba(65, 45, 59, .8)",
+                                "rgba(108, 74, 87, .8)",
+                                "rgba(222, 204, 202, .8)",
+                                "rgba(65, 45, 59, .6)",
+                                "rgba(108, 74, 87, .6)"
                             ],
                             data: topProductsData.map(item => item.total_quantity)
                         }]
@@ -640,19 +733,19 @@ try {
                             {
                                 label: "Đơn hàng",
                                 data: dailyStatsData.map(item => item.orders),
-                                backgroundColor: "rgba(235, 22, 22, .2)",
-                                borderColor: "rgba(235, 22, 22, .7)",
-                                pointBackgroundColor: "rgba(235, 22, 22, .7)",
-                                pointBorderColor: "rgba(235, 22, 22, .7)",
+                                backgroundColor: "rgba(65, 45, 59, .2)",
+                                borderColor: "rgba(65, 45, 59, .8)",
+                                pointBackgroundColor: "rgba(65, 45, 59, .8)",
+                                pointBorderColor: "rgba(65, 45, 59, .8)",
                                 fill: true
                             },
                             {
                                 label: "Doanh thu (triệu đồng)",
                                 data: dailyStatsData.map(item => Math.round(item.revenue / 1000000)),
-                                backgroundColor: "rgba(235, 22, 22, .4)",
-                                borderColor: "rgba(235, 22, 22, 1)",
-                                pointBackgroundColor: "rgba(235, 22, 22, 1)",
-                                pointBorderColor: "rgba(235, 22, 22, 1)",
+                                backgroundColor: "rgba(222, 204, 202, .4)",
+                                borderColor: "rgba(108, 74, 87, 1)",
+                                pointBackgroundColor: "rgba(108, 74, 87, 1)",
+                                pointBorderColor: "rgba(108, 74, 87, 1)",
                                 fill: false
                             }
                         ]
@@ -693,6 +786,72 @@ try {
             const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
             const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
             return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+        
+        // Function xuất Excel với biểu đồ
+        function exportDashboardExcel() {
+            const weekSelector = document.getElementById('week-selector');
+            const selectedWeek = weekSelector ? weekSelector.value : '';
+            
+            // Hiển thị loading
+            const exportBtn = document.querySelector('.export-btn');
+            if (exportBtn) {
+                const originalContent = exportBtn.innerHTML;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo file...';
+                exportBtn.disabled = true;
+                
+                // Tạo URL với tuần được chọn
+                const exportUrl = '/WEB_MXH/admin/pages/dashboard/export_dashboard_excel.php' + 
+                                (selectedWeek ? '?week=' + encodeURIComponent(selectedWeek) : '');
+                
+                // Tạo link download ẩn
+                const downloadLink = document.createElement('a');
+                downloadLink.href = exportUrl;
+                downloadLink.style.display = 'none';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // Khôi phục button sau 3 giây
+                setTimeout(() => {
+                    exportBtn.innerHTML = originalContent;
+                    exportBtn.disabled = false;
+                }, 3000);
+                
+                // Hiển thị thông báo thành công
+                setTimeout(() => {
+                    showNotification('success', 'File CSV đã được tạo và tải xuống! (Có thể mở bằng Excel)');
+                }, 1000);
+            }
+        }
+        
+        // Function hiển thị thông báo
+        function showNotification(type, message) {
+            // Tạo notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Tự động ẩn sau 5 giây
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
         }
     </script>
 </body>

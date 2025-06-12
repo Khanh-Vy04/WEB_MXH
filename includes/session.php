@@ -102,21 +102,21 @@ function isAdminBySession() {
 // Hàm kiểm tra quyền admin (dựa trên user data)
 function isAdmin($user = null) {
     if ($user) {
-        // Kiểm tra từ dữ liệu user được truyền vào
-        return $user['role_id'] == 1 || $user['user_id'] == 1 || stripos($user['username'], 'admin') !== false;
+        // Kiểm tra từ dữ liệu user được truyền vào - chỉ dựa vào role_id
+        return isset($user['role_id']) && $user['role_id'] == 1;
     } else {
         // Kiểm tra từ session hoặc database
         if (isLoggedIn()) {
             global $conn;
             $user_id = $_SESSION['user_id'];
-            $sql = "SELECT user_id, username, role_id FROM users WHERE user_id = ?";
+            $sql = "SELECT role_id FROM users WHERE user_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows > 0) {
                 $userData = $result->fetch_assoc();
-                return $userData['role_id'] == 1 || $userData['user_id'] == 1 || stripos($userData['username'], 'admin') !== false;
+                return $userData['role_id'] == 1;
             }
         }
         return false;

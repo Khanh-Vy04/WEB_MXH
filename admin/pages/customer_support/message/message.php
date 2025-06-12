@@ -13,6 +13,9 @@ function getChatSessions($conn) {
                 (SELECT reply_message FROM support_replies sr2 
                  WHERE sr2.support_id = sr.support_id 
                  ORDER BY created_at DESC LIMIT 1) as last_message,
+                (SELECT is_customer_reply FROM support_replies sr3 
+                 WHERE sr3.support_id = sr.support_id 
+                 ORDER BY created_at DESC LIMIT 1) as last_message_is_customer,
                 SUM(CASE WHEN sr.is_customer_reply = 1 AND sr.created_at > COALESCE(
                     (SELECT MAX(created_at) FROM support_replies sr3 
                      WHERE sr3.support_id = sr.support_id AND sr3.is_customer_reply = 0), '2000-01-01'
@@ -105,17 +108,24 @@ function timeAgo($datetime) {
     <div class="content">
         <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
 
-        <div class="container-fluid pt-4 px-4">
-            <div class="bg-white rounded p-4 mb-4 shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="mb-0"><i class="fas fa-comments text-primary"></i> Quản lý Chat Support</h4>
+        <div class="container-fluid pt-4 px-4" style="background: #f8f9fa; min-height: calc(100vh - 80px);">
+            <!-- Header Section -->
+            <div class="header-section mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0" style="color: #412d3b; font-weight: 700; font-size: 1.8rem;">
+                        <i class="fas fa-comments" style="color: #deccca; margin-right: 10px;"></i>
+                        Quản Lý Chat Support
+                    </h2>
                     <div class="d-flex align-items-center gap-3">
-                        <span class="badge bg-primary"><?= count($sessions) ?> cuộc trò chuyện</span>
+                        <span class="badge bg-primary px-3 py-2" style="font-size: 0.9rem;"><?= count($sessions) ?> cuộc trò chuyện</span>
                         <button class="btn btn-outline-primary btn-sm" onclick="refreshPage()">
                             <i class="fas fa-sync-alt"></i> Làm mới
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <div class="bg-white rounded p-4 mb-4 shadow-sm" style="border: 1px solid #e9ecef;">
                 
                 <?php if (isset($_GET['success'])): ?>
                 <div class="alert alert-success alert-dismissible fade show">
@@ -124,15 +134,15 @@ function timeAgo($datetime) {
                 </div>
                 <?php endif; ?>
 
-                <div class="row" style="height: 70vh;">
+                <div class="row" style="height: 65vh;">
                     <div class="col-md-4 border-end">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0" style="color:#6c63ff; font-weight:700;">
-                                <i class="fas fa-list"></i> Danh sách Chat
+                            <h5 class="mb-0" style="color: #412d3b; font-weight: 700;">
+                                <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách Chat
                             </h5>
                         </div>
                         
-                        <div style="height: 100%; overflow-y: auto;">
+                        <div style="height: calc(100% - 50px); max-height: 320px; overflow-y: auto;">
                             <?php if (empty($sessions)): ?>
                                 <div class="text-center text-muted py-5">
                                     <i class="fas fa-comments fa-3x mb-3"></i>
@@ -145,31 +155,34 @@ function timeAgo($datetime) {
                                     <div class="d-flex align-items-start">
                                         <div class="session-avatar me-3">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                 style="width:45px;height:45px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;font-weight:700;">
+                                                 style="width:40px;height:40px;background:linear-gradient(135deg, #412d3b 0%, #deccca 100%);color:white;font-weight:700;font-size:0.9em;">
                                                 <?= strtoupper(substr($session['customer_name'] ?? 'U', 0, 1)) ?>
                                             </div>
                                         </div>
                                         
                                         <div class="flex-grow-1 min-width-0">
                                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <h6 class="mb-0 text-truncate" style="font-weight: 600;">
+                                                <h6 class="mb-0 text-truncate" style="font-weight: 600; color: #412d3b; max-width: 150px;">
                                                     <?= htmlspecialchars($session['customer_name'] ?? 'Khách hàng') ?>
                                                 </h6>
-                                                <small class="text-muted"><?= timeAgo($session['last_message_time']) ?></small>
+                                                <small class="text-muted" style="flex-shrink: 0;"><?= timeAgo($session['last_message_time']) ?></small>
                                             </div>
                                             
-                                            <p class="mb-1 text-muted small text-truncate">
-                                                <?= htmlspecialchars(substr($session['last_message'], 0, 50)) ?><?= strlen($session['last_message']) > 50 ? '...' : '' ?>
+                                            <p class="mb-1 text-muted small text-truncate" style="max-width: 200px;">
+                                                <?= htmlspecialchars(substr($session['last_message'], 0, 35)) ?><?= strlen($session['last_message']) > 35 ? '...' : '' ?>
+                                                <?php if ($session['last_message_is_customer'] == 1): ?>
+                                                    <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6em;">chưa phản hồi</span>
+                                                <?php endif; ?>
                                             </p>
                                             
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <small class="text-primary">
+                                                <small style="color: #412d3b; max-width: 90px; overflow: hidden; text-overflow: ellipsis;">
                                                     <i class="fas fa-hashtag"></i> <?= $session['support_id'] ?>
                                                 </small>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <span class="badge bg-light text-dark"><?= $session['message_count'] ?> tin nhắn</span>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <span class="badge text-dark" style="background: #deccca; font-size: 0.6em;"><?= $session['message_count'] ?></span>
                                                     <?php if ($session['unread_count'] > 0): ?>
-                                                        <span class="badge bg-danger"><?= $session['unread_count'] ?> mới</span>
+                                                        <span class="badge bg-danger" style="font-size: 0.6em;"><?= $session['unread_count'] ?></span>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
@@ -183,26 +196,33 @@ function timeAgo($datetime) {
 
                     <div class="col-md-8 d-flex flex-column">
                         <?php if ($current_session): ?>
-                            <div class="chat-header p-3 border-bottom bg-light">
+                            <div class="chat-header p-3 border-bottom" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
                                 <div class="d-flex align-items-center">
                                     <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                                         style="width:40px;height:40px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;font-weight:700;">
+                                         style="width:40px;height:40px;background:rgba(255,255,255,0.2);color:white;font-weight:700;border:2px solid rgba(255,255,255,0.3);">
                                         <?= strtoupper(substr($current_session['customer_name'] ?? 'U', 0, 1)) ?>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0" style="font-weight: 600;">
+                                        <h6 class="mb-0" style="font-weight: 600; color: white;">
                                             <?= htmlspecialchars($current_session['customer_name'] ?? 'Khách hàng') ?>
                                         </h6>
-                                        <small class="text-muted">
+                                        <small style="color: rgba(255,255,255,0.8);">
                                             <i class="fas fa-hashtag"></i> Support ID: <?= $current_session['support_id'] ?>
                                             • <?= $current_session['message_count'] ?> tin nhắn
                                         </small>
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-circle me-1" style="font-size: 0.6em;"></i>
-                                            Đang hoạt động
-                                        </span>
+                                        <?php if ($current_session['last_message_is_customer'] == 1): ?>
+                                            <span class="badge bg-warning text-dark mb-1">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                Chưa trả lời
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">
+                                                <i class="fas fa-check-circle me-1" style="font-size: 0.6em; color: #4caf50;"></i>
+                                                Đã trả lời
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +233,7 @@ function timeAgo($datetime) {
                                         <?php if ($msg['is_customer_reply']): ?>
                                             <div class="message-avatar me-2">
                                                 <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;font-weight:600;font-size:0.9em;">
+                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #412d3b 0%, #deccca 100%);color:white;font-weight:600;font-size:0.9em;">
                                                     <?= strtoupper(substr($msg['customer_name'] ?? 'U', 0, 1)) ?>
                                                 </div>
                                             </div>
@@ -236,7 +256,7 @@ function timeAgo($datetime) {
                                             </div>
                                             <div class="message-avatar ms-2">
                                                 <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);color:white;font-weight:600;">
+                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #deccca 0%, #412d3b 100%);color:white;font-weight:600;">
                                                     A
                                                 </div>
                                             </div>
@@ -245,7 +265,7 @@ function timeAgo($datetime) {
                                 <?php endforeach; ?>
                             </div>
 
-                            <div class="chat-input border-top bg-white p-3">
+                            <div class="chat-input border-top p-3" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
                                 <form method="POST" class="d-flex align-items-end gap-2">
                                     <input type="hidden" name="action" value="send_message">
                                     <input type="hidden" name="support_id" value="<?= $current_session['support_id'] ?>">
@@ -253,10 +273,10 @@ function timeAgo($datetime) {
                                     <div class="flex-grow-1">
                                         <textarea name="message" class="form-control" rows="2" 
                                                 placeholder="Nhập tin nhắn phản hồi khách hàng..." 
-                                                required style="resize: none;"></textarea>
+                                                required style="resize: none; border: 2px solid #e9ecef; border-radius: 15px; padding: 12px 16px; background: white;"></textarea>
                                     </div>
                                     
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #412d3b 0%, #deccca 100%); color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600;">
                                         <i class="fas fa-paper-plane"></i> Gửi
                                     </button>
                                 </form>

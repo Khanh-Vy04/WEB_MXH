@@ -14,7 +14,7 @@ body {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, sans-serif;
-  background-color: #f5f5f7;
+  background-color: #f3f4f6;
   color: #1a1a1a;
   display: flex;
   flex-direction: column;
@@ -35,17 +35,19 @@ body {
   flex: 1 0 auto;
   min-height: 100vh;
   padding: 0;
+  background: #f3f4f6 !important;
 }
 
 .container-fluid.pt-4.px-4 {
   flex: 1 0 auto;
+  background: #f7f8f9;
 }
 
 /* Table Container */
 .table-container {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   margin-bottom: 1.5rem;
   overflow-x: auto;
 }
@@ -60,16 +62,16 @@ th {
   padding: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0f172b;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f9fafb;
+  color: white;
+  border-bottom: none;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
 }
 
 td {
   padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #f1f3f4;
   font-size: 0.9rem;
-  color: #0f172b;
+  color: #444;
 }
 
 tr:hover {
@@ -83,22 +85,22 @@ tr:hover {
 }
 
 .customer-avatar {
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  color: #0f172b;
-  font-size: 0.875rem;
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
 }
 
 .customer-info .customer-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: #0f172b;
+  color: #444;
 }
 
 .customer-info .customer-email {
@@ -114,8 +116,8 @@ tr:hover {
   margin-bottom: 1.5rem;
   background: white;
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .search-bar input {
@@ -129,7 +131,7 @@ tr:hover {
 
 .search-bar input:focus {
   outline: none;
-  border-color: #0f172b;
+  border-color: #412d3b;
 }
 
 .right-controls {
@@ -149,24 +151,24 @@ tr:hover {
 
 .export-btn {
   padding: 0.5rem 1rem;
-  background: #0f172b;
+  background: #deccca;
   border: none;
   border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  color: white;
+  color: #412d3b;
   font-size: 0.9rem;
   transition: background-color 0.3s ease;
 }
 
 .export-btn:hover {
-  background: #1a2a4a;
+  background: #c4b5b0;
 }
 
 .btn-add-customer {
-  background: #6366f1;
+  background: #412d3b;
   color: #fff;
   border-radius: 8px;
   font-weight: 500;
@@ -176,7 +178,7 @@ tr:hover {
 }
 
 .btn-add-customer:hover {
-  background: #4f46e5;
+  background: #6c4a57;
   color: #fff;
 }
 
@@ -188,12 +190,12 @@ tr:hover {
   margin-top: 20px;
   padding: 1rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .entries-info {
-  color: #0f172b;
+  color: #444;
   font-size: 0.875rem;
 }
 
@@ -211,22 +213,22 @@ tr:hover {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   background: white;
-  color: #0f172b;
+  color: #412d3b;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .page-btn:hover {
-  background: #fdeaea;
-  border-color: #b90f0f;
-  color: #b90f0f;
+  background: #f9fafb;
+  border-color: #412d3b;
+  color: #412d3b;
 }
 
 .page-btn.active {
-  background: #0f172b;
+  background: #412d3b;
   color: white;
-  border-color: #0f172b;
+  border-color: #412d3b;
 }
 
 /* Đảm bảo các nút có thể click */
@@ -261,12 +263,12 @@ a {
   border: none;
   background: none;
   cursor: pointer;
-  color: #0f172b;
+  color: #412d3b;
   transition: color 0.3s ease;
 }
 
 .action-btn:hover {
-  color: #1a2a4a;
+  color: #6c4a57;
 }
 
 /* Dropdown Menu */
@@ -297,7 +299,7 @@ a {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  color: #0f172b;
+  color: #412d3b;
   text-decoration: none;
   font-size: 0.875rem;
   transition: background-color 0.2s;

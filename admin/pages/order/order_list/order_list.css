@@ -8,7 +8,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, sans-serif;
-  background-color: #f5f5f7;
+  background-color: #f3f4f6;
   color: #1a1a1a;
 }
 
@@ -30,7 +30,7 @@ body {
   flex: 1;
   margin-left: 250px;
   padding: 2rem;
-  background: #f5f5f7;
+  background: #f3f4f6;
   min-height: calc(100vh - 60px); /* Trừ đi chiều cao của navbar */
 }
 
@@ -44,12 +44,12 @@ body {
 
 .stat-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 15px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   transition: transform 0.3s ease;
 }
 
@@ -61,7 +61,7 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #f3f4f6;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,14 +69,14 @@ body {
 
 .stat-icon i {
   font-size: 1.25rem;
-  color: #0f172b;
+  color: white;
 }
 
 .stat-info h2 {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: #0f172b;
+  color: #444;
 }
 
 .stat-info p {
@@ -93,8 +93,8 @@ body {
   margin-bottom: 1.5rem;
   background: white;
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .search-bar input {
@@ -108,7 +108,7 @@ body {
 
 .search-bar input:focus {
   outline: none;
-  border-color: #0f172b;
+  border-color: #412d3b;
 }
 
 .right-controls {
@@ -128,27 +128,27 @@ body {
 
 .export-btn {
   padding: 0.5rem 1rem;
-  background: #0f172b;
+  background: #deccca;
   border: none;
   border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  color: white;
+  color: #412d3b;
   font-size: 0.9rem;
   transition: background-color 0.3s ease;
 }
 
 .export-btn:hover {
-  background: #1a2a4a;
+  background: #c4b5b0;
 }
 
 /* Table Styles */
 .table-container {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   margin-bottom: 1.5rem;
   overflow-x: auto;
 }
@@ -163,16 +163,16 @@ th {
   padding: 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0f172b;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f9fafb;
+  color: white;
+  border-bottom: none;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
 }
 
 td {
   padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #f1f3f4;
   font-size: 0.9rem;
-  color: #0f172b;
+  color: #444;
 }
 
 tr:hover {
@@ -180,14 +180,14 @@ tr:hover {
 }
 
 .order-link {
-  color: #0f172b;
+  color: #412d3b;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .order-link:hover {
-  color: #1a2a4a;
+  color: #6c4a57;
 }
 
 .customer-cell {
@@ -200,19 +200,19 @@ tr:hover {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #f3f4f6;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  color: #0f172b;
+  color: white;
   font-size: 0.875rem;
 }
 
 .customer-info .customer-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: #0f172b;
+  color: #444;
 }
 
 .customer-info .customer-email {
@@ -267,27 +267,27 @@ tr:hover {
 
 .payment-method i {
   font-size: 1rem;
-  color: #0f172b;
+  color: #412d3b;
   flex-shrink: 0;
   width: 16px;
   text-align: center;
 }
 
 .payment-method i.fa-credit-card {
-  color: #0f172b;
+  color: #412d3b;
 }
 
 .payment-method i.fa-money-bill-wave {
-  color: #0f172b;
+  color: #412d3b;
 }
 
 .payment-method i.fa-mobile-alt {
-  color: #0f172b;
+  color: #412d3b;
 }
 
 .payment-text {
   font-size: 0.8rem;
-  color: #0f172b;
+  color: #412d3b;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -299,12 +299,12 @@ tr:hover {
   border: none;
   background: none;
   cursor: pointer;
-  color: #0f172b;
+  color: #412d3b;
   transition: color 0.3s ease;
 }
 
 .action-btn:hover {
-  color: #1a2a4a;
+  color: #6c4a57;
 }
 
 /* Pagination */
@@ -315,12 +315,12 @@ tr:hover {
   margin-top: 20px;
   padding: 1rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .entries-info {
-  color: #0f172b;
+  color: #444;
   font-size: 0.875rem;
 }
 
@@ -338,7 +338,7 @@ tr:hover {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   background: white;
-  color: #0f172b;
+  color: #412d3b;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -346,14 +346,14 @@ tr:hover {
 
 .page-btn:hover {
   background: #f3f4f6;
-  border-color: #0f172b;
-  color: #0f172b;
+  border-color: #412d3b;
+  color: #412d3b;
 }
 
 .page-btn.active {
-  background: #0f172b;
+  background: #412d3b;
   color: white;
-  border-color: #0f172b;
+  border-color: #412d3b;
 }
 
 /* Đảm bảo các nút có thể click */

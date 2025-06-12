@@ -41,8 +41,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errors[] = "Thứ tự hiển thị phải là số không âm";
     }
     
+    // Kiểm tra display_order đã tồn tại chưa (nếu không phải 0)
+    if (empty($errors) && $display_order > 0) {
+        $check_order_sql = "SELECT banner_id FROM banners WHERE display_order = ?";
+        $check_stmt = $conn->prepare($check_order_sql);
+        $check_stmt->bind_param("i", $display_order);
+        $check_stmt->execute();
+        $check_result = $check_stmt->get_result();
+        
+        if ($check_result->num_rows > 0) {
+            $errors[] = "Thứ tự hiển thị $display_order đã được sử dụng bởi banner khác";
+        }
+    }
+    
     if (empty($errors)) {
-        // Nếu không có display_order, lấy số lớn nhất + 1
+        // Nếu display_order = 0, tự động lấy số lớn nhất + 1
         if ($display_order == 0) {
             $max_order_sql = "SELECT MAX(display_order) as max_order FROM banners";
             $max_result = $conn->query($max_order_sql);
@@ -81,13 +94,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $display_order = 0;
     $is_active = 1;
 }
+
+// Lấy danh sách display_order đã sử dụng để hiển thị gợi ý
+$used_orders_sql = "SELECT display_order FROM banners WHERE display_order > 0 ORDER BY display_order ASC";
+$used_orders_result = $conn->query($used_orders_sql);
+$used_orders = [];
+while ($row = $used_orders_result->fetch_assoc()) {
+    $used_orders[] = $row['display_order'];
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>Admin - Banner</title>
+    <title>Thêm Banner Mới</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
@@ -95,245 +116,263 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
-        .form-container {
+        .banner-container {
             background: #F5F5F5;
             border-radius: 15px;
-            padding: 30px;
-            max-width: 100%;
+            padding: 0;
             margin: 0 auto;
-            border: 1px solid #E0E0E0;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        
+
         .page-header {
+            background: linear-gradient(135deg, #deccca 0%, #c9b5b0 100%);
+            color: #412d3b;
+            padding: 25px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
             flex-wrap: wrap;
             gap: 15px;
         }
-        
+
         .page-title {
-            color: #333;
             font-size: 1.8rem;
             font-weight: bold;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
+
         .btn-back {
-            background: #deccca;
+            background: rgba(255,255,255,0.2);
             color: #412d3b;
             padding: 10px 20px;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.3);
             border-radius: 8px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
         .btn-back:hover {
-            background: #c9b5b0;
+            background: rgba(255,255,255,0.3);
             color: #412d3b;
             text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
-        
+
+        .form-content {
+            padding: 30px;
+            background: #FFFFFF;
+        }
+
         .form-group {
             margin-bottom: 25px;
         }
-        
+
         .form-label {
-            color: #333;
             font-weight: 600;
+            color: #333;
             margin-bottom: 8px;
             display: block;
+            font-size: 1rem;
         }
-        
+
+        .required {
+            color: #dc3545;
+        }
+
         .form-control {
-            background: #FFFFFF;
-            border: 2px solid #DDD;
+            background: #F8F9FA;
+            border: 2px solid #E5E5E5;
             border-radius: 8px;
             padding: 12px 15px;
             color: #333;
             font-size: 1rem;
             transition: all 0.3s;
+            width: 100%;
+            box-sizing: border-box;
         }
-        
+
         .form-control:focus {
+            background: #FFFFFF;
+            border-color: #deccca;
+            box-shadow: 0 0 0 3px rgba(222, 204, 202, 0.1);
             outline: none;
-            border-color: #deccca;
-            box-shadow: 0 0 0 0.2rem rgba(222, 204, 202, 0.25);
-            background: #FFFFFF;
         }
-        
-        .form-control::placeholder {
-            color: #888;
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.4;
         }
-        
-        textarea.form-control {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .checkbox-container input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            appearance: none;
-            background: #F5F5F5;
-            border: 2px solid #DDD;
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s;
-        }
-        
-        .checkbox-container input[type="checkbox"]:checked {
-            background: #deccca;
-            border-color: #deccca;
-        }
-        
-        .checkbox-container input[type="checkbox"]:checked::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #412d3b;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        
-        .checkbox-container label {
-            color: #333;
-            margin: 0;
-            cursor: pointer;
-        }
-        
+
         .preview-container {
-            background: #FFFFFF;
-            border: 2px dashed #DDD;
-            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px dashed #deccca;
+            border-radius: 10px;
             padding: 20px;
             text-align: center;
-            margin-top: 15px;
+            background: #f8f9fa;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
+        .preview-text {
+            color: #666;
+            font-style: italic;
+        }
+
         .preview-image {
             max-width: 100%;
             max-height: 200px;
             border-radius: 8px;
-            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        
-        .preview-text {
-            color: #888;
-            font-style: italic;
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-        
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #deccca;
+        }
+
+        .checkbox-container label {
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            margin: 0;
+        }
+
         .form-buttons {
             display: flex;
             gap: 15px;
             margin-top: 30px;
-            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid #E5E5E5;
         }
-        
-        .btn-submit {
-            background: #deccca;
-            border-color: #deccca;
-            color: #412d3b;
-            padding: 15px 30px;
-            border: none;
+
+        .btn {
+            padding: 12px 25px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 1rem;
+            border: none;
             cursor: pointer;
             transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .btn-submit:hover {
-            background: #c9b5b0;
-            border-color: #c9b5b0;
-            color: #412d3b;
-            transform: translateY(-2px);
-        }
-        
-        .btn-cancel {
+
+        .btn-primary {
             background: #deccca;
-            border-color: #deccca;
             color: #412d3b;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
         }
-        
-        .btn-cancel:hover {
+
+        .btn-primary:hover {
             background: #c9b5b0;
-            border-color: #c9b5b0;
             color: #412d3b;
-            text-decoration: none;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(65, 45, 59, 0.2);
         }
-        
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+            transform: translateY(-1px);
+        }
+
         .alert {
-            padding: 15px;
+            padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 25px;
             font-weight: 500;
+            border: none;
         }
-        
+
         .alert-success {
-            background: #D4EDDA;
+            background: #d4edda;
             color: #155724;
-            border: 1px solid #C3E6CB;
+            border-left: 4px solid #28a745;
         }
-        
+
         .alert-error {
-            background: #F8D7DA;
-            color: #721C24;
-            border: 1px solid #F5C6CB;
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
         }
-        
-        .help-text {
-            color: #666;
+
+        .order-suggestion {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .order-suggestion h6 {
+            color: #1976d2;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .order-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .order-item {
+            background: #bbdefb;
+            color: #0d47a1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .order-available {
+            color: #2e7d32;
+            font-weight: 500;
             font-size: 0.85rem;
-            margin-top: 5px;
         }
-        
-        .required {
-            color: #E74C3C;
-        }
-        
+
         @media (max-width: 768px) {
-            .form-container {
-                padding: 20px;
-                margin: 0 15px;
-                max-width: calc(100% - 30px);
-            }
-            
             .page-header {
                 flex-direction: column;
                 align-items: stretch;
+                text-align: center;
             }
             
             .form-buttons {
                 flex-direction: column;
             }
             
-            .btn-submit, .btn-cancel {
-                width: 100%;
-                text-align: center;
+            .form-content {
+                padding: 20px;
             }
         }
     </style>
@@ -357,117 +396,151 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-12">
-                        <div class="form-container">
+                        <div class="banner-container">
+                            <!-- Header -->
                             <div class="page-header">
-                                <h2 class="page-title">
-                                    <i class="fas fa-plus-circle me-3"></i>Add New Banner
-                                </h2>
+                                <h1 class="page-title">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Thêm Banner Mới
+                                </h1>
                                 <a href="banner_list.php" class="btn-back">
-                                    <i class="fas fa-arrow-left me-2"></i>Back
+                                    <i class="fas fa-arrow-left"></i>
+                                    Quay Lại
                                 </a>
                             </div>
                             
-                            <!-- Alert Messages -->
-                            <?php if (!empty($message)): ?>
-                                <div class="alert alert-<?php echo $messageType; ?>">
-                                    <?php echo $message; ?>
-                                </div>
-                            <?php endif; ?>
-                            
-                            <form method="POST" id="bannerForm">
-                                <!-- URL Banner -->
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        Image URL <span class="required">*</span>
-                                    </label>
-                                    <input type="url" 
-                                           name="banner_url" 
-                                           class="form-control" 
-                                           placeholder="https://example.com/banner.jpg"
-                                           value="<?php echo htmlspecialchars($banner_url); ?>"
-                                           required
-                                           id="bannerUrl">
-                                    <div class="help-text">
-                                        Enter the full URL of the banner image. Recommended size: 1200x400px
+                            <div class="form-content">
+                                <!-- Alert Messages -->
+                                <?php if (!empty($message)): ?>
+                                    <div class="alert <?php echo $messageType == 'success' ? 'alert-success' : 'alert-error'; ?>">
+                                        <i class="fas fa-<?php echo $messageType == 'success' ? 'check-circle' : 'exclamation-triangle'; ?> me-2"></i>
+                                        <?php echo $message; ?>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <form method="POST" id="bannerForm">
+                                    <!-- URL Banner -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-link me-2"></i>URL Hình Ảnh <span class="required">*</span>
+                                        </label>
+                                        <input type="url" 
+                                               name="banner_url" 
+                                               class="form-control" 
+                                               placeholder="https://example.com/banner.jpg"
+                                               value="<?php echo htmlspecialchars($banner_url); ?>"
+                                               required
+                                               id="bannerUrl">
+                                        <div class="help-text">
+                                            Nhập URL đầy đủ của hình ảnh banner. Kích thước khuyến nghị: 1200x400px
+                                        </div>
+                                        
+                                        <!-- Preview Container -->
+                                        <div class="preview-container" id="previewContainer">
+                                            <div class="preview-text" id="previewText">
+                                                Nhập URL để xem trước hình ảnh
+                                            </div>
+                                            <img id="previewImage" class="preview-image" style="display: none;">
+                                        </div>
                                     </div>
                                     
-                                    <!-- Preview Container -->
-                                    <div class="preview-container" id="previewContainer">
-                                        <div class="preview-text" id="previewText">
-                                            Enter URL to preview image
+                                    <!-- Tiêu đề Banner -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-heading me-2"></i>Tiêu Đề Banner <span class="required">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               name="banner_title" 
+                                               class="form-control" 
+                                               placeholder="Nhập tiêu đề banner"
+                                               value="<?php echo htmlspecialchars($banner_title); ?>"
+                                               required
+                                               maxlength="255">
+                                        <div class="help-text">
+                                            Tiêu đề sẽ được sử dụng để quản lý và có thể hiển thị trên website
                                         </div>
-                                        <img id="previewImage" class="preview-image" style="display: none;">
                                     </div>
-                                </div>
-                                
-                                <!-- Tiêu đề Banner -->
-                                <div class="form-group">
-                                    <label class="form-label">
-                                        Banner Title <span class="required">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           name="banner_title" 
-                                           class="form-control" 
-                                           placeholder="Enter banner title"
-                                           value="<?php echo htmlspecialchars($banner_title); ?>"
-                                           required
-                                           maxlength="255">
-                                    <div class="help-text">
-                                        The title will be used for management and can be displayed on the website
+                                    
+                                    <!-- Mô tả Banner -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-align-left me-2"></i>Mô Tả Banner
+                                        </label>
+                                        <textarea name="banner_description" 
+                                                  class="form-control" 
+                                                  rows="4"
+                                                  placeholder="Nhập mô tả chi tiết về banner, mục đích sử dụng..."><?php echo htmlspecialchars($banner_description); ?></textarea>
+                                        <div class="help-text">
+                                            Mô tả chi tiết về banner, mục đích sử dụng (tùy chọn)
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Mô tả Banner -->
-                                <div class="form-group">
-                                    <label class="form-label">Banner Description</label>
-                                    <textarea name="banner_description" 
-                                              class="form-control
-                                              rows="4"><?php echo htmlspecialchars($banner_description); ?></textarea>
-                                    <div class="help-text">
-                                        Detailed description of the banner, purpose of use (optional)
+                                    
+                                    <!-- Thứ tự hiển thị -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-sort-numeric-up me-2"></i>Thứ Tự Hiển Thị
+                                        </label>
+                                        <input type="number" 
+                                               name="display_order" 
+                                               class="form-control" 
+                                               placeholder="0"
+                                               value="<?php echo $display_order; ?>"
+                                               min="0"
+                                               max="999"
+                                               id="displayOrder">
+                                        <div class="help-text">
+                                            Thứ tự hiển thị của banner (số nhỏ hơn sẽ hiển thị trước). Để trống hoặc 0 để tự động
+                                        </div>
+                                        
+                                        <?php if (!empty($used_orders)): ?>
+                                        <div class="order-suggestion">
+                                            <h6><i class="fas fa-info-circle me-2"></i>Thông Tin Thứ Tự</h6>
+                                            <div>
+                                                <strong>Đã sử dụng:</strong>
+                                                <div class="order-list">
+                                                    <?php foreach ($used_orders as $order): ?>
+                                                        <span class="order-item"><?php echo $order; ?></span>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
+                                            <div class="order-available">
+                                                <i class="fas fa-lightbulb me-1"></i>
+                                                Gợi ý: Sử dụng số <?php echo max($used_orders) + 1; ?> cho vị trí cuối hoặc chọn số khác chưa được sử dụng
+                                            </div>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
-                                </div>
-                                
-                                <!-- Thứ tự hiển thị -->
-                                <div class="form-group">
-                                    <label class="form-label">Display Order</label>
-                                    <input type="number" 
-                                           name="display_order" 
-                                           class="form-control" 
-                                           placeholder="0"
-                                           value="<?php echo $display_order; ?>"
-                                           min="0"
-                                           max="999">
-                                    <div class="help-text">
-                                        Display order of the banner (smaller number will display first). Leave blank for automatic
+                                    
+                                    <!-- Trạng thái -->
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-toggle-on me-2"></i>Trạng Thái
+                                        </label>
+                                        <div class="checkbox-container">
+                                            <input type="checkbox" 
+                                                   name="is_active" 
+                                                   id="is_active"
+                                                   <?php echo $is_active ? 'checked' : ''; ?>>
+                                            <label for="is_active">Kích hoạt banner ngay sau khi thêm</label>
+                                        </div>
+                                        <div class="help-text">
+                                            Banner chỉ được hiển thị trên website khi ở trạng thái kích hoạt
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Trạng thái -->
-                                <div class="form-group">
-                                    <label class="form-label">Status</label>
-                                    <div class="checkbox-container">
-                                        <input type="checkbox" 
-                                               name="is_active" 
-                                               id="is_active"
-                                               <?php echo $is_active ? 'checked' : ''; ?>>
-                                        <label for="is_active">Activate banner immediately after adding</label>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="form-buttons">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i>
+                                            Thêm Banner
+                                        </button>
+                                        <button type="reset" class="btn btn-secondary">
+                                            <i class="fas fa-undo"></i>
+                                            Đặt Lại
+                                        </button>
                                     </div>
-                                    <div class="help-text">
-                                        Banner will only be displayed on the website when activated
-                                    </div>
-                                </div>
-                                
-                                <!-- Buttons -->
-                                <div class="form-buttons">
-                                    <button type="submit" class="btn-submit">
-                                        <i class="fas fa-save me-2"></i>Add Banner
-                                    </button>
-                                    <a href="banner_list.php" class="btn-cancel">
-                                        <i class="fas fa-times me-2"></i>Cancel
-                                    </a>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -482,40 +555,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/WEB_MXH/admin/pages/dashboard/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
-    
+
     <script>
-        // Preview image functionality
+        // Preview image khi thay đổi URL
         document.getElementById('bannerUrl').addEventListener('input', function() {
             const url = this.value.trim();
             const previewContainer = document.getElementById('previewContainer');
-            const previewImage = document.getElementById('previewImage');
             const previewText = document.getElementById('previewText');
+            const previewImage = document.getElementById('previewImage');
             
             if (url && isValidUrl(url)) {
+                previewText.style.display = 'none';
                 previewImage.src = url;
                 previewImage.style.display = 'block';
-                previewText.style.display = 'none';
-                
-                previewImage.onerror = function() {
-                    this.style.display = 'none';
-                    previewText.style.display = 'block';
-                    previewText.textContent = 'Không thể tải hình ảnh từ URL này';
-                    previewText.style.color = '#E74C3C';
-                };
-                
                 previewImage.onload = function() {
                     previewText.style.display = 'none';
                 };
+                previewImage.onerror = function() {
+                    previewText.textContent = 'Không thể tải hình ảnh từ URL này';
+                    previewText.style.display = 'block';
+                    previewImage.style.display = 'none';
+                };
             } else {
-                previewImage.style.display = 'none';
+                previewText.textContent = url ? 'URL không hợp lệ' : 'Nhập URL để xem trước hình ảnh';
                 previewText.style.display = 'block';
-                previewText.textContent = 'Nhập URL để xem trước hình ảnh';
-                previewText.style.color = '#7F8C8D';
+                previewImage.style.display = 'none';
             }
         });
-        
+
+        // Check valid URL
         function isValidUrl(string) {
             try {
                 new URL(string);
@@ -524,27 +594,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 return false;
             }
         }
-        
+
+        // Display order validation
+        const usedOrders = <?php echo json_encode($used_orders); ?>;
+        document.getElementById('displayOrder').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value > 0 && usedOrders.includes(value)) {
+                this.style.borderColor = '#dc3545';
+                this.style.backgroundColor = '#fff5f5';
+                
+                // Show warning
+                let warning = document.getElementById('orderWarning');
+                if (!warning) {
+                    warning = document.createElement('div');
+                    warning.id = 'orderWarning';
+                    warning.style.cssText = 'color: #dc3545; font-size: 0.85rem; margin-top: 5px; font-weight: 500;';
+                    this.parentNode.insertBefore(warning, this.nextSibling.nextSibling);
+                }
+                warning.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Thứ tự ' + value + ' đã được sử dụng!';
+            } else {
+                this.style.borderColor = '#E5E5E5';
+                this.style.backgroundColor = '#F8F9FA';
+                
+                // Remove warning
+                const warning = document.getElementById('orderWarning');
+                if (warning) {
+                    warning.remove();
+                }
+            }
+        });
+
         // Form validation
         document.getElementById('bannerForm').addEventListener('submit', function(e) {
-            const url = document.getElementById('bannerUrl').value.trim();
-            const title = document.querySelector('input[name="banner_title"]').value.trim();
+            const bannerUrl = document.querySelector('input[name="banner_url"]').value.trim();
+            const bannerTitle = document.querySelector('input[name="banner_title"]').value.trim();
+            const displayOrder = parseInt(document.querySelector('input[name="display_order"]').value) || 0;
             
-            if (!url) {
-                alert('Vui lòng nhập URL banner');
+            if (!bannerUrl) {
                 e.preventDefault();
+                alert('Vui lòng nhập URL hình ảnh!');
                 return;
             }
             
-            if (!isValidUrl(url)) {
-                alert('URL banner không hợp lệ');
+            if (!isValidUrl(bannerUrl)) {
                 e.preventDefault();
+                alert('URL hình ảnh không hợp lệ!');
                 return;
             }
             
-            if (!title) {
-                alert('Vui lòng nhập tiêu đề banner');
+            if (!bannerTitle) {
                 e.preventDefault();
+                alert('Vui lòng nhập tiêu đề banner!');
+                return;
+            }
+            
+            if (displayOrder > 0 && usedOrders.includes(displayOrder)) {
+                e.preventDefault();
+                alert('Thứ tự hiển thị ' + displayOrder + ' đã được sử dụng! Vui lòng chọn số khác.');
                 return;
             }
         });

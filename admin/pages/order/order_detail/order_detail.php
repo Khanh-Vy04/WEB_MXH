@@ -103,13 +103,32 @@ while ($item = $items_result->fetch_assoc()) {
     <link rel="stylesheet" href="/WEB_MXH/admin/pages/order/order_detail/order_detail.css" />
     
     <style>
+        .content { background: #f3f4f6 !important; }
+        .container-fluid { background: #f7f8f9; }
+        
+        .header-section {
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .header-section h2 {
+            color: #222;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            margin-left: 0.1rem;
+        }
+        
         .order-detail-header {
-            background: #764ba2;
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             color: white;
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: none; /* Remove box-shadow for flat look */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .order-detail-header h2, .order-detail-header p, .order-detail-header span, .order-detail-header h4 {
@@ -128,7 +147,7 @@ while ($item = $items_result->fetch_assoc()) {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -142,15 +161,15 @@ while ($item = $items_result->fetch_assoc()) {
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid #e3e6f0;
         }
         
         .info-card h5 {
-            color: #333;
+            color: #444;
             margin-bottom: 20px;
             font-weight: 700;
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid #deccca;
             padding-bottom: 10px;
         }
         
@@ -159,7 +178,7 @@ while ($item = $items_result->fetch_assoc()) {
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #412d3b;
         }
         
         .product-item:last-child {
@@ -169,7 +188,7 @@ while ($item = $items_result->fetch_assoc()) {
         .product-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -179,12 +198,12 @@ while ($item = $items_result->fetch_assoc()) {
         }
         
         .price-text {
-            color: #e74a3b;
+            color: #6c4a57;
             font-weight: 700;
         }
         
         .total-summary {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             color: white;
             border-radius: 15px;
             padding: 20px;
@@ -201,9 +220,50 @@ while ($item = $items_result->fetch_assoc()) {
         }
         
         .contact-info i {
-            color: #667eea;
+            color: #412d3b;
             width: 20px;
             margin-right: 10px;
+        }
+        
+        .text-primary {
+            color: #412d3b !important;
+        }
+        
+        .badge.bg-info {
+            background-color: #412d3b !important;
+        }
+        
+        /* Tên sản phẩm màu đen */
+        .product-item h6 {
+            color: #000 !important;
+            font-weight: 600;
+        }
+        
+        /* Cập nhật màu cho địa chỉ giao hàng */
+        .shipping-address-box {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+            color: white !important;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        /* Cập nhật màu cho thống kê đơn hàng */
+        .stat-box-primary {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+            color: white !important;
+        }
+        
+        .stat-box-secondary {
+            background: linear-gradient(135deg, #deccca 0%, #c4b5b0 100%) !important;
+            color: #412d3b !important;
+        }
+        
+        .stat-box-primary .h4 {
+            color: white !important;
+        }
+        
+        .stat-box-secondary .h4 {
+            color: #412d3b !important;
         }
     </style>
 </head>
@@ -216,10 +276,22 @@ while ($item = $items_result->fetch_assoc()) {
             <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
             
             <div class="container-fluid pt-4 px-4">
-                <!-- Back Button -->
-                <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-primary mb-3">
-                    <i class="fas fa-arrow-left me-2"></i> Quay lại danh sách đơn hàng
-                </a>
+                <!-- Header -->
+                <div class="header-section">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2>
+                                <i class="fas fa-file-invoice me-2" style="color: #000 !important;"></i>
+                                <span style="color: #000 !important;">Chi Tiết Đơn Hàng #<?php echo $order_id; ?></span>
+                            </h2>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a href="/WEB_MXH/admin/pages/order/order_list/order_list.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Order Header -->
                 <div class="order-detail-header">
@@ -374,7 +446,7 @@ while ($item = $items_result->fetch_assoc()) {
                                     <i class="fas fa-map-marker-alt me-2"></i>
                                     Địa chỉ giao hàng
                                 </h5>
-                                <div class="p-3 bg-light rounded">
+                                <div class="shipping-address-box">
                                     <?php echo nl2br(htmlspecialchars($order['address'])); ?>
                                 </div>
                             </div>
@@ -389,17 +461,17 @@ while ($item = $items_result->fetch_assoc()) {
                             
                             <div class="row text-center">
                                 <div class="col-6">
-                                    <div class="p-3 bg-primary bg-opacity-10 rounded">
-                                        <div class="h4 text-primary mb-1"><?php echo count($order_items); ?></div>
-                                        <div class="small text-muted">Sản phẩm</div>
+                                    <div class="p-3 stat-box-primary rounded">
+                                        <div class="h4 mb-1"><?php echo count($order_items); ?></div>
+                                        <div class="small">Sản phẩm</div>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="p-3 bg-success bg-opacity-10 rounded">
-                                        <div class="h4 text-success mb-1">
+                                    <div class="p-3 stat-box-secondary rounded">
+                                        <div class="h4 mb-1">
                                             <?php echo array_sum(array_column($order_items, 'quantity')); ?>
                                         </div>
-                                        <div class="small text-muted">Số lượng</div>
+                                        <div class="small">Số lượng</div>
                                     </div>
                                 </div>
                             </div>

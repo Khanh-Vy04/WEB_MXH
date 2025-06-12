@@ -107,7 +107,7 @@ $end = min($start + $rowsPerPage, $totalRows);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Genres List</title>
+    <title>Quản Lý Dòng Nhạc</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
@@ -415,7 +415,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Header -->
                             <div class="header-section">
                                 <h2 class="page-title">
-                                    <i class="fas fa-music me-3"></i>Genre Management
+                                    <i class="fas fa-music me-3"></i>Quản Lý Dòng Nhạc
                                 </h2>
                             </div>
                             
@@ -432,7 +432,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     <input type="text" 
                                            name="search" 
                                            class="search-box"
-                                           placeholder="Search music genre..." 
+                                           placeholder="Tìm kiếm dòng nhạc..." 
                                            value="<?php echo htmlspecialchars($search); ?>">
                                 </form>
                                 
@@ -448,7 +448,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     </form>
                                     
                                     <a href="/WEB_MXH/admin/pages/genre/add_genre.php" class="btn-add">
-                                        <i class="fas fa-plus me-2"></i>Add New Genre
+                                        <i class="fas fa-plus me-2"></i>Thêm Dòng Nhạc
                                     </a>
                                 </div>
                             </div>
@@ -459,9 +459,9 @@ $end = min($start + $rowsPerPage, $totalRows);
                                 <thead>
                                     <tr>
                                         <th style="width: 80px;">ID</th>
-                                        <th style="width: 200px;">Genre</th>
-                                        <th style="width: 400px;">Description</th>
-                                        <th style="width: 120px;">Action</th>
+                                        <th style="width: 200px;">Dòng Nhạc</th>
+                                        <th style="width: 400px;">Mô Tả</th>
+                                        <th style="width: 120px;">Thao Tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>

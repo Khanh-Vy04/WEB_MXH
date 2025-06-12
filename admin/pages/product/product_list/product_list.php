@@ -95,7 +95,7 @@ if ($result->num_rows > 0) {
             'name' => $row['product_name'],
             'desc' => $row['description'],
             'category' => $row['genre_name'] ?? 'Chưa phân loại',
-            'artist' => $row['artist_name'] ?? 'Unknown Artist',
+            'artist' => $row['artist_name'] ?? 'Chưa có nghệ sĩ',
             'stock' => $row['stock'] > 0,
             'price' => $row['price'],
             'qty' => $row['stock'],
@@ -142,11 +142,11 @@ function getUrlWithParams($params) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product List</title>
+    <title>Quản Lý Sản Phẩm - AuraDisc</title>
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -184,65 +184,85 @@ function getUrlWithParams($params) {
         ?>
         <div class="container-fluid pt-4 px-4">
             <script>console.log('Main content area started');</script>
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <div class="filter-label">Filter</div>
-                <form method="GET" class="filter-bar-row">
-                    <select name="status" class="form-select">
-                        <option value="">Status</option>
-                        <option value="active" <?php if($status=='active') echo 'selected'; ?>>Active</option>
-                        <option value="inactive" <?php if($status=='inactive') echo 'selected'; ?>>Inactive</option>
-                        <option value="scheduled" <?php if($status=='scheduled') echo 'selected'; ?>>Scheduled</option>
-                    </select>
-                    <select name="category" class="form-select">
-                        <option value="">Genre</option>
-                        <?php foreach ($available_genres as $genre): ?>
-                        <option value="<?php echo htmlspecialchars($genre); ?>" <?php if($category == $genre) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($genre); ?>
-                        </option>
-                        <?php endforeach; ?>
-                        <option value="Chưa phân loại" <?php if($category == 'Chưa phân loại') echo 'selected'; ?>>Chưa phân loại</option>
-                    </select>
-                    <select name="stock" class="form-select">
-                        <option value="">Stock</option>
-                        <option value="1" <?php if($stock==='1') echo 'selected'; ?>>In Stock</option>
-                        <option value="0" <?php if($stock==='0') echo 'selected'; ?>>Out of Stock</option>
-                    </select>
-                </form>
+            
+            <!-- Header Section -->
+            <div class="header-section" style="background: #fff; border-radius: 18px; padding: 1.1rem 1.5rem 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);">
+                <h2 style="color: #222; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.7rem; margin-left: 0.1rem;">
+                    <i class="fas fa-compact-disc me-2"></i>Quản Lý Sản Phẩm
+                </h2>
+                <p style="color: #444; margin-bottom: 0;">Quản lý các sản phẩm âm nhạc và album</p>
             </div>
-            <!-- Product Action Bar -->
-            <div class="product-action-bar">
-                <form method="GET" class="search-bar" style="max-width: 400px;">
-                    <input type="text" name="search" placeholder="Search Product" value="<?php echo htmlspecialchars($search); ?>" />
-                </form>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <form method="GET" class="entries-dropdown" style="margin:0;">
-                        <select name="entries" onchange="this.form.submit()">
-                            <option value="3" <?php echo $rowsPerPage == 3 ? 'selected' : ''; ?>>3</option>
-                            <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
-                            <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
-                            <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
-                            <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
-                        </select>
-                    </form>
-                    <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn"><i class="fas fa-plus"></i> Add Product</a>
+
+            <!-- Statistics Section -->
+            <div class="row g-4 mb-4">
+                <?php
+                $stats_sql = "SELECT COUNT(*) as total_products, SUM(stock) as total_stock, AVG(price) as avg_price, COUNT(CASE WHEN stock < 10 THEN 1 END) as low_stock FROM products";
+                $stats_result = $conn->query($stats_sql);
+                $stats = $stats_result->fetch_assoc();
+                ?>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card" style="background: #fff; border: none; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); height: 120px; display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s;">
+                        <div class="stat-number" style="font-size: 1.8rem; font-weight: bold; color: #222; margin-bottom: 5px;">
+                            <?php echo number_format($stats['total_products']); ?>
+                        </div>
+                        <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
+                            Tổng Sản Phẩm
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card" style="background: #fff; border: none; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); height: 120px; display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s;">
+                        <div class="stat-number" style="font-size: 1.8rem; font-weight: bold; color: #222; margin-bottom: 5px;">
+                            <?php echo number_format($stats['total_stock']); ?>
+                        </div>
+                        <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
+                            Tổng Tồn Kho
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card" style="background: #fff; border: none; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); height: 120px; display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s;">
+                        <div class="stat-number" style="font-size: 1.8rem; font-weight: bold; color: #222; margin-bottom: 5px;">
+                            <?php echo number_format($stats['avg_price'], 0, '', ','); ?>đ
+                        </div>
+                        <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
+                            Giá Trung Bình
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card low-stock" style="background: #fff; border: none; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; text-align: center; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08); height: 120px; display: flex; flex-direction: column; justify-content: center; transition: transform 0.3s;">
+                        <div class="stat-number" style="font-size: 1.8rem; font-weight: bold; color: #991b1b; margin-bottom: 5px;">
+                            <?php echo $stats['low_stock']; ?>
+                        </div>
+                        <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
+                            Sắp Hết Hàng
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- Product Table -->
-            <div class="table-container">
+            <!-- Table Section -->
+            <div class="table-section" style="background: #fff; border-radius: 16px; padding: 1.2rem 1.5rem; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);">
+                <div class="search-bar" style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <form method="GET" class="d-flex flex-grow-1">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="search" value="<?php echo htmlspecialchars($search); ?>" style="flex: 1; padding: 0.6rem 1rem; border: 2px solid #222; border-radius: 10px; font-size: 1rem; color: #444; background: #fff; transition: border-color 0.2s;">
+                    </form>
+                    <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn" style="background: #deccca; color: #412d3b; border: none; border-radius: 10px; padding: 0.5rem 1.2rem; font-size: 1rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; text-decoration: none;">
+                        <i class="fas fa-plus" style="color: #412d3b; font-size: 1.1rem;"></i> Thêm Sản Phẩm
+                    </a>
+                </div>
                 <script>console.log('Rendering product table...');</script>
                 <table>
                     <thead>
                         <tr>
-                            <th><input type="checkbox" class="select-all" /></th>
-                            <th>PRODUCT</th>
-                            <th>ARTIST</th>
-                            <th>GENRE</th>
-                            <th>STOCK</th>
-                            <th>PRICE</th>
-                            <th>QTY</th>
-                            <th>STATUS</th>
-                            <th>ACTIONS</th>
+                            <th>SẢN PHẨM</th>
+                            <th>NGHỆ SĨ</th>
+                            <th>THỂ LOẠI</th>
+                            <th>TỒN KHO</th>
+                            <th>GIÁ</th>
+                            <th>SỐ LƯỢNG</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>THAO TÁC</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -252,7 +272,6 @@ function getUrlWithParams($params) {
                             echo "<script>console.log('Rendering product " . ($index + 1) . ": " . addslashes($product['name']) . "');</script>";
                         ?>
                         <tr>
-                            <td><input type="checkbox" name="selected_products[]" value="<?php echo $product['product_id']; ?>" /></td>
                             <td class="product-cell">
                                 <img src="<?php echo $product['image_url']; ?>" class="product-img-thumb" alt="product" style="width: 50px; height: 50px; object-fit: cover;">
                                 <div>
@@ -262,30 +281,43 @@ function getUrlWithParams($params) {
                             <td><?php echo htmlspecialchars($product['artist']); ?></td>
                             <td><?php echo $product['category']; ?></td>
                             <td>
+                                <?php 
+                                $stock = $product['qty']; 
+                                $badge_class = 'badge-stock-in'; 
+                                $low_stock_tag = ''; 
+                                if ($stock < 5) { 
+                                    $badge_class = 'badge-stock-out'; 
+                                    $low_stock_tag = ' <small class="text-danger fw-bold">(Sắp hết!)</small>'; 
+                                } elseif ($stock < 15) { 
+                                    $badge_class = 'badge-stock-medium'; 
+                                } 
+                                ?>
+                                <span class="<?php echo $badge_class; ?>"><?php echo $stock; ?></span><?php echo $low_stock_tag; ?>
+                            </td>
+                            <td><?php echo number_format($product['price'], 0, '.', ','); ?>đ</td>
+                            <td>
                                 <?php if($product['stock']): ?>
-                                    <span class="badge-stock-in">In Stock</span>
+                                    <span class="badge-stock-in">Còn Hàng</span>
                                 <?php else: ?>
-                                    <span class="badge-stock-out">Out</span>
+                                    <span class="badge-stock-out">Hết Hàng</span>
                                 <?php endif; ?>
                             </td>
-                            <td><?php echo number_format($product['price'],2); ?>$</td>
-                            <td><?php echo $product['qty']; ?></td>
                             <td>
                                 <?php if($product['status']=='active'): ?>
-                                    <span class="badge-status-active">Active</span>
+                                    <span class="badge-status-active">Hoạt Động</span>
                                 <?php elseif($product['status']=='inactive'): ?>
-                                    <span class="badge-status-inactive">Inactive</span>
+                                    <span class="badge-status-inactive">Không Hoạt Động</span>
                                 <?php else: ?>
-                                    <span class="badge-status-scheduled">Scheduled</span>
+                                    <span class="badge-status-scheduled">Đã Lên Lịch</span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn"><i class="fas fa-ellipsis-v"></i></button>
                                     <div class="dropdown-menu">
-                                        <a href="view_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-eye"></i> View</a>
-                                        <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                                        <a href="delete_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                                        <a href="view_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-eye"></i> Xem Chi Tiết</a>
+                                        <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
+                                        <a href="delete_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"><i class="fas fa-trash-alt"></i> Xóa</a>
                                     </div>
                                 </div>
                             </td>
@@ -297,7 +329,7 @@ function getUrlWithParams($params) {
             </div>
             <!-- Pagination -->
             <div class="pagination-bar">
-                <span class="entries-info">Showing <?php echo $start + 1; ?> to <?php echo $end; ?> of <?php echo $totalRows; ?> entries</span>
+                <span class="entries-info">Hiển thị <?php echo $start + 1; ?> đến <?php echo $end; ?> trong tổng số <?php echo $totalRows; ?> sản phẩm</span>
                 <div class="pagination-controls">
                     <?php if ($currentPageNumber > 1): ?>
                     <a href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>" class="page-btn">

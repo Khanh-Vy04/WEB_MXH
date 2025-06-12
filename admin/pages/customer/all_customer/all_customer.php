@@ -126,10 +126,29 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
     <link rel="stylesheet" href="all_customer.css" />
     
     <style>
+        .content { background: #f3f4f6 !important; }
+        .container-fluid { background: #f7f8f9; }
+        
+        .header-section {
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .header-section h2 {
+            color: #222;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            margin-left: 0.1rem;
+        }
+        
         .customer-avatar {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -140,18 +159,18 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
         }
         
         .admin-badge {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 2px 8px;
+            background: linear-gradient(135deg, #412d3b, #6c4a57) !important;
+            color: white !important;
+            padding: 3px 8px;
             border-radius: 10px;
             font-size: 11px;
             font-weight: bold;
         }
         
         .user-badge {
-            background: linear-gradient(135deg, #74b9ff, #0984e3);
-            color: white;
-            padding: 2px 8px;
+            background: linear-gradient(135deg, #deccca, #c4b5b0) !important;
+            color: #412d3b !important;
+            padding: 3px 8px;
             border-radius: 10px;
             font-size: 11px;
             font-weight: bold;
@@ -165,8 +184,8 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
         }
         
         .table-modern thead th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+            color: white !important;
             font-weight: 600;
             border: none;
             padding: 15px;
@@ -176,6 +195,7 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
             padding: 15px;
             vertical-align: middle;
             border-bottom: 1px solid #f1f3f4;
+            color: #444 !important;
         }
         
         .search-container {
@@ -186,18 +206,42 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
+        .btn-primary {
+            background: #412d3b !important;
+            border-color: #412d3b !important;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            background: #6c4a57 !important;
+            border-color: #6c4a57 !important;
+        }
+        
+        .btn-success {
+            background: #deccca !important;
+            border-color: #deccca !important;
+            color: #412d3b !important;
+        }
+        
+        .btn-success:hover {
+            background: #c4b5b0 !important;
+            border-color: #c4b5b0 !important;
+            color: #412d3b !important;
+        }
+        
         .toggle-role-btn {
             transition: all 0.3s ease;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            border-radius: 8px !important;
+            width: auto !important;
+            height: auto !important;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 4px 8px !important;
         }
         
         .toggle-role-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         
@@ -205,6 +249,23 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        .page-link {
+            color: #412d3b !important;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #412d3b !important;
+            border-color: #412d3b !important;
+        }
+        
+        .badge.bg-info {
+            background-color: #412d3b !important;
+        }
+        
+        .text-success {
+            color: #6c4a57 !important;
         }
     </style>
   </head>
@@ -220,6 +281,23 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
+            <!-- Header -->
+            <div class="header-section">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2>
+                            <i class="fas fa-users me-2" style="color: #000 !important;"></i>
+                            <span style="color: #000 !important;">Quản Lý Khách Hàng</span>
+                        </h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="button" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;" onclick="exportCustomers()">
+                            <i class="fas fa-file-export me-2"></i>Xuất Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Search and Filter Bar -->
             <div class="search-container">
                 <div class="row align-items-center">
@@ -247,10 +325,9 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                 <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
                             </select>
                         </form>
-                        <button type="button" class="btn btn-success" onclick="exportCustomers()">
-                            <i class="fas fa-file-export me-2"></i>
-                            Xuất Excel
-                        </button>
+                        <small class="text-muted">
+                            Tổng số: <strong><?php echo $totalRows; ?></strong> khách hàng
+                        </small>
                     </div>
                 </div>
             </div>
@@ -325,7 +402,7 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                                         data-user-id="<?php echo $user['user_id']; ?>"
                                                         data-current-role="<?php echo isAdmin($user) ? 'admin' : 'user'; ?>"
                                                         title="<?php echo isAdmin($user) ? 'Chuyển thành User' : 'Chuyển thành Admin'; ?>"
-                                                        style="padding: 2px 6px; font-size: 11px; <?php echo isAdmin($user) ? 'background: #ffa502; border-color: #ffa502; color: white;' : 'background: #5f27cd; border-color: #5f27cd; color: white;'; ?>">
+                                                        style="<?php echo isAdmin($user) ? 'background: #deccca; border-color: #deccca; color: #412d3b;' : 'background: #412d3b; border-color: #412d3b; color: white;'; ?>">
                                                     <i class="fas fa-exchange-alt"></i>
                                                 </button>
                                             <?php endif; ?>
@@ -409,10 +486,90 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                 </div>
             <?php endif; ?>
         </div>
+        
+        <?php include __DIR__.'/../../dashboard/footer.php'; ?>
       </div>
     </div>
 
     <!-- JavaScript -->
+    <!-- Custom Modal for confirmations -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title" id="confirmModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận thay đổi
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-user-shield fa-3x" style="color: #412d3b; opacity: 0.7;"></i>
+                    </div>
+                    <p id="confirmMessage" class="text-center mb-0" style="font-size: 16px; line-height: 1.5;"></p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 20px 25px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px; padding: 8px 20px;">
+                        <i class="fas fa-times me-1"></i>Hủy bỏ
+                    </button>
+                    <button type="button" class="btn btn-primary" id="confirmButton" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); border: none; border-radius: 8px; padding: 8px 20px;">
+                        <i class="fas fa-check me-1"></i>Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title" id="successModalLabel">
+                        <i class="fas fa-check-circle me-2"></i>Thành công
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-check-circle fa-3x" style="color: #28a745; opacity: 0.8;"></i>
+                    </div>
+                    <p id="successMessage" class="text-center mb-0" style="font-size: 16px; line-height: 1.5;"></p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 20px 25px;">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" style="border-radius: 8px; padding: 8px 20px; width: 100%;">
+                        <i class="fas fa-check me-1"></i>Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <div class="modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%); color: white; border-radius: 15px 15px 0 0;">
+                    <h5 class="modal-title" id="errorModalLabel">
+                        <i class="fas fa-exclamation-circle me-2"></i>Lỗi
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-times-circle fa-3x" style="color: #dc3545; opacity: 0.8;"></i>
+                    </div>
+                    <p id="errorMessage" class="text-center mb-0" style="font-size: 16px; line-height: 1.5;"></p>
+                </div>
+                <div class="modal-footer" style="border: none; padding: 20px 25px;">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="border-radius: 8px; padding: 8px 20px; width: 100%;">
+                        <i class="fas fa-times me-1"></i>Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
@@ -434,6 +591,38 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
             });
         }
         
+        // Modal functions
+        function showConfirmModal(message, onConfirm) {
+            document.getElementById('confirmMessage').textContent = message;
+            const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+            
+            // Remove existing event listeners
+            const newConfirmButton = document.getElementById('confirmButton').cloneNode(true);
+            document.getElementById('confirmButton').parentNode.replaceChild(newConfirmButton, document.getElementById('confirmButton'));
+            
+            newConfirmButton.addEventListener('click', function() {
+                confirmModal.hide();
+                onConfirm();
+            });
+        }
+        
+        function showSuccessModal(message, onClose = null) {
+            document.getElementById('successMessage').textContent = message;
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+            
+            if (onClose) {
+                document.getElementById('successModal').addEventListener('hidden.bs.modal', onClose, { once: true });
+            }
+        }
+        
+        function showErrorModal(message) {
+            document.getElementById('errorMessage').textContent = message;
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+
         // Toggle role functionality
         document.addEventListener('DOMContentLoaded', function() {
             const toggleButtons = document.querySelectorAll('.toggle-role-btn');
@@ -443,49 +632,49 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                     const userId = this.getAttribute('data-user-id');
                     const currentRole = this.getAttribute('data-current-role');
                     const newRole = currentRole === 'admin' ? 'user' : 'admin';
+                    const buttonElement = this;
                     
-                    // Xác nhận trước khi thay đổi
+                    // Xác nhận trước khi thay đổi với popup
                     const confirmMessage = `Bạn có chắc chắn muốn chuyển tài khoản này thành ${newRole.toUpperCase()}?`;
-                    if (!confirm(confirmMessage)) {
-                        return;
-                    }
                     
-                    // Disable button và hiển thị loading
-                    this.disabled = true;
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    
-                    // Gửi AJAX request
-                    fetch('/WEB_MXH/admin/pages/customer/toggle_role.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `user_id=${userId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Hiển thị thông báo thành công
-                            alert(data.message);
-                            
-                            // Reload trang để cập nhật giao diện
-                            window.location.reload();
-                        } else {
-                            // Hiển thị lỗi
-                            alert('Lỗi: ' + data.message);
+                    showConfirmModal(confirmMessage, function() {
+                        // Disable button và hiển thị loading
+                        buttonElement.disabled = true;
+                        buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        
+                        // Gửi AJAX request
+                        fetch('/WEB_MXH/admin/pages/customer/toggle_role.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `user_id=${userId}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Hiển thị thông báo thành công với popup
+                                showSuccessModal(data.message, function() {
+                                    // Reload trang để cập nhật giao diện
+                                    window.location.reload();
+                                });
+                            } else {
+                                // Hiển thị lỗi với popup
+                                showErrorModal(data.message);
+                                
+                                // Khôi phục button
+                                buttonElement.disabled = false;
+                                buttonElement.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showErrorModal('Đã xảy ra lỗi khi thực hiện thao tác');
                             
                             // Khôi phục button
-                            this.disabled = false;
-                            this.innerHTML = '<i class="fas fa-exchange-alt"></i>';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Đã xảy ra lỗi khi thực hiện thao tác');
-                        
-                        // Khôi phục button
-                        this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+                            buttonElement.disabled = false;
+                            buttonElement.innerHTML = '<i class="fas fa-exchange-alt"></i>';
+                        });
                     });
                 });
             });

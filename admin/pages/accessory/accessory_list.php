@@ -444,7 +444,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             </div>
             <?php endif; ?>
             <div class="header-section">
-                <h2><i class="fas fa-headphones me-2"></i>Quản Lý Accessories</h2>
+                <h2><i class="fas fa-headphones me-2"></i>Quản Lý Phụ Kiện</h2>
                 <p>Quản lý các phụ kiện âm nhạc và thiết bị audio</p>
                     </div>
             <div class="row g-4 mb-4">
@@ -453,17 +453,17 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                     $stats_result = $conn->query($stats_sql);
                     $stats = $stats_result->fetch_assoc();
                     ?>
-                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div><div class="stat-label">Tổng Accessories</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div><div class="stat-label">Tổng Phụ Kiện</div></div></div>
                 <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div><div class="stat-label">Tổng Tồn Kho</div></div></div>
-                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number">$<?php echo number_format($stats['avg_price'], 2); ?></div><div class="stat-label">Giá Trung Bình</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['avg_price'], 0, '', ','); ?>đ</div><div class="stat-label">Giá Trung Bình</div></div></div>
                 <div class="col-xl-3 col-md-6"><div class="stat-card low-stock"><div class="stat-number"><?php echo $stats['low_stock']; ?></div><div class="stat-label">Sắp Hết Hàng</div></div></div>
             </div>
             <div class="table-section">
                 <div class="search-bar">
                         <form method="GET" class="d-flex flex-grow-1">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm accessories..." name="search" value="<?php echo htmlspecialchars($search); ?>">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm phụ kiện..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                         </form>
-                    <a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Accessory</a>
+                    <a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Phụ Kiện</a>
                 </div>
             <?php if ($result->num_rows > 0): ?>
             <div class="table-responsive">
@@ -472,7 +472,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                         <tr>
                             <th>ID</th>
                             <th>Hình Ảnh</th>
-                            <th>Tên Accessory</th>
+                            <th>Tên Phụ Kiện</th>
                             <th>Giá</th>
                             <th>Tồn Kho</th>
                             <th>Ngày Tạo</th>
@@ -485,8 +485,8 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                             <td><?php echo $accessory['accessory_id']; ?></td>
                                 <td><img src="<?php echo htmlspecialchars($accessory['image_url']); ?>" alt="<?php echo htmlspecialchars($accessory['accessory_name']); ?>" class="accessory-image" onerror="this.src='https://via.placeholder.com/60x60/ff6b35/ffffff?text=N/A'"></td>
                                 <td><strong><?php echo htmlspecialchars($accessory['accessory_name']); ?></strong></td>
-                                <td><span class="fw-bold text-warning">$<?php echo number_format($accessory['price'], 2); ?></span></td>
-                                <td><?php $stock = $accessory['stock']; $badge_class = 'stock-high'; if ($stock < 5) $badge_class = 'stock-low'; elseif ($stock < 15) $badge_class = 'stock-medium'; ?><span class="stock-badge <?php echo $badge_class; ?>"><?php echo $stock; ?></span></td>
+                                <td><span class="fw-bold text-warning"><?php echo number_format($accessory['price'], 0, '', ','); ?>đ</span></td>
+                                <td><?php $stock = $accessory['stock']; $badge_class = 'stock-high'; $low_stock_tag = ''; if ($stock < 5) { $badge_class = 'stock-low'; $low_stock_tag = ' <small class="text-danger fw-bold">(Sắp hết!)</small>'; } elseif ($stock < 15) $badge_class = 'stock-medium'; ?><span class="stock-badge <?php echo $badge_class; ?>"><?php echo $stock; ?></span><?php echo $low_stock_tag; ?></td>
                                 <td><small><?php echo date('d/m/Y H:i', strtotime($accessory['created_at'])); ?></small></td>
                                 <td><div class="btn-group btn-group-sm"><a href="edit_accessory.php?id=<?php echo $accessory['accessory_id']; ?>" class="btn btn-warning" title="Chỉnh sửa"><i class="fas fa-edit"></i></a><button type="button" class="btn btn-danger" onclick="deleteAccessory(<?php echo $accessory['accessory_id']; ?>, '<?php echo htmlspecialchars($accessory['accessory_name']); ?>')" title="Xóa"><i class="fas fa-trash"></i></button></div></td>
                         </tr>
@@ -495,7 +495,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                 </table>
             </div>
             <?php if ($total_pages > 1): ?>
-            <nav aria-label="Accessories pagination">
+            <nav aria-label="Phụ kiện pagination">
                     <ul class="pagination">
                         <?php if ($page > 1): ?><li class="page-item"><a class="page-link" href="?page=<?php echo $page-1; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>"><i class="fas fa-chevron-left"></i> Trước</a></li><?php endif; ?>
                         <?php for ($i = 1; $i <= $total_pages; $i++): ?><li class="page-item <?php echo $i == $page ? 'active' : ''; ?>"><a class="page-link" href="?page=<?php echo $i; ?><?php echo !empty($search) ? '&search='.urlencode($search) : ''; ?>"><?php echo $i; ?></a></li><?php endfor; ?>
@@ -504,7 +504,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             </nav>
             <?php endif; ?>
             <?php else: ?>
-                <div class="text-center py-5"><i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i><h5 style="color: #333;">Không có accessories nào</h5><p style="color: #6c757d; "><?php if (!empty($search)): ?>Không tìm thấy accessories nào với từ khóa "<?php echo htmlspecialchars($search); ?>"<?php else: ?>Chưa có accessories nào trong hệ thống<?php endif; ?></p><a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Accessory Đầu Tiên</a></div>
+                <div class="text-center py-5"><i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i><h5 style="color: #333;">Không có phụ kiện nào</h5><p style="color: #6c757d; "><?php if (!empty($search)): ?>Không tìm thấy phụ kiện nào với từ khóa "<?php echo htmlspecialchars($search); ?>"<?php else: ?>Chưa có phụ kiện nào trong hệ thống<?php endif; ?></p><a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Phụ Kiện Đầu Tiên</a></div>
             <?php endif; ?>
             </div>
         </div>
@@ -515,7 +515,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
         ?>
     </div>
 </div>
-<div class="modal fade" id="deleteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Xác Nhận Xóa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Bạn có chắc chắn muốn xóa accessory <strong id="accessoryName"></strong>?</p><p class="text-warning"><i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><form method="POST" style="display: inline;"><input type="hidden" name="accessory_id" id="deleteAccessoryId"><button type="submit" name="delete" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button></form></div></div></div></div>
+<div class="modal fade" id="deleteModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Xác Nhận Xóa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Bạn có chắc chắn muốn xóa phụ kiện <strong id="accessoryName"></strong>?</p><p class="text-warning"><i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!</p></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button><form method="POST" style="display: inline;"><input type="hidden" name="accessory_id" id="deleteAccessoryId"><button type="submit" name="delete" class="btn btn-danger"><i class="fas fa-trash"></i> Xóa</button></form></div></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>

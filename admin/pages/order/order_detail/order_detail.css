@@ -1,7 +1,8 @@
 .bg-white-box {
   background: #fff !important;
-  color: #222;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  color: #444;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 15px;
 }
 .section-title {
   color: #222 !important;
@@ -26,10 +27,10 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #222; /* black */
-  border: 4px solid #e5e7eb; /* light gray border */
+  background: #412d3b;
+  border: 4px solid #deccca;
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(65, 45, 59, 0.2);
 }
 .timeline-item:not(:last-child):after {
   content: '';
@@ -38,12 +39,12 @@
   top: 20px;
   width: 2px;
   height: calc(100% - 20px);
-  background: #e5e7eb; /* light gray line */
+  background: #deccca;
   z-index: 1;
 }
 .timeline-item:last-child .timeline-point {
-  background: #bbb;
-  border-color: #e5e7eb;
+  background: #6c4a57;
+  border-color: #deccca;
 }
 .timeline-item:last-child:after {
   content: '';
@@ -54,8 +55,8 @@
   height: 30px;
   background: repeating-linear-gradient(
     to bottom,
-    #e5e7eb,
-    #e5e7eb 4px,
+    #deccca,
+    #deccca 4px,
     transparent 4px,
     transparent 8px
   );
@@ -64,6 +65,7 @@
 .timeline-content {
   margin-left: 32px;
   padding-bottom: 12px;
+  color: #444;
 }
 @media (max-width: 600px) {
   .timeline-content { font-size: 0.95em; }
@@ -73,14 +75,17 @@
 }
 .order-table-bg {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 15px;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 .order-table-header {
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
+  color: white;
 }
 .product-name-bold {
   font-weight: 600;
+  color: #444;
 }
 
 /* Back button style */
@@ -105,4 +110,29 @@
 .btn-primary i {
     font-size: 14px;
     font-weight: bold !important;
+}
+
+/* Additional brand styling */
+.table th {
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.table td {
+    color: #444 !important;
+    border-bottom: 1px solid #f1f3f4 !important;
+}
+
+.badge {
+    background: #412d3b !important;
+    color: white !important;
+}
+
+.text-primary {
+    color: #412d3b !important;
+}
+
+.border-primary {
+    border-color: #412d3b !important;
 }

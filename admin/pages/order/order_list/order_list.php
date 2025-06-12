@@ -10,13 +10,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $order_id = (int)$_POST['order_id'];
         $new_stage_id = (int)$_POST['stage_id'];
         
-        $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
-        $update_stmt->bind_param("ii", $new_stage_id, $order_id);
-        
-        if ($update_stmt->execute()) {
-            $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
+        // Kiểm tra nếu là hủy đơn hàng (stage_id = -1)
+        if ($new_stage_id == -1) {
+            // Bắt đầu transaction
+            $conn->begin_transaction();
+            
+            try {
+                // Lấy thông tin đơn hàng
+                $order_query = "SELECT o.*, u.username, u.full_name 
+                               FROM orders o 
+                               JOIN users u ON o.buyer_id = u.user_id 
+                               WHERE o.order_id = ?";
+                $order_stmt = $conn->prepare($order_query);
+                $order_stmt->bind_param("i", $order_id);
+                $order_stmt->execute();
+                $order_result = $order_stmt->get_result();
+                $order = $order_result->fetch_assoc();
+                
+                if (!$order) {
+                    throw new Exception("Không tìm thấy đơn hàng");
+                }
+                
+                // Lấy danh sách sản phẩm trong đơn hàng để hoàn stock
+                $items_query = "SELECT * FROM order_items WHERE order_id = ?";
+                $items_stmt = $conn->prepare($items_query);
+                $items_stmt->bind_param("i", $order_id);
+                $items_stmt->execute();
+                $items_result = $items_stmt->get_result();
+                
+                // Hoàn lại stock cho từng sản phẩm
+                while ($item = $items_result->fetch_assoc()) {
+                    if ($item['item_type'] == 'product') {
+                        $update_stock = "UPDATE products SET stock = stock + ? WHERE product_id = ?";
+                        $stock_stmt = $conn->prepare($update_stock);
+                        $stock_stmt->bind_param("ii", $item['quantity'], $item['item_id']);
+                        $stock_stmt->execute();
+                    } elseif ($item['item_type'] == 'accessory') {
+                        $update_stock = "UPDATE accessories SET stock = stock + ? WHERE accessory_id = ?";
+                        $stock_stmt = $conn->prepare($update_stock);
+                        $stock_stmt->bind_param("ii", $item['quantity'], $item['item_id']);
+                        $stock_stmt->execute();
+                    }
+                }
+                
+                // Xử lý hoàn tiền nếu đã thanh toán
+                $refund_message = "";
+                if ($order['payment_method'] == 'wallet' || $order['payment_method'] == 'vnpay') {
+                    // Hoàn tiền vào ví
+                    $refund_query = "UPDATE users SET balance = balance + ? WHERE user_id = ?";
+                    $refund_stmt = $conn->prepare($refund_query);
+                    $refund_stmt->bind_param("di", $order['final_amount'], $order['buyer_id']);
+                    $refund_stmt->execute();
+                    
+                    $refund_message = " Số tiền " . number_format($order['final_amount'], 0, '.', ',') . "đ đã được hoàn vào ví khách hàng.";
+                } else {
+                    $refund_message = " (Thanh toán COD - không cần hoàn tiền)";
+                }
+                
+                // Cập nhật trạng thái đơn hàng
+                $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
+                $update_stmt->bind_param("ii", $new_stage_id, $order_id);
+                $update_stmt->execute();
+                
+                // Commit transaction
+                $conn->commit();
+                
+                $success_message = "Đã hủy đơn hàng #{$order_id} của khách hàng {$order['full_name']} thành công!" . $refund_message;
+                
+            } catch (Exception $e) {
+                // Rollback nếu có lỗi
+                $conn->rollback();
+                $error_message = "Lỗi khi hủy đơn hàng: " . $e->getMessage();
+            }
         } else {
-            $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
+            // Xử lý cập nhật stage bình thường
+            $update_stmt = $conn->prepare("UPDATE orders SET stage_id = ? WHERE order_id = ?");
+            $update_stmt->bind_param("ii", $new_stage_id, $order_id);
+            
+            if ($update_stmt->execute()) {
+                $success_message = "Cập nhật trạng thái đơn hàng #{$order_id} thành công!";
+            } else {
+                $error_message = "Lỗi cập nhật đơn hàng: " . $conn->error;
+            }
         }
     }
 }
@@ -79,6 +154,7 @@ $orders_query = "
         o.final_amount,
         o.voucher_discount,
         o.stage_id,
+        o.payment_method,
         u.user_id,
         u.username,
         u.full_name,
@@ -160,6 +236,25 @@ while ($stat = $stats_result->fetch_assoc()) {
     <link rel="stylesheet" href="order_list.css" />
     
     <style>
+        .content { background: #f3f4f6 !important; }
+        .container-fluid { background: #f7f8f9; }
+        
+        .header-section {
+            background: #fff;
+            border-radius: 18px;
+            padding: 1.1rem 1.5rem 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .header-section h2 {
+            color: #222;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            margin-left: 0.1rem;
+        }
+        
         .stage-badge {
             padding: 5px 12px;
             border-radius: 20px;
@@ -182,14 +277,15 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .stage-dropdown:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(0,123,255,.25);
+            box-shadow: 0 0 0 2px rgba(65, 45, 59, 0.25);
         }
         
         .order-card {
             border: 1px solid #e3e6f0;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-bottom: 15px;
             transition: all 0.3s ease;
+            background: white;
         }
         
         .order-card:hover {
@@ -201,7 +297,7 @@ while ($stat = $stats_result->fetch_assoc()) {
             padding: 4px 12px;
             border: none;
             border-radius: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             color: white;
             font-size: 0.8rem;
             transition: all 0.3s ease;
@@ -209,13 +305,13 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .update-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 10px rgba(65, 45, 59, 0.3);
             color: white;
         }
         
         .stats-card {
             border-radius: 15px;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             color: white;
             border: none;
             margin-bottom: 20px;
@@ -233,7 +329,7 @@ while ($stat = $stats_result->fetch_assoc()) {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,7 +340,7 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .amount-text {
             font-weight: 700;
-            color: #e74a3b;
+            color: #6c4a57;
         }
         
         .table-custom {
@@ -259,6 +355,7 @@ while ($stat = $stats_result->fetch_assoc()) {
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            color: #444;
         }
         
         .table-custom tr td:first-child {
@@ -267,6 +364,14 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .table-custom tr td:last-child {
             border-radius: 0 10px 10px 0;
+        }
+        
+        .table-custom thead th {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+            color: white !important;
+            border: none;
+            padding: 15px;
+            font-weight: 600;
         }
         
         .alert-custom {
@@ -284,9 +389,51 @@ while ($stat = $stats_result->fetch_assoc()) {
         }
         
         .search-box:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #412d3b;
+            box-shadow: 0 0 0 3px rgba(65, 45, 59, 0.1);
             outline: none;
+        }
+        
+        .btn-primary {
+            background: #412d3b !important;
+            border-color: #412d3b !important;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            background: #6c4a57 !important;
+            border-color: #6c4a57 !important;
+        }
+        
+        .btn-success {
+            background: #deccca !important;
+            border-color: #deccca !important;
+            color: #412d3b !important;
+        }
+        
+        .btn-success:hover {
+            background: #c4b5b0 !important;
+            border-color: #c4b5b0 !important;
+            color: #412d3b !important;
+        }
+        
+        .bg-secondary {
+            background-color: white !important;
+            border-radius: 15px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+        }
+        
+        .text-primary {
+            color: #412d3b !important;
+        }
+        
+        .page-link {
+            color: #412d3b !important;
+        }
+        
+        .page-item.active .page-link {
+            background-color: #412d3b !important;
+            border-color: #412d3b !important;
         }
     </style>
   </head>
@@ -301,29 +448,27 @@ while ($stat = $stats_result->fetch_assoc()) {
         <!-- Navbar -->
         <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
 
-            <!-- Page Content -->
+        <!-- Page Content -->
         <div class="container-fluid pt-4 px-4">
-                <!-- Header -->
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="bg-secondary rounded h-100 p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h3 class="mb-0">
-                                    <i class="fas fa-shopping-cart me-2"></i>
-                                    Quản lý đơn hàng
-                                </h3>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-primary" onclick="window.location.reload()">
-                                        <i class="fas fa-sync-alt me-1"></i> Làm mới
-                                    </button>
-                                    <button class="btn btn-success" onclick="exportOrders()">
-                                        <i class="fas fa-download me-1"></i> Xuất Excel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Header -->
+            <div class="header-section">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2>
+                            <i class="fas fa-shopping-cart me-2" style="color: #000 !important;"></i>
+                            <span style="color: #000 !important;">Quản Lý Đơn Hàng</span>
+                        </h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary me-2" onclick="window.location.reload()">
+                            <i class="fas fa-sync-alt me-1"></i> Làm mới
+                        </button>
+                        <button class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;" onclick="exportOrders()">
+                            <i class="fas fa-file-export me-2"></i>Xuất Excel
+                        </button>
                     </div>
                 </div>
+            </div>
 
                             <!-- Thông báo -->
                             <?php if (isset($success_message)): ?>
@@ -397,7 +542,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                             <div class="table-responsive">
                                 <table class="table table-custom">
                                     <thead>
-                                        <tr style="background: #667eea; color: white;">
+                                        <tr>
                                             <th style="border-radius: 10px 0 0 10px; padding: 15px;">
                                                 <i class="fas fa-hashtag me-1"></i> Đơn hàng
                                             </th>
@@ -414,6 +559,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                 <i class="fas fa-money-bill me-1"></i> Tổng tiền
                                             </th>
                                             <th style="padding: 15px;">
+                                                <i class="fas fa-credit-card me-1"></i> Thanh toán
+                                            </th>
+                                            <th style="padding: 15px;">
                                                 <i class="fas fa-tasks me-1"></i> Trạng thái
                                             </th>
                                             <th style="border-radius: 0 10px 10px 0; padding: 15px;">
@@ -424,7 +572,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                                     <tbody>
                                         <?php if (empty($orders)): ?>
                                             <tr>
-                                                <td colspan="7" class="text-center" style="border-radius: 10px;">
+                                                <td colspan="8" class="text-center" style="border-radius: 10px;">
                                                     <div class="py-4">
                                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                                         <h5 class="text-muted">Không có đơn hàng nào</h5>
@@ -472,10 +620,26 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
-                                                        <form method="POST" style="display: inline;">
+                                                        <?php
+                                                        $payment_badges = [
+                                                            'wallet' => ['label' => 'Ví AuraDisc', 'color' => '#28a745', 'icon' => 'fas fa-wallet'],
+                                                            'vnpay' => ['label' => 'VNPay', 'color' => '#007bff', 'icon' => 'fas fa-credit-card'],
+                                                            'cash' => ['label' => 'COD', 'color' => '#ffc107', 'icon' => 'fas fa-money-bill']
+                                                        ];
+                                                        $payment = $payment_badges[$order['payment_method']] ?? $payment_badges['wallet'];
+                                                        ?>
+                                                        <span class="badge" style="background-color: <?php echo $payment['color']; ?>; color: white; padding: 6px 12px;">
+                                                            <i class="<?php echo $payment['icon']; ?> me-1"></i>
+                                                            <?php echo $payment['label']; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <form method="POST" style="display: inline;" id="stageForm_<?php echo $order['order_id']; ?>">
                                                             <input type="hidden" name="action" value="update_stage">
                                                             <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
-                                                            <select name="stage_id" class="stage-dropdown" onchange="this.form.submit()">
+                                                            <select name="stage_id" class="stage-dropdown" 
+                                                                    <?php echo $order['stage_id'] == -1 ? 'disabled' : ''; ?>
+                                                                    onchange="handleStageChange(this, <?php echo $order['order_id']; ?>, <?php echo $order['final_amount']; ?>, '<?php echo addslashes($order['payment_method']); ?>')">
                                                                 <?php foreach ($stages as $stage_id => $stage): ?>
                                                                     <option value="<?php echo $stage_id; ?>" 
                                                                             <?php echo $order['stage_id'] == $stage_id ? 'selected' : ''; ?>>
@@ -485,6 +649,9 @@ while ($stat = $stats_result->fetch_assoc()) {
                                                             </select>
                                                         </form>
                                                         <div class="mt-2">
+                                                            <?php if ($order['stage_id'] == -1): ?>
+                                                                <i class="fas fa-lock text-muted me-1" title="Đơn hàng đã hủy không thể chỉnh sửa"></i>
+                                                            <?php endif; ?>
                                                             <span class="stage-badge" style="background-color: <?php echo $order['color_code']; ?>">
                                                                 <?php echo htmlspecialchars($order['stage_name']); ?>
                                                             </span>
@@ -552,18 +719,118 @@ while ($stat = $stats_result->fetch_assoc()) {
       <!-- Content End -->
     </div>
 
+    <!-- Modal Xác nhận hủy đơn hàng -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Xác nhận hủy đơn hàng
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Cảnh báo!</strong> Hành động này không thể hoàn tác.
+                    </div>
+                    
+                    <div class="order-info">
+                        <p><strong>Mã đơn hàng:</strong> <span id="modal-order-id"></span></p>
+                        <p><strong>Phương thức thanh toán:</strong> <span id="modal-payment-method"></span></p>
+                        <p><strong>Số tiền:</strong> <span id="modal-amount"></span></p>
+                    </div>
+                    
+                    <div class="alert alert-info" id="refund-info">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        <strong>Hoàn tiền:</strong> <span id="refund-message"></span>
+                    </div>
+                    
+                    <p class="text-muted">Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>
+                        Không, giữ đơn hàng
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                        <i class="fas fa-trash me-1"></i>
+                        Có, hủy đơn hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
     
     <script>
+        let currentOrderForm = null;
+        let currentSelectElement = null;
+        
         function viewOrderDetail(orderId) {
             // Mở modal hoặc chuyển trang xem chi tiết
             window.open(`/WEB_MXH/admin/pages/order/order_detail/order_detail.php?id=${orderId}`, '_blank');
         }
         
-
+        function handleStageChange(selectElement, orderId, amount, paymentMethod) {
+            const newStageId = selectElement.value;
+            
+            // Nếu chọn hủy đơn hàng (stage_id = -1), hiển thị popup xác nhận
+            if (newStageId == -1) {
+                currentOrderForm = document.getElementById(`stageForm_${orderId}`);
+                currentSelectElement = selectElement;
+                
+                // Cập nhật thông tin trong modal
+                document.getElementById('modal-order-id').textContent = `#${orderId}`;
+                document.getElementById('modal-amount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+                
+                // Hiển thị phương thức thanh toán
+                const paymentLabels = {
+                    'wallet': 'Ví AuraDisc',
+                    'vnpay': 'VNPay', 
+                    'cash': 'COD'
+                };
+                document.getElementById('modal-payment-method').textContent = paymentLabels[paymentMethod] || 'Không xác định';
+                
+                // Hiển thị thông tin hoàn tiền
+                let refundMessage = '';
+                if (paymentMethod === 'wallet' || paymentMethod === 'vnpay') {
+                    refundMessage = `Số tiền ${new Intl.NumberFormat('vi-VN').format(amount)}đ sẽ được hoàn lại vào ví khách hàng.`;
+                } else {
+                    refundMessage = 'Thanh toán COD - không cần hoàn tiền.';
+                }
+                document.getElementById('refund-message').textContent = refundMessage;
+                
+                // Hiển thị modal
+                const modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+                modal.show();
+                
+                // Reset lại select về giá trị cũ
+                selectElement.selectedIndex = Array.from(selectElement.options).findIndex(option => option.selected && option.value != -1);
+                
+            } else {
+                // Cập nhật stage bình thường
+                selectElement.closest('form').submit();
+            }
+        }
+        
+        // Xử lý khi xác nhận hủy đơn hàng
+        document.getElementById('confirmCancelBtn').addEventListener('click', function() {
+            if (currentOrderForm && currentSelectElement) {
+                // Set lại giá trị select về -1 và submit form
+                currentSelectElement.value = -1;
+                currentOrderForm.submit();
+            }
+            
+            // Đóng modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('cancelOrderModal'));
+            modal.hide();
+        });
         
         function exportOrders() {
             // Xuất dữ liệu ra Excel

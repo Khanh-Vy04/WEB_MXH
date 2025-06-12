@@ -1,152 +1,7 @@
-/* Message List */
-.list-group-item.active {
-  background: #deccca !important;
-  color: #412d3b !important;
-  border-color: #cc8889 !important;
-  font-weight: bold;
-}
-.list-group-item .badge {
-  font-size: 0.85em;
-}
-#chat-box {
-  min-height: 300px;
-  max-height: 60vh;
-  overflow-y: auto;
-  padding-bottom: 16px;
-}
-.bg-primary {
-  background: #cc8889 !important;
-  color: #fff !important;
-}
-.bg-light {
-  background: #fff !important;
-  color: #412d3b !important;
-  border: 1px solid #ebecef;
-}
-form input[type="text"],
-.form-control[type="text"] {
-  border-radius: 6px;
-  background: #f8f9fa !important;
-  color: #222 !important;
-  border: 1.5px solid #ebecef !important;
-  box-shadow: none !important;
-}
-form input[type="text"]:focus,
-.form-control[type="text"]:focus {
-  background: #f8f9fa !important;
-  border-color: #412d3b !important;
-}
-form .btn,
-form .btn-light,
-form .btn-primary {
-  padding: 0.4rem !important;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  min-height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1em;
-}
-form .btn-primary i,
-form .btn-light i {
-  margin: 0;
-}
-.dot-status {
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px #eee;
-}
-.col-md-4 h5 {
-  color: #412d3b;
-  font-weight: 700;
-}
-.col-md-4 ul {
-  padding-left: 0;
-}
-.col-md-4 li {
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-.col-md-4 li:hover,
-.col-md-4 li.active {
-  background: #f3f6fb;
-}
-
-/* Chat bubble */
-.chat-bubble {
-  padding: 12px 16px;
-  border-radius: 16px;
-  margin-bottom: 4px;
-  max-width: 70%;
-  word-break: break-word;
-  font-size: 1.05em;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  background: #fff;
-  color: #222;
-  display: inline-block;
-}
-.customer-bubble {
-  background: #fff;
-  color: #222;
-  border: 1px solid #ebecef;
-  align-self: flex-start;
-}
-.admin-bubble {
-  background: #deccca;
-  color: #fff;
-  align-self: flex-end;
-}
-
-.col-md-4 {
-  border-right: 1px solid #f3f6fb !important;
-}
-.chat-header {
-  border-bottom: 1px solid #f3f6fb !important;
-}
-
-/* Chỉ style nút gửi tin nhắn trong form chat */
-form .btn-primary,
-form .btn-primary:active,
-form .btn-primary:focus {
-  background: #deccca !important;
-  color: #412d3b !important;
-  border: none !important;
-  font-weight: 600;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-form .btn-primary:hover {
-  background: #412d3b !important;
-  color: #deccca !important;
-}
-
-form input[type="text"]::placeholder,
-.form-control[type="text"]::placeholder {
-  color: #b9b9b9 !important;
-  opacity: 1;
-}
-
-.msg-time {
-  margin-top: 2px;
-  font-size: 0.92em;
-  color: #b9b9b9 !important;
-  text-align: right;
-  font-weight: 500;
-}
-
-/* Nút search lớn vừa với input */
-form .btn[type="submit"] {
-  height: 40px;
-  min-width: 90px;
-  font-size: 1.05em;
-  padding: 0 18px;
-  border-radius: 6px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Form Controls */
+.form-control:focus {
+    border-color: #412d3b !important;
+    box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
 }
 
 /* Admin Chat Support Styles */
@@ -154,22 +9,24 @@ form .btn[type="submit"] {
 /* Session List Styles */
 .session-item {
     transition: all 0.3s ease;
-    border: 1px solid transparent;
-    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
 }
 
 .session-item:hover {
-    background: #e9ecef;
-    border-color: #dee2e6;
-    transform: translateX(5px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: #f8f9fa;
+    border-color: #deccca;
+    box-shadow: 0 4px 15px rgba(65, 45, 59, 0.1);
 }
 
 .session-item.active {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-color: #2196f3;
-    transform: translateX(8px);
-    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    background: linear-gradient(135deg, rgba(222, 204, 202, 0.1) 0%, rgba(65, 45, 59, 0.05) 100%);
+    border-color: #412d3b;
+    box-shadow: 0 6px 20px rgba(65, 45, 59, 0.2);
 }
 
 .session-avatar {
@@ -190,8 +47,8 @@ form .btn[type="submit"] {
 
 /* Chat Header */
 .chat-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white;
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
     border-radius: 10px 10px 0 0;
 }
 
@@ -211,20 +68,20 @@ form .btn[type="submit"] {
     word-wrap: break-word;
     line-height: 1.4;
     position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .customer-message {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    color: #1976d2;
+    background: linear-gradient(135deg, rgba(222, 204, 202, 0.3) 0%, rgba(222, 204, 202, 0.1) 100%) !important;
+    color: #412d3b !important;
+    border: 2px solid #deccca;
     border-bottom-left-radius: 6px;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
 }
 
 .admin-message {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: white;
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
     border-bottom-right-radius: 6px;
-    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
 
 .message-avatar {
@@ -247,29 +104,35 @@ form .btn[type="submit"] {
 }
 
 .chat-input textarea:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    background: #fff;
+    border-color: #412d3b !important;
+    box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
 }
 
 .chat-input .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #412d3b 0%, #deccca 100%) !important;
     border: none;
     border-radius: 15px;
     padding: 10px 20px;
     font-weight: 600;
     transition: all 0.3s ease;
+    color: white !important;
 }
 
 .chat-input .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4);
+    background: linear-gradient(135deg, #6c4a57 0%, #412d3b 100%) !important;
 }
 
 /* Chat Messages Container */
 .chat-messages {
+    background: #f8f9fa !important;
     border-radius: 0;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    height: calc(65vh - 260px) !important;
+    max-height: 280px !important;
+    min-height: 180px !important;
+    overflow-y: auto;
+    flex: 1 1 auto !important;
 }
 
 /* Scrollbar Styling */
@@ -286,20 +149,20 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-track {
 
 .chat-messages::-webkit-scrollbar-thumb,
 div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #deccca;
     border-radius: 10px;
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover,
 div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+    background: #412d3b;
 }
 
 /* Alert Styles */
 .alert-success {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    border: 1px solid #28a745;
-    color: #155724;
+    background: linear-gradient(135deg, rgba(222, 204, 202, 0.1) 0%, rgba(65, 45, 59, 0.05) 100%);
+    border-color: #deccca;
+    color: #412d3b;
     border-radius: 10px;
 }
 
@@ -311,11 +174,13 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
 }
 
 .badge.bg-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
+    border: none !important;
 }
 
 .badge.bg-danger {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
+    background: #dc3545 !important;
 }
 
 .badge.bg-success {
@@ -324,21 +189,20 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
 
 /* Button Enhancements */
 .btn-outline-primary {
-    color: #667eea;
-    border-color: #667eea;
-    transition: all 0.3s ease;
+    color: #412d3b !important;
+    border-color: #412d3b !important;
+    background: transparent !important;
 }
 
 .btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    background: #412d3b !important;
+    border-color: #412d3b !important;
+    color: white !important;
 }
 
 /* Empty State */
 .text-center.text-muted i {
-    color: #dee2e6 !important;
+    color: #deccca !important;
 }
 
 /* Animation */
@@ -354,7 +218,7 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
 }
 
 .message-item {
-    animation: slideIn 0.3s ease;
+    animation: slideIn 0.3s ease-out;
 }
 
 /* Responsive */
@@ -364,11 +228,26 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
     }
     
     .session-item {
-        margin-bottom: 8px;
+        padding: 0.75rem;
     }
     
     .chat-input textarea {
         font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .row[style*="height: 65vh"] {
+        height: auto !important;
+        min-height: 500px !important;
+    }
+    
+    .col-md-4, .col-md-8 {
+        height: auto !important;
+        max-height: none !important;
+    }
+    
+    .chat-messages {
+        height: 300px !important;
+        max-height: 300px !important;
     }
 }
 
@@ -387,3 +266,374 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
     }
 }
+
+/* Header Section */
+.header-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+/* Content Background */
+body {
+    background: #f8f9fa !important;
+}
+
+/* Message Avatar Positioning */
+.message-avatar {
+    align-self: flex-end;
+    margin-bottom: 5px;
+}
+
+/* Border Colors */
+.border-end {
+    border-color: #e9ecef !important;
+}
+
+.border-bottom {
+    border-color: #e9ecef !important;
+}
+
+.border-top {
+    border-color: #e9ecef !important;
+}
+
+/* Text Colors */
+.text-primary {
+    color: #412d3b !important;
+}
+
+/* Container Styling */
+.bg-white {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #e9ecef;
+}
+
+/* Badge Styling */
+.badge.bg-warning {
+    background: linear-gradient(135deg, #deccca 0%, #f4e6e1 100%) !important;
+    color: #412d3b !important;
+}
+
+/* Fix Chat Container Height */
+.col-md-8.d-flex.flex-column {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    overflow: hidden;
+}
+
+/* Chat List Container Height Fix */
+div[style*="height: calc(100% - 50px)"] {
+    height: calc(65vh - 160px) !important;
+    max-height: 320px !important;
+    overflow-y: auto;
+}
+
+/* Session List Height Control */
+.session-item {
+    min-height: auto !important;
+    flex-shrink: 0;
+}
+
+/* Ensure session list doesn't expand */
+.col-md-4 {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 33.333333% !important;
+    max-width: 33.333333% !important;
+    flex-shrink: 0 !important;
+}
+
+/* Chat area flex control */
+.chat-messages {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+}
+
+/* Override inline styles */
+.row[style*="height: 65vh"] {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    width: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+}
+
+.row[style*="height: 65vh"] .col-md-4 {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 33.333333% !important;
+    max-width: 33.333333% !important;
+    padding-right: 0.75rem !important;
+    padding-left: 0.75rem !important;
+}
+
+.row[style*="height: 65vh"] .col-md-8 {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    overflow: hidden !important;
+}
+
+/* Chat list container fixed height */
+.col-md-4 div[style*="overflow-y: auto"] {
+    height: calc(65vh - 180px) !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+}
+
+/* Ensure chat input stays at bottom */
+.chat-input {
+    flex-shrink: 0 !important;
+    margin-top: auto !important;
+}
+
+/* Chat header fixed height */
+.chat-header {
+    flex-shrink: 0 !important;
+    height: auto !important;
+}
+
+/* Session list title area */
+.col-md-4 .d-flex.justify-content-between {
+    flex-shrink: 0 !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Force admin message brand colors - Override any orange/cam colors */
+.message-bubble.admin-message,
+.admin-message,
+div[style*="background"]:has(.admin-message),
+.message-content .message-bubble:not(.customer-message) {
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Override any orange/cam background */
+.message-bubble[style*="background"]:not(.customer-message),
+.message-content div[style*="ff6b35"],
+.message-content div[style*="f7931e"],
+.message-content div[style*="orange"],
+.message-content .admin-message {
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
+}
+
+/* Chat session height exact control */
+.session-item {
+    max-height: 70px !important;
+    min-height: 65px !important;
+}
+
+/* Reduce session list padding to fit more items */
+.session-item .d-flex.align-items-start {
+    min-height: 65px;
+}
+
+/* Compact session avatar */
+.session-item .session-avatar div {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 0.9em !important;
+}
+
+/* Compact session item content */
+.session-item {
+    padding: 0.5rem !important;
+    margin-bottom: 0.25rem !important;
+}
+
+.session-item h6 {
+    font-size: 0.9rem !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.session-item p {
+    font-size: 0.75rem !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.session-item small {
+    font-size: 0.7rem !important;
+}
+
+/* Better fit for chat list */
+.col-md-4 .d-flex.justify-content-between.align-items-center {
+    margin-bottom: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.col-md-4 h5 {
+    font-size: 1.1rem !important;
+}
+
+/* Final override để đảm bảo không có thanh kéo */
+.row[style*="65vh"] .col-md-4 > div:last-child {
+    height: calc(65vh - 180px) !important;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Force exact heights */
+.session-item .d-flex.align-items-start {
+    min-height: 50px !important;
+    max-height: 55px !important;
+    overflow: hidden;
+}
+
+/* Ensure no overflow on session content */
+.session-item .flex-grow-1 {
+    overflow: hidden !important;
+    max-width: calc(100% - 60px) !important;
+    min-width: 0 !important;
+}
+
+/* Fix session item horizontal overflow */
+.session-item .d-flex.align-items-start {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+.session-item .d-flex.justify-content-between {
+    width: 100% !important;
+    overflow: hidden !important;
+}
+
+/* Text truncation for session items */
+.session-item h6,
+.session-item p,
+.session-item small {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+}
+
+/* Badge container control */
+.session-item .d-flex.align-items-center.gap-2 {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+/* Avatar sizing consistency */
+.session-item .session-avatar div,
+.message-avatar div {
+    flex-shrink: 0 !important;
+}
+
+/* Badge size control */
+.session-item .badge {
+    font-size: 0.6rem !important;
+    padding: 2px 6px !important;
+}
+
+/* Perfect fit for mobile */
+@media (max-width: 768px) {
+    .session-item {
+        max-height: 60px !important;
+        padding: 0.4rem !important;
+    }
+    
+    .session-item h6 {
+        font-size: 0.85rem !important;
+    }
+    
+    .session-item p {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Critical width fixes for session list */
+.col-md-4.border-end {
+    border-right: 1px solid #e9ecef !important;
+    overflow-x: hidden !important;
+    word-wrap: break-word !important;
+}
+
+/* Session item width control */
+.session-item {
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+}
+
+/* Prevent badge overflow */
+.session-item .badge {
+    flex-shrink: 0 !important;
+    max-width: fit-content !important;
+}
+
+/* Time display control */
+.session-item small.text-muted {
+    flex-shrink: 0 !important;
+    min-width: fit-content !important;
+}
+
+/* Customer name truncation */
+.session-item h6.text-truncate {
+    max-width: 140px !important;
+}
+
+/* Message preview truncation */  
+.session-item p.text-truncate {
+    max-width: 180px !important;
+}
+
+/* Support ID truncation */
+.session-item small[style*="color: #412d3b"] {
+    max-width: 100px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Badge container flex control */
+.session-item .d-flex.justify-content-between.align-items-center {
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+}
+
+.session-item .d-flex.align-items-center.gap-2 {
+    gap: 0.25rem !important;
+    flex-wrap: nowrap !important;
+}
+
+/* CRITICAL: Force admin message bubble colors - Final override */
+.message-bubble.admin-message,
+.admin-message,
+.message-content .admin-message,
+div.message-bubble.admin-message {
+    background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Ensure customer message colors */
+.message-bubble.customer-message,
+.customer-message,
+.message-content .customer-message,
+div.message-bubble.customer-message {
+    background: linear-gradient(135deg, rgba(222, 204, 202, 0.3) 0%, rgba(222, 204, 202, 0.1) 100%) !important;
+    color: #412d3b !important;
+    border: 2px solid #deccca !important;
+    border-bottom-left-radius: 6px !important;
+}
+
+/* Remove any conflicting transforms that cause jumping */
+.session-item,
+.session-item:hover,
+.session-item.active,
+.session-item:focus {
+    transform: none !important;
+}
+
+

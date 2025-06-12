@@ -144,7 +144,7 @@ $end = min($start + $rowsPerPage, $totalRows);
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Banner Management</title>
+    <title>Quản Lý Banner</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
@@ -523,7 +523,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Header -->
                             <div class="header-section">
                                 <h2 class="page-title">
-                                    <i class="fas fa-images me-3"></i>Banner Management
+                                    <i class="fas fa-images me-3"></i>Quản Lý Banner
                                 </h2>
                             </div>
                             
@@ -540,7 +540,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     <input type="text" 
                                            name="search" 
                                            class="search-box"
-                                           placeholder="Search banner..." 
+                                           placeholder="Tìm kiếm banner..." 
                                            value="<?php echo htmlspecialchars($search); ?>">
                                 </form>
                                 
@@ -556,7 +556,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     </form>
                                     
                                     <a href="add_banner.php" class="btn-add">
-                                        <i class="fas fa-plus me-2"></i>Add New Banner
+                                        <i class="fas fa-plus me-2"></i>Thêm Banner Mới
                                     </a>
                                 </div>
                             </div>
@@ -567,11 +567,11 @@ $end = min($start + $rowsPerPage, $totalRows);
                                 <thead>
                                     <tr>
                                         <th style="width: 80px;">ID</th>
-                                        <th style="width: 150px;">Image</th> 
-                                        <th style="width: 300px;">Information</th>
-                                        <th style="width: 120px; text-align: left; padding-left: 20px;">Display Order</th>
-                                        <th style="width: 100px;">Status</th>
-                                        <th style="width: 200px;">Action</th>
+                                        <th style="width: 150px;">Hình Ảnh</th> 
+                                        <th style="width: 300px;">Thông Tin</th>
+                                        <th style="width: 120px; text-align: left; padding-left: 20px;">Thứ Tự Hiển Thị</th>
+                                        <th style="width: 100px;">Trạng Thái</th>
+                                        <th style="width: 200px;">Thao Tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -596,29 +596,29 @@ $end = min($start + $rowsPerPage, $totalRows);
                                         </td>
                                         <td>
                                             <?php if($banner['is_active']): ?>
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">Hoạt Động</span>
                                             <?php else: ?>
-                                                <span class="badge bg-danger">Inactive</span>
+                                                <span class="badge bg-danger">Tạm Dừng</span>
                                             <?php endif; ?>
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="edit_banner.php?id=<?php echo $banner['banner_id']; ?>" class="btn btn-sm btn-primary" title="Edit">
+                                                <a href="edit_banner.php?id=<?php echo $banner['banner_id']; ?>" class="btn btn-sm btn-primary" title="Chỉnh sửa">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 
-                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to change the status of this banner?')">
+                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn thay đổi trạng thái banner này?')">
                                                     <input type="hidden" name="action" value="toggle_status">
                                                     <input type="hidden" name="banner_id" value="<?php echo $banner['banner_id']; ?>">
-                                                    <button type="submit" class="btn btn-sm <?php echo $banner['is_active'] ? 'btn-warning' : 'btn-success'; ?>" title="<?php echo $banner['is_active'] ? 'Deactivate' : 'Activate'; ?>">
+                                                    <button type="submit" class="btn btn-sm <?php echo $banner['is_active'] ? 'btn-warning' : 'btn-success'; ?>" title="<?php echo $banner['is_active'] ? 'Tạm dừng' : 'Kích hoạt'; ?>">
                                                         <i class="fas <?php echo $banner['is_active'] ? 'fa-pause' : 'fa-play'; ?>"></i>
                                                     </button>
                                                 </form>
                                                 
-                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this banner?')">
+                                                <form method="POST" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa banner này?')">
                                                     <input type="hidden" name="action" value="delete">
                                                     <input type="hidden" name="banner_id" value="<?php echo $banner['banner_id']; ?>">
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -632,7 +632,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Pagination -->
                             <div class="pagination-container">
                                 <div class="pagination-info">
-                                    Showing <?php echo $start + 1; ?> to <?php echo $end; ?> of <?php echo $totalRows; ?> banners
+                                    Hiển thị <?php echo $start + 1; ?> đến <?php echo $end; ?> trong tổng số <?php echo $totalRows; ?> banner
                                 </div>
                                 
                                 <?php if ($totalPages > 1): ?>

@@ -1,32 +1,15 @@
 <?php
-// Bật hiển thị lỗi để debug
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 $currentPage = 'voucher';
 
 try {
     require_once '../../../config/database.php';
     require_once '../../../includes/session.php';
 
-    // Debug: Kiểm tra kết nối database
-    if (!isset($conn)) {
-        die("Lỗi: Không thể kết nối database. Kiểm tra file config/database.php");
-    }
-
-    if ($conn->connect_error) {
-        die("Lỗi kết nối database: " . $conn->connect_error);
-    }
-
-    echo "<!-- Debug: Database connected successfully -->\n";
-
     // Kiểm tra quyền admin
     if (!isAdmin()) {
         header("Location: ../../../index.php");
         exit();
     }
-
-    echo "<!-- Debug: Admin check passed -->\n";
 
     // Kiểm tra bảng vouchers có tồn tại không
     $check_table = $conn->query("SHOW TABLES LIKE 'vouchers'");
@@ -99,9 +82,7 @@ try {
     
     if ($result === false) {
         $error_msg = "Lỗi query: " . $conn->error;
-        echo "<!-- Debug: Query error: " . $conn->error . " -->\n";
     } else {
-        echo "<!-- Debug: Query executed successfully, found " . $result->num_rows . " rows -->\n";
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $vouchers[] = $row;
@@ -156,15 +137,6 @@ try {
         .inactive {
             opacity: 0.5;
         }
-        .debug-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 12px;
-        }
         .badge[style*="background-color: #412d3b"] {
             color: #fff !important;
         }
@@ -200,18 +172,6 @@ try {
         ?>
         
         <div class="container-fluid pt-4 px-4">
-            <!-- Debug Information -->
-            <div class="debug-info">
-                <strong>Debug Info:</strong><br>
-                - PHP Version: <?php echo PHP_VERSION; ?><br>
-                - Database Connected: <?php echo isset($conn) ? 'Yes' : 'No'; ?><br>
-                - Admin Check: <?php echo isLoggedIn() ? 'Logged in' : 'Not logged in'; ?><br>
-                - Vouchers Count: <?php echo count($vouchers); ?><br>
-                <?php if (isset($error_msg)): ?>
-                - Error: <?php echo htmlspecialchars($error_msg); ?><br>
-                <?php endif; ?>
-            </div>
-
             <!-- Header -->
             <div class="header-section">
                 <div class="row align-items-center">
