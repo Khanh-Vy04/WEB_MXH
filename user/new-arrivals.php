@@ -92,6 +92,9 @@ $total_count = $week_count + $month_count;
     <!-- Footer CSS -->
     <link rel="stylesheet" href="assets/css/footer.css">
 
+    <!-- Custom Navbar CSS -->
+    <link rel="stylesheet" href="assets/css/custom_navbar.css">
+
     <style>
         .new-arrivals-header {
             background: linear-gradient(135deg, #ff6b35, #f7931e);
