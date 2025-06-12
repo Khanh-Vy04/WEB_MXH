@@ -159,9 +159,13 @@ if ($artist_id > 0) {
     <link rel="stylesheet" href="includes/common.css">
     
     <style>
+        .main-content {
+            padding-top: 0;
+        }
+        
         .artist-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 80px 0;
             text-align: center;
             margin-bottom: 50px;
@@ -185,7 +189,7 @@ if ($artist_id > 0) {
             height: 200px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid rgba(255,255,255,0.3);
+            border: 5px solid rgba(65, 45, 59, 0.3);
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative;
@@ -193,17 +197,18 @@ if ($artist_id > 0) {
         }
         
         .artist-name {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #412d3b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
             position: relative;
             z-index: 2;
         }
         
         .artist-bio {
-            font-size: 1.1rem;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            color: #412d3b;
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.6;
@@ -212,44 +217,59 @@ if ($artist_id > 0) {
         }
         
         .product-card {
-            background: white;
+            background: #f7f8f9;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
         }
         
         .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .product-card:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
         }
         
         .product-image {
             width: 100%;
-            height: 250px;
+            height: 280px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
         
         .product-card:hover .product-image {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         
         .product-info {
-            padding: 25px;
+            padding: 20px;
+            text-align: center;
         }
         
         .product-name {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
-            line-height: 1.3;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .product-card:hover .product-name {
+            color: #412d3b;
         }
         
-        .product-genre {
-            color: #ff6b35;
+        .product-genre, .product-artist {
+            color: #412d3b !important;
             font-size: 0.9rem;
             font-weight: 500;
             margin-bottom: 10px;
@@ -257,38 +277,35 @@ if ($artist_id > 0) {
         
         .product-description {
             color: #666;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
             margin-bottom: 15px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-        
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
+            line-height: 1.5;
         }
         
         .product-price {
-            font-size: 1.4rem;
+            font-size: 1.15rem;
+            color: #412d3b;
             font-weight: 700;
-            color: #e74c3c;
+            margin-bottom: 12px;
         }
         
         .stock-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
         
         .in-stock {
-            background: #d4edda;
-            color: #155724;
+            background: #deccca;
+            color: #412d3b;
         }
         
         .out-stock {
@@ -297,120 +314,104 @@ if ($artist_id > 0) {
         }
         
         .stats-bar {
-            background: rgba(255,255,255,0.1);
+            background: rgba(65, 45, 59, 0.1);
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 40px;
             text-align: center;
-            color: white;
+            color: #412d3b;
             backdrop-filter: blur(10px);
         }
         
         .stats-item {
             display: inline-block;
             margin: 0 30px;
+            color: #412d3b;
         }
         
         .stats-number {
             font-size: 1.8rem;
             font-weight: 700;
             display: block;
+            color: #412d3b;
         }
         
         .stats-label {
             font-size: 0.9rem;
-            opacity: 0.8;
+            color: #412d3b;
         }
-        
-        .product-actions {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
+
+        /* Search styles from accessories.php */
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 30px;
         }
-        
-        .btn-view-product {
-            display: block;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            text-align: center;
+
+        .search-box {
             width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #deccca;
+            border-radius: 30px;
+            font-size: 1rem;
+            color: #412d3b;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #412d3b;
+            box-shadow: 0 0 10px rgba(65, 45, 59, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #412d3b;
+        }
+
+        .btn-view-product {
+            background: #412d3b;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
         }
         
         .btn-view-product:hover {
+            background: #deccca;
+            color: #412d3b;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
-            color: white;
+            box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4);
             text-decoration: none;
         }
-        
-        .btn-view-product i {
-            margin-right: 8px;
+
+        .product-card.hidden {
+            display: none;
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-        }
-        
-        .alert-info {
-            color: #31708f;
-            background-color: #d9edf7;
-            border-color: #bce8f1;
-        }
-        
-        .alert-danger {
-            color: #a94442;
-            background-color: #f2dede;
-            border-color: #ebccd1;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin: 40px 0;
-        }
-        
-        .no-results i {
-            font-size: 4rem;
-            color: #ddd;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .no-results p {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-        
-        .mb-4 {
-            margin-bottom: 1.5rem;
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease;
-        }
-        
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
             .artist-name {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+            
+            .artist-bio {
+                font-size: 1.1rem;
             }
             
             .artist-image {
@@ -427,7 +428,7 @@ if ($artist_id > 0) {
 
 <body>
     <!-- Include Navigation (Simplified) -->
-    <?php include 'includes/navigation_simple.php'; ?>
+    <?php include 'includes/navigation.php'; ?>
 
     <div class="main-content">
         <!-- Artist/Genre Header -->
@@ -477,7 +478,7 @@ if ($artist_id > 0) {
             <?php endif; ?>
             
             <!-- Thống kê -->
-            <div class="stats-bar">
+            <!-- <div class="stats-bar">
                 <div class="stats-item">
                     <strong><?php echo count($products); ?></strong>
                     <span>Sản phẩm</span>
@@ -493,66 +494,62 @@ if ($artist_id > 0) {
                     <span>Thể loại</span>
                 </div>
                 <?php endif; ?>
-            </div>
+            </div> -->
 
             <!-- Danh sách sản phẩm -->
             <?php if (count($products) > 0): ?>
-            <h2 class="text-center mb-40">
+            <!-- <h2 class="text-center mb-40">
                 <i class="fa fa-music"></i> 
                 <?php if ($artist): ?>
                     Sản phẩm của <?php echo htmlspecialchars($artist['artist_name']); ?>
                 <?php elseif ($genre): ?>
                     Sản phẩm thể loại <?php echo htmlspecialchars($genre['genre_name']); ?>
                 <?php endif; ?>
-            </h2>
+            </h2> -->
+
+            <!-- Search Box -->
+            <div class="search-container" style="max-width: 700px; margin: 40px auto;">
+                <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm sản phẩm..." style="padding: 18px 25px; font-size: 1.1rem;">
+                <i class="fa fa-search search-icon" style="font-size: 1.2rem;"></i>
+            </div>
             
             <div class="row">
                 <?php foreach ($products as $product): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
-                <div class="product-card fade-in">
-                    <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
-                         class="product-image" 
-                         alt="<?php echo htmlspecialchars($product['product_name']); ?>"
-                         onerror="this.src='https://via.placeholder.com/300x250/667eea/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
-                    
-                    <div class="product-info">
-                        <h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                    <div class="product-card" data-name="<?php echo strtolower($product['product_name']); ?>" onclick="window.location.href='product-detail.php?type=product&id=<?php echo $product['product_id']; ?>'" style="cursor: pointer;">
+                        <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                             class="product-image" 
+                             alt="<?php echo htmlspecialchars($product['product_name']); ?>"
+                             onerror="this.src='https://via.placeholder.com/300x250/667eea/ffffff?text=<?php echo urlencode($product['product_name']); ?>'">
                         
-                        <?php if (!empty($product['genre_name'])): ?>
-                        <div class="product-genre">
-                            <i class="fa fa-music"></i> <?php echo htmlspecialchars($product['genre_name']); ?>
+                        <div class="stock-status <?php echo $product['stock'] > 0 ? 'in-stock' : 'out-stock'; ?>">
+                            <?php if ($product['stock'] > 0): ?>
+                                <i class="fa fa-check-circle"></i> Còn hàng (<?php echo $product['stock']; ?>)
+                            <?php else: ?>
+                                <i class="fa fa-times-circle"></i> Hết hàng
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
                         
-                        <?php if ($genre && !empty($product['artist_name'])): ?>
-                        <div class="product-artist" style="color: #ff6b35; font-size: 0.9rem; font-weight: 500; margin-bottom: 10px;">
-                            <i class="fa fa-user"></i> <?php echo htmlspecialchars($product['artist_name']); ?>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
-                        
-                        <div class="product-footer">
+                        <div class="product-info">
+                            <h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
+                            
+                            <?php if (!empty($product['genre_name'])): ?>
+                            <div class="product-genre">
+                                <i class="fa fa-music"></i> <?php echo htmlspecialchars($product['genre_name']); ?>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php if ($genre && !empty($product['artist_name'])): ?>
+                            <div class="product-artist">
+                                <i class="fa fa-user"></i> <?php echo htmlspecialchars($product['artist_name']); ?>
+                            </div>
+                            <?php endif; ?>
+                            
                             <div class="product-price">
                                 <?php echo number_format($product['price'], 0, ',', '.'); ?> VNĐ
                             </div>
-                            
-                            <div class="stock-status <?php echo $product['stock'] > 0 ? 'in-stock' : 'out-stock'; ?>">
-                                <?php if ($product['stock'] > 0): ?>
-                                    <i class="fa fa-check-circle"></i> Còn hàng (<?php echo $product['stock']; ?>)
-                                <?php else: ?>
-                                    <i class="fa fa-times-circle"></i> Hết hàng
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        
-                        <div class="product-actions">
-                            <a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="btn-view-product">
-                                <i class="fa fa-eye"></i> Xem sản phẩm
-                            </a>
                         </div>
                     </div>
-                </div>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -602,24 +599,29 @@ if ($artist_id > 0) {
         console.log('🐛 Products count: ' + document.querySelectorAll('.product-card').length);
         <?php endif; ?>
         
-        // Hiệu ứng xuất hiện từ từ cho sản phẩm
+        // Tìm kiếm sản phẩm
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                const productName = card.getAttribute('data-name');
+                if (productName.includes(searchTerm)) {
+                    card.closest('.col-md-6').style.display = 'block';
+                } else {
+                    card.closest('.col-md-6').style.display = 'none';
+                }
+            });
+        });
+
+        // Hiệu ứng xuất hiện từ từ
         window.addEventListener('load', function() {
-            <?php if ($debug): ?>
-            console.log('🐛 Window loaded, initializing fade-in');
-            <?php endif; ?>
-            
-            const cards = document.querySelectorAll('.fade-in');
-            
-            <?php if ($debug): ?>
-            console.log('🐛 Found cards:', cards.length);
-            <?php endif; ?>
-            
+            const cards = document.querySelectorAll('.product-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
-                    card.classList.add('visible');
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
-                }, index * 150);
+                }, index * 100);
             });
         });
     </script>

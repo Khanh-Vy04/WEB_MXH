@@ -153,8 +153,9 @@ if (!empty($reviews)) {
     <style>
         /* Product Detail Styles */
         .product-detail-section {
-            padding: 50px 0;
+            padding: 140px 0 80px;
             background: #f8f9fa;
+            margin-top: 20px;
         }
         
         .product-image-container {
@@ -164,12 +165,19 @@ if (!empty($reviews)) {
             padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .product-main-image {
             width: 100%;
-            height: 400px;
-            object-fit: cover;
+            height: 100%;
+            object-fit: contain;
             border-radius: 10px;
             transition: transform 0.3s ease;
         }
@@ -195,7 +203,7 @@ if (!empty($reviews)) {
         }
         
         .product-artist {
-            color: #ff6b35;
+            color: #412d3b;
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 20px;
@@ -205,13 +213,13 @@ if (!empty($reviews)) {
         }
         
         .product-artist i {
-            color: #ff6b35;
+            color: #412d3b;
         }
         
         .product-price {
             font-size: 2rem;
             font-weight: 900;
-            color: #ff6b35;
+            color: #412d3b;
             margin-bottom: 20px;
         }
         
@@ -268,8 +276,8 @@ if (!empty($reviews)) {
         .btn-add-cart {
             flex: 1;
             min-width: 200px;
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             border: none;
             padding: 15px 25px;
             border-radius: 50px;
@@ -287,13 +295,15 @@ if (!empty($reviews)) {
         
         .btn-add-cart:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(222, 204, 202, 0.4);
+            background: #412d3b;
+            color: #deccca;
         }
         
         .btn-wishlist {
-            background: white;
-            color: #ff6b35;
-            border: 2px solid #ff6b35;
+            background: #deccca;
+            color: #412d3b;
+            border: 2px solid #deccca;
             padding: 15px 25px;
             border-radius: 50px;
             font-weight: 600;
@@ -307,10 +317,26 @@ if (!empty($reviews)) {
         }
         
         .btn-wishlist:hover {
-            background: #ff6b35;
-            color: white;
+            background: #412d3b;
+            color: #deccca;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(222, 204, 202, 0.4);
+            border-color: #412d3b;
+        }
+        
+        .btn-wishlist.active {
+            background: #412d3b;
+            color: #deccca;
+            border-color: #412d3b;
+        }
+        
+        /* Remove hover effects for active state */
+        .btn-wishlist.active:hover {
+            background: #412d3b;
+            color: #deccca;
+            border-color: #412d3b;
+            transform: none;
+            box-shadow: none;
         }
         
         .product-meta {
@@ -321,8 +347,8 @@ if (!empty($reviews)) {
         .meta-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-size: 1.25rem;
         }
         
         .meta-label {
@@ -431,7 +457,7 @@ if (!empty($reviews)) {
         }
         
         .related-product-price {
-            color: #ff6b35;
+            color: #412d3b;
             font-size: 1.2rem;
             font-weight: 700;
         }
@@ -479,20 +505,23 @@ if (!empty($reviews)) {
             margin-right: 15px;
         }
         
+        .artist-details {
+            color: #412d3b;
+        }
+        
         .artist-details h4 {
             margin: 0;
-            color: #333;
+            color: #412d3b;
             font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
         }
         
         .artist-bio {
-            color: #666;
-            font-size: 0.9rem;
-            margin: 5px 0 0 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            color: #412d3b;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin: 0;
         }
         
         /* Quantity Selector */
@@ -511,7 +540,7 @@ if (!empty($reviews)) {
         .quantity-controls {
             display: flex;
             align-items: center;
-            border: 2px solid #ddd;
+            border: 2px solid #deccca;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -528,8 +557,14 @@ if (!empty($reviews)) {
         }
         
         .quantity-btn:hover {
-            background: #ff6b35;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
+        }
+        
+        .quantity-btn:active {
+            background: #deccca;
+            color: #412d3b;
+            transform: translateY(1px);
         }
         
         .quantity-input {
@@ -539,6 +574,8 @@ if (!empty($reviews)) {
             width: 60px;
             font-weight: 600;
             background: white;
+            font-size: 1.1rem;
+            color: #412d3b;
         }
         
         .quantity-input:focus {
@@ -633,14 +670,9 @@ if (!empty($reviews)) {
                         <h1 class="product-title"><?php echo htmlspecialchars($product_data['product_name']); ?></h1>
                         
                         <?php if ($artist_info && $type === 'product'): ?>
-                        <div class="artist-info-box d-flex align-items-center">
-                            <img src="<?php echo htmlspecialchars($artist_info['image_url']); ?>" 
-                                 alt="<?php echo htmlspecialchars($artist_info['artist_name']); ?>"
-                                 class="artist-avatar"
-                                 onerror="this.src='https://via.placeholder.com/60x60?text=Artist'">
+                        <div class="artist-info-box">
                             <div class="artist-details">
-                                <h4><?php echo htmlspecialchars($artist_info['artist_name']); ?></h4>
-                                <p class="artist-bio"><?php echo htmlspecialchars($artist_info['bio']); ?></p>
+                                <div class="artist-bio"><?php echo nl2br(htmlspecialchars($product_data['description'])); ?></div>
                             </div>
                         </div>
                         <?php endif; ?>
@@ -676,10 +708,6 @@ if (!empty($reviews)) {
                             <?php endif; ?>
                         </div>
                         <?php endif; ?>
-                        
-                        <div class="product-description">
-                            <?php echo nl2br(htmlspecialchars($product_data['description'])); ?>
-                        </div>
                         
                         <?php if (isset($product_data['stock']) && $product_data['stock'] > 0): ?>
                         <div class="quantity-selector">
@@ -940,9 +968,7 @@ if (!empty($reviews)) {
                     if (response.success) {
                         // Update button state to "added"
                         wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
-                        wishlistBtn.style.background = '#28a745';
-                        wishlistBtn.style.borderColor = '#28a745';
-                        wishlistBtn.style.color = 'white';
+                        wishlistBtn.classList.add('active');
                         wishlistBtn.onclick = function() { removeFromWishlist(productId, type); };
                         
                         // Update wishlist badge if it exists
@@ -958,9 +984,7 @@ if (!empty($reviews)) {
                         if (response.already_exists) {
                             // Already in wishlist - change button state
                             wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
-                            wishlistBtn.style.background = '#28a745';
-                            wishlistBtn.style.borderColor = '#28a745';
-                            wishlistBtn.style.color = 'white';
+                            wishlistBtn.classList.add('active');
                             wishlistBtn.onclick = function() { removeFromWishlist(productId, type); };
                         }
                         showErrorMessage(response.message);
@@ -1000,9 +1024,7 @@ if (!empty($reviews)) {
                     if (response.success) {
                         // Reset button to "add" state
                         wishlistBtn.innerHTML = '<i class="fa fa-heart-o"></i> Yêu thích';
-                        wishlistBtn.style.background = 'white';
-                        wishlistBtn.style.borderColor = '#ff6b35';
-                        wishlistBtn.style.color = '#ff6b35';
+                        wishlistBtn.classList.remove('active');
                         wishlistBtn.onclick = function() { addToWishlist(productId, type); };
                         
                         // Update wishlist badge if it exists
@@ -1049,9 +1071,7 @@ if (!empty($reviews)) {
                         var wishlistBtn = document.querySelector('.btn-wishlist');
                         if (wishlistBtn) {
                             wishlistBtn.innerHTML = '<i class="fa fa-heart"></i> Đã yêu thích';
-                            wishlistBtn.style.background = '#28a745';
-                            wishlistBtn.style.borderColor = '#28a745';
-                            wishlistBtn.style.color = 'white';
+                            wishlistBtn.classList.add('active');
                             wishlistBtn.onclick = function() { removeFromWishlist(<?php echo $id; ?>, '<?php echo $type; ?>'); };
                         }
                     }
