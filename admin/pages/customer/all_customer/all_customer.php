@@ -373,7 +373,7 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
   <body>
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Sidebar -->
-        <?php 
+      vậy hãy tiếp tục so với<?php 
             if (file_exists(__DIR__.'/../../dashboard/sidebar.php')) {
             include __DIR__.'/../../dashboard/sidebar.php'; 
             }
@@ -435,10 +435,10 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                         <th>
                                             <i class="fas fa-id-card me-2"></i>ID & Loại
                                         </th>
-                                        <th>
+                                        <th style="text-align: center;">
                                             <i class="fas fa-envelope me-2"></i>Liên hệ
                                         </th>
-                                        <th>
+                                        <th style="text-align: center;">
                                             <i class="fas fa-map-marker-alt me-2"></i>Địa chỉ
                                         </th>
                                         <th>
@@ -500,7 +500,7 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td style="text-align: center;">
                                                     <div class="mb-1">
                                                         <i class="fas fa-envelope text-primary me-2"></i>
                                                         <small><?php echo htmlspecialchars($user['email']); ?></small>
@@ -512,7 +512,7 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                                                         </div>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td>
+                                                <td style="text-align: center;">
                                                     <?php if ($user['address']): ?>
                                                         <small class="text-muted"><?php echo htmlspecialchars(substr($user['address'], 0, 50)) . (strlen($user['address']) > 50 ? '...' : ''); ?></small>
                                                     <?php else: ?>

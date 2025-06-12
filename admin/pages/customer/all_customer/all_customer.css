@@ -23,31 +23,27 @@ body {
 }
 
 .container-fluid.position-relative.d-flex.p-0 {
-  flex: 1 0 auto;
+  min-height: 100vh;
   display: flex;
   flex-direction: row;
-  min-height: 100vh;
+  gap: 0 !important;
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 auto;
-  min-height: 100vh;
-  padding: 0;
-  background: #f3f4f6 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 .container-fluid.pt-4.px-4 {
-  flex: 1 0 auto;
-  background: #f7f8f9;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 /* Table Container */
 .table-container {
   background: white;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 1.5rem;
   overflow-x: auto;
 }
@@ -117,7 +113,7 @@ tr:hover {
   background: white;
   padding: 1rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .search-bar input {
@@ -191,7 +187,7 @@ tr:hover {
   padding: 1rem;
   background: white;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .entries-info {
@@ -441,4 +437,16 @@ table tr {
   height: 53.5px;
   min-height: 53.5px;
   max-height: 53.5px;
+}
+
+/* Xoá padding phải của sidebar */
+.sidebar {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+  background: #edeef0 !important;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: none;
 }

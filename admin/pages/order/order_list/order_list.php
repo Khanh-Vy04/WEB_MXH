@@ -386,12 +386,26 @@ while ($stat = $stats_result->fetch_assoc()) {
             border: 2px solid #e3e6f0;
             padding: 10px 20px;
             transition: all 0.3s ease;
+            background: #ffffff;
         }
         
         .search-box:focus {
             border-color: #412d3b;
             box-shadow: 0 0 0 3px rgba(65, 45, 59, 0.1);
             outline: none;
+        }
+        
+        .form-select {
+            background-color: #ffffff;
+            border: 2px solid #e3e6f0;
+            border-radius: 25px;
+            padding: 8px 15px;
+            color: #333;
+        }
+        
+        .form-select:focus {
+            border-color: #412d3b;
+            box-shadow: 0 0 0 3px rgba(65, 45, 59, 0.1);
         }
         
         .btn-primary {
@@ -432,8 +446,9 @@ while ($stat = $stats_result->fetch_assoc()) {
         }
         
         .page-item.active .page-link {
-            background-color: #412d3b !important;
-            border-color: #412d3b !important;
+            background-color: #6c4a57 !important;
+            border-color: #6c4a57 !important;
+            color: #fff !important;
         }
     </style>
   </head>

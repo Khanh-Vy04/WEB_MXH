@@ -256,14 +256,19 @@ try {
         }
         
         .chart-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            min-height: 400px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
-        .chart-container h6 {
-            color: #412d3b;
-            font-weight: 600;
+        .chart-container canvas {
+            width: 100% !important;
+            height: 320px !important;
+            max-height: 320px;
+            margin: 0 auto;
+            display: block;
         }
         
         .table-custom {

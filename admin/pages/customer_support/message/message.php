@@ -108,7 +108,7 @@ function timeAgo($datetime) {
     <div class="content">
         <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
 
-        <div class="container-fluid pt-4 px-4" style="background: #f8f9fa; min-height: calc(100vh - 80px);">
+        <div class="container-fluid pt-4 px-4" style="background:rgb(247, 251, 255); min-height: calc(100vh - 80px);">
             <!-- Header Section -->
             <div class="header-section mb-4">
                 <div class="d-flex justify-content-between align-items-center">
@@ -176,7 +176,7 @@ function timeAgo($datetime) {
                                             </p>
                                             
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <small style="color: #412d3b; max-width: 90px; overflow: hidden; text-overflow: ellipsis;">
+                                                <small style="color:rgb(255, 243, 251); max-width: 90px; overflow: hidden; text-overflow: ellipsis;">
                                                     <i class="fas fa-hashtag"></i> <?= $session['support_id'] ?>
                                                 </small>
                                                 <div class="d-flex align-items-center gap-1">
