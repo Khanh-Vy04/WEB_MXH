@@ -70,8 +70,8 @@ $cart_count = getCartItemCount();
         }
 
         .cart-header {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
+            background: linear-gradient(135deg, #412D3B, #deccca);
+            color: #deccca!important;
             padding: 30px;
             text-align: center;
         }
@@ -125,7 +125,7 @@ $cart_count = getCartItemCount();
         .cart-item-name {
             font-weight: 600;
             color: #333;
-            font-size: 1.1rem;
+            font-size: 1.8rem;
             margin-bottom: 5px;
         }
 
@@ -136,9 +136,9 @@ $cart_count = getCartItemCount();
         }
 
         .cart-item-price {
-            font-size: 1.2rem;
+            font-size: 1.8rem;
             font-weight: 600;
-            color: #ff6b35;
+            color: #412d3b;
         }
 
         .quantity-controls {
@@ -162,9 +162,9 @@ $cart_count = getCartItemCount();
         }
 
         .quantity-btn:hover {
-            background: #ff6b35;
-            color: white;
-            border-color: #ff6b35;
+            background:#deccca;
+            color: #412d3b;
+            border-color: #deccca;
         }
 
         .quantity-btn:disabled {

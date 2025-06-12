@@ -48,9 +48,7 @@ if (isLoggedIn()) {
         <!-- Start Atribute Navigation -->
         <div class="attr-nav">
             <ul>
-                <li class="search">
-                    <a href="#"><span class="lnr lnr-magnifier"></span></a>
-                </li><!--/.search-->
+                
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="lnr lnr-user"></span>
@@ -180,8 +178,8 @@ nav.navbar.bootsnav .navbar-brand {
 }
 
 .attr-nav > ul > li > a span.badge {
-  background-color: #ff6b35 !important; /* Màu badge giỏ hàng */
-  color: #ffffff !important;
+  background-color: #deccca !important; /* Màu badge giỏ hàng */
+  color: #412d3b !important;
 }
 
 nav.navbar.bootsnav .navbar-toggle {
@@ -201,8 +199,8 @@ nav.navbar.bootsnav .navbar-toggle i {
 
 .user-menu-link:hover,
 .dropdown-item:hover {
-  background-color: #f8f9fa !important;
-  color: #ff6b35 !important;
+  background-color: #deccca!important;
+  color: #412d3b !important;
 }
 
 /* Giữ lại các style cần thiết cho dropdown menu và cart */
@@ -239,16 +237,16 @@ nav.navbar.bootsnav .navbar-toggle i {
 }
 
 .logout-link:hover {
-    background: #ffe6e1;
-    color: #dc3545;
+    background: #deccca;
+    color: #412d3b;
 }
 
 .logout-link:hover i {
-    color: #dc3545;
+    color: #412d3b;
 }
 
 #cart-badge {
-    background: #ff6b35;
+    background: #deccca;
     min-width: 20px;
     height: 20px;
     border-radius: 10px;
@@ -375,8 +373,8 @@ nav.navbar.bootsnav .navbar-toggle i {
                 <p style="margin-bottom: 25px; color: #666;">${message}</p>
                 <div style="display: flex; gap: 15px; justify-content: center;">
                     <a href="/WEB_MXH/login.php" class="btn" style="
-                        background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-                        color: white;
+                        background: linear-gradient(135deg, #412D3B 0%, #deccca 100%);
+                        color: #412D3B;
                         padding: 12px 20px;
                         border-radius: 25px;
                         text-decoration: none;

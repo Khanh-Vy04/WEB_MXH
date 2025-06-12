@@ -51,14 +51,6 @@
 						<div class="hm-foot-para">
 							<p>Nếu có bất kỳ câu hỏi, nhận xét nào hoặc chỉ để nói về mọi thứ về vinyl, hãy nhớ liên hệ với chúng tôi thông qua (+84)783222894</p>
 						</div><!--/.hm-foot-para-->
-						<!--<div class="hm-foot-email">
-							<div class="foot-email-box">
-								<input type="text" class="form-control" placeholder="Nhập email của bạn...">
-							</div>--><!--/.foot-email-box
-							<div class="foot-email-subscribe">
-								<span><i class="fa fa-location-arrow"></i></span>
-							</div>/.foot-email-icon
-						</div>-->
 					</div><!--/.hm-footer-widget-->
 				</div><!--/.col-->
 			</div><!--/.row-->
@@ -73,15 +65,8 @@
 <footer id="footer"  class="footer">
 	<div class="container">
 		<div class="hm-footer-copyright text-center">
-			<!--<div class="footer-social">
-				<a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>	
-				<a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
-				<a href="#" title="LinkedIn"><i class="fa fa-linkedin"></i></a>
-				<a href="#" title="Pinterest"><i class="fa fa-pinterest"></i></a>
-				<a href="#" title="Behance"><i class="fa fa-behance"></i></a>	
-			</div>-->
 			<p>
-				&copy; 2024 AuraDisc. Tất cả quyền được bảo lưu. Thiết kế và phát triển bởi <a href="#">AuraDisc Team</a>
+				&copy; 2025 AuraDisc. Tất cả quyền được bảo lưu. Thiết kế và phát triển bởi <a href="#">AuraDisc Team</a>
 			</p><!--/p-->
 		</div><!--/.text-center-->
 	</div><!--/.container-->
@@ -95,3 +80,129 @@
 	
 </footer><!--/.footer-->
 <!--footer end-->
+
+<style>
+/* Newsletter styles */
+.newsletter{
+    padding: 20px 0;  /* Giảm padding trên dưới */
+    background: #7c6e78;
+    min-height: 300px;  /* Thêm min-height để đảm bảo chiều cao tối thiểu */
+    display: flex;
+    align-items: center;
+}
+.newsletter, .newsletter * { color: #111 !important; }
+
+/* Container và layout */
+.newsletter .container { 
+    padding-left: 15px;  /* Giảm padding */
+    padding-right: 15px;
+}
+.newsletter .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 -15px;  /* Negative margin để cân bằng padding của columns */
+}
+.newsletter .col-md-3 {
+    padding: 0 15px;  /* Padding đều cho các cột */
+}
+
+/* Widget styling */
+.hm-footer-widget {
+    margin-bottom: 0;  /* Bỏ margin bottom */
+    height: 100%;  /* Chiều cao 100% để các cột bằng nhau */
+}
+.newsletter .hm-footer-widget:first-child { margin-left: 0; }  /* Reset margin left */
+
+.hm-foot-title {
+    margin-bottom: 15px;  /* Giảm margin dưới tiêu đề */
+}
+.hm-foot-title h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Menu và text content */
+.hm-foot-menu ul, 
+.hm-foot-para, 
+.hm-foot-menu ul p {
+    margin: 0;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.hm-foot-menu ul li a {
+    color: #111;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    display: inline-block;
+    transition: .3s;
+}
+
+.hm-foot-menu ul li a:hover {
+    color: #e99c2e;
+    transform: translateX(10px);
+}
+
+/* Footer styles */
+.footer {
+    background: #f8f9fd;
+    padding: 20px 0;
+    margin-top: 0;
+}
+.hm-footer-copyright p,
+.hm-footer-copyright p a {
+    color: #a5adb3;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Scroll Top */
+#scroll-Top .return-to-top {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    display: none;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
+    color: #fff;
+    background: #e99c2e;
+    border: 1px solid #e99c2e;
+    border-radius: 50%;
+    transition: .5s;
+    z-index: 2;
+}
+
+#scroll-Top .return-to-top:hover {
+    background: #fff;
+    color: #e99c2e;
+}
+
+#scroll-Top .return-to-top i {
+    position: relative;
+    animation: example 1s alternate infinite;
+}
+
+@keyframes example {
+    0%   { bottom: 0px; }
+    100% { bottom: 7px; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .newsletter {
+        padding: 30px 0;
+    }
+    .hm-footer-widget {
+        margin-bottom: 30px;
+    }
+}
+</style>

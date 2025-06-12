@@ -241,97 +241,106 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 flex-grow: 1; /* Allow description to grow and fill available space */
             }
 
-            .section-title {
-                text-align: center;
-                margin-bottom: 50px;
-                position: relative;
+            .section-padding {
+                padding: 40px 0;
             }
-            
-            .section-title h2 {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: #333;
+
+            .section-title {
                 margin-bottom: 20px;
             }
-            
+
+            .section-title h2 {
+                font-size: 2.8rem;
+                font-weight: 700;
+                color: #412D3B;
+                text-align: center;
+                margin: 0 0 30px 0;
+            }
+
             .section-title p {
                 color: #666;
                 max-width: 600px;
                 margin: 0 auto;
             }
 
-            .section-padding {
-                padding: 80px 0;
-            }
-
             .product-card {
-                background: #f7f8f9; /* Synchronized with accessories.php */
-                border-radius: 20px; /* Synchronized with accessories.php */
+                background: #f7f8f9;
+                border-radius: 20px;
                 overflow: hidden;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Synchronized with accessories.php */
-                margin-bottom: 30px;
-                transition: all 0.3s ease;
-                position: relative;
-                height: 100%;
-                opacity: 0;
-                transform: translateY(20px);
-                animation: fadeIn 0.5s ease forwards;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: 400px;
             }
             
             .product-card:hover {
-                transform: translateY(-5px); /* Synchronized with accessories.php */
-                box-shadow: 0 15px 40px rgba(0,0,0,0.15); /* Synchronized with accessories.php */
+                text-decoration: none;
+                color: inherit;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+            
+            .product-image-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                overflow: hidden;
             }
             
             .product-image {
                 width: 100%;
-                height: 220px; /* Synchronized with accessories.php */
+                height: 100%;
                 object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-            
-            .product-card:hover .product-image {
-                transform: scale(1.03); /* Synchronized with accessories.php */
+                object-position: center;
             }
             
             .product-info {
                 padding: 20px;
-                text-align: center;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                background: #f7f8f9;
             }
             
             .product-name {
-                font-size: 1.25rem; /* Synchronized with accessories.php title size */
+                font-size: 1.1rem;
                 font-weight: 600;
-                margin-bottom: 8px; /* Synchronized with accessories.php title margin */
                 color: #333;
-                min-height: 30px; /* Synchronized with accessories.php */
-                line-height: 1.2; /* Synchronized with accessories.php */
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                line-height: 1.3;
             }
             
             .product-price {
-                color: #412D3B; /* Synchronized with accessories.php price color */
-                font-size: 1.15rem; /* Synchronized with accessories.php price size */
+                color: #412D3B;
+                font-size: 1.15rem;
                 font-weight: 700;
-                margin-bottom: 0px; /* Synchronized with accessories.php price margin */
+                margin-top: 10px;
             }
             
             .btn-view-more {
                 display: inline-block;
-                background: #412D3B; /* Synchronized with accessories.php button background */
+                background: #412D3B;
                 color: white;
                 padding: 12px 30px;
                 border-radius: 25px;
                 text-decoration: none;
                 font-weight: 500;
-                margin-top: 70px; /* Adjusted to create more space */
-                transition: all 0.3s ease;
+                margin-top: 30px;
+                transition: background-color 0.3s ease, color 0.3s ease;
             }
             
             .btn-view-more:hover {
-                transform: none; /* Removed all transformations to prevent shrinking/movement */
-                box-shadow: 0 5px 15px rgba(65, 45, 59, 0.4); /* Synchronized with accessories.php button shadow */
-                color: #412D3B; /* Changed to dark color for better contrast on light background */
                 background: #deccca;
+                color: #412D3B;
+                text-decoration: none;
+                transform: none;
             }
 
             .btn-view-product {
@@ -369,7 +378,8 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 
             .voucher-slider-wrapper {
                 position: relative;
-                margin: 0 50px;
+                margin: 0;
+                padding: 0;
             }
 
             .voucher-card {
@@ -579,18 +589,16 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 top: 50%;
                 transform: translateY(-50%);
                 width: 100%;
-                display: flex;
-                justify-content: space-between;
                 pointer-events: none;
                 z-index: 4;
             }
 
             .voucher-prev, .voucher-next {
-                background: rgba(65, 45, 59, 0.9); /* Synchronized with accessories.php dark theme */
+                position: absolute;
+                width: 40px;
+                height: 40px;
+                background: rgba(65, 45, 59, 0.9);
                 color: white;
-                border: none;
-                width: 50px;
-                height: 50px;
                 border-radius: 50%;
                 cursor: pointer;
                 display: flex;
@@ -598,22 +606,36 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 justify-content: center;
                 font-size: 1.2rem;
                 transition: all 0.3s ease;
-                pointer-events: all;
+                pointer-events: auto;
                 box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             }
 
             .voucher-prev:hover, .voucher-next:hover {
-                background: rgba(65, 45, 59, 1); /* Synchronized with accessories.php dark theme */
+                background: rgba(65, 45, 59, 1);
                 transform: scale(1.1);
                 box-shadow: 0 6px 20px rgba(0,0,0,0.3);
             }
 
+            /* Arrow Positions */
             .voucher-prev {
-                left: -60px !important; /* hoặc -50px, tuỳ bạn thấy hợp lý */
+                left: -50px;
             }
 
             .voucher-next {
-                right: -60px !important; /* hoặc -50px, tuỳ bạn thấy hợp lý */
+                right: -1150px; /* Added 200px more to the right */
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 1200px) {
+                .voucher-next {
+                    right: -950px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .voucher-next {
+                    right: -750px;
+                }
             }
 
             /* Owl Carousel Custom Styles for Vouchers */
@@ -658,35 +680,6 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 
             .claim-success {
                 animation: claimSuccess 0.6s ease;
-            }
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                .voucher-slider-wrapper {
-                    margin: 0 20px;
-                }
-                
-                .voucher-prev {
-                    left: -100px !important;
-                }
-                
-                .voucher-next {
-                    right: -30px !important;
-                }
-                
-                .voucher-prev, .voucher-next {
-                    width: 40px;
-                    height: 40px;
-                    font-size: 1rem;
-                }
-                
-                .voucher-value .value {
-                    font-size: 1.8rem;
-                }
-                
-                .voucher-name {
-                    font-size: 1.1rem;
-                }
             }
 
             /* Ensure equal height for cards in grids */
@@ -759,7 +752,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
                 gap: 30px;
-                padding: 40px 0;
+                padding: 20px 0;
             }
             @media (max-width: 1200px) {
                 .grid-container { grid-template-columns: repeat(3, 1fr);}
@@ -852,6 +845,247 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             .genre-card:hover .genre-icon {
                 transform: scale(1.03);
             }
+
+            /* Reset grid styles */
+            .products-grid {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 30px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Override any Bootstrap column classes */
+            .products-grid > div {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Product Card Base */
+            .product-card {
+                display: block !important;
+                background: #f7f8f9 !important;
+                border-radius: 20px !important;
+                overflow: hidden !important;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08) !important;
+                text-decoration: none !important;
+                color: inherit !important;
+                height: 400px !important; /* Cố định chiều cao */
+                width: 100% !important;
+                position: relative !important;
+            }
+
+            /* Image Container */
+            .product-image-container {
+                width: 100% !important;
+                height: 300px !important; /* Cố định chiều cao phần ảnh */
+                overflow: hidden !important;
+                position: relative !important;
+            }
+
+            .product-image {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                object-position: center !important;
+            }
+
+            /* Product Info */
+            .product-info {
+                padding: 20px !important;
+                height: 100px !important; /* Cố định chiều cao phần info */
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+
+            .product-name {
+                font-size: 1.1rem !important;
+                font-weight: 600 !important;
+                margin: 0 !important;
+                color: #333 !important;
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important;
+                -webkit-box-orient: vertical !important;
+                overflow: hidden !important;
+                line-height: 1.3 !important;
+            }
+
+            .product-price {
+                color: #412D3B !important;
+                font-size: 1.15rem !important;
+                font-weight: 700 !important;
+                margin-top: auto !important;
+            }
+
+            /* View More Button - No animations */
+            .btn-view-more {
+                display: inline-block !important;
+                background: #412D3B !important;
+                color: white !important;
+                padding: 12px 30px !important;
+                border-radius: 25px !important;
+                text-decoration: none !important;
+                font-weight: 500 !important;
+                margin-top: 30px !important;
+                transition: background-color 0.3s ease !important;
+                transform: none !important;
+            }
+
+            .btn-view-more:hover {
+                background: #deccca !important;
+                color: #412D3B !important;
+                text-decoration: none !important;
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Responsive Grid */
+            @media (max-width: 1200px) {
+                .products-grid {
+                    grid-template-columns: repeat(3, 1fr) !important;
+                }
+            }
+
+            @media (max-width: 992px) {
+                .products-grid {
+                    grid-template-columns: repeat(2, 1fr) !important;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .products-grid {
+                    grid-template-columns: repeat(1, 1fr) !important;
+                }
+            }
+
+            /* Featured Artists Section Background */
+            #artists {
+                background-color: #f8f9fa;
+                padding: 40px 0;
+            }
+
+            /* Voucher Section Styles */
+            .voucher-section {
+                padding: 40px 0;
+                background-color: #f8f9fa;
+            }
+
+            .voucher-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                padding: 20px 60px; /* Added padding for arrow placement */
+                position: relative;
+            }
+
+            .voucher-card {
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                padding: 25px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .voucher-amount {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #412D3B;
+                margin-bottom: 15px;
+            }
+
+            .voucher-title {
+                font-size: 1.4rem;
+                font-weight: 600;
+                color: #412D3B;
+                margin-bottom: 10px;
+            }
+
+            .voucher-description {
+                font-size: 1.1rem;
+                color: #666;
+                margin-bottom: 15px;
+                flex-grow: 1;
+            }
+
+            .voucher-code {
+                font-size: 1.2rem;
+                font-weight: 600;
+                padding: 10px;
+                border: 2px dashed #412D3B;
+                border-radius: 10px;
+                text-align: center;
+                margin: 15px 0;
+            }
+
+            /* Navigation Arrows */
+            .voucher-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 40px;
+                height: 40px;
+                background: #412D3B;
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+
+            .voucher-nav.prev {
+                left: 0;
+            }
+
+            .voucher-nav.next {
+                right: 0;
+            }
+
+            .voucher-nav:hover {
+                background: #deccca;
+                color: #412D3B;
+            }
+
+            /* Price and Description Text */
+            .product-price, .artist-bio, .genre-description {
+                font-size: 1.15rem;
+                line-height: 1.6;
+            }
+
+            /* Ensure equal height for all cards */
+            .artist-card, .genre-card, .voucher-card {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            @media (max-width: 768px) {
+                .section-title h2 {
+                    font-size: 2.2rem;
+                }
+                
+                .voucher-container {
+                    padding: 20px 40px;
+                }
+                
+                .voucher-amount {
+                    font-size: 1.8rem;
+                }
+                
+                .voucher-title {
+                    font-size: 1.2rem;
+                }
+                
+                .voucher-description {
+                    font-size: 1rem;
+                }
+            }
         </style>
 
     </head>
@@ -942,28 +1176,26 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 				<div class="section-title">
 					<h2>New Arrivals</h2>
 				</div>
-				
-					<div class="row products-grid">
+				<div class="products-grid">
 					<?php foreach ($new_products as $product): ?>
-					<div class="col-md-3 col-sm-6">
-						<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="product-card">
+					<a href="product-detail.php?type=product&id=<?php echo $product['product_id']; ?>" class="product-card">
+						<div class="product-image-container">
 							<img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
 								 alt="<?php echo htmlspecialchars($product['product_name']); ?>"
 								 class="product-image"
 								 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
-							<div class="product-info">
-								<h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
-								<div class="product-price"><?php echo number_format($product['price']); ?>₫</div>
-							</div>
-						</a>
-					</div>
+						</div>
+						<div class="product-info">
+							<h3 class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></h3>
+							<div class="product-price"><?php echo number_format($product['price']); ?>₫</div>
+						</div>
+					</a>
 					<?php endforeach; ?>
-					</div>
-				
+				</div>
 				<div class="text-center">
 					<a href="new-arrivals.php" class="btn-view-more">Xem tất cả</a>
-						</div>
-									</div>
+				</div>
+			</div>
 		</section>
 		<!--new-arrivals end -->
 
@@ -975,26 +1207,24 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 				<div class="section-title">
 					<h2>Featured Artists</h2>
 				</div>
-					<div class="row artists-grid">
+				<div class="grid-container">
 					<?php foreach ($artists as $artist): ?>
-					<div class="col-md-3 col-sm-6">
-						<a href="Artists/artist-detail.php?id=<?php echo $artist['artist_id']; ?>" class="artist-card">
-							<img src="<?php echo htmlspecialchars($artist['image_url']); ?>" 
-								 alt="<?php echo htmlspecialchars($artist['artist_name']); ?>"
-								 class="artist-image"
-								 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
-							<div class="artist-info">
-								<h3 class="artist-name"><?php echo htmlspecialchars($artist['artist_name']); ?></h3>
-								<p class="artist-bio"><?php echo htmlspecialchars($artist['bio']); ?></p>
-							</div>
-						</a>
+					<div class="artist-card">
+						<img src="<?php echo htmlspecialchars($artist['image_url']); ?>" 
+							 alt="<?php echo htmlspecialchars($artist['artist_name']); ?>"
+							 class="artist-image"
+							 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+						<div class="artist-info">
+							<h3 class="artist-name"><?php echo htmlspecialchars($artist['artist_name']); ?></h3>
+							<p class="artist-bio"><?php echo htmlspecialchars($artist['bio']); ?></p>
+						</div>
 					</div>
 					<?php endforeach; ?>
-								</div>
+				</div>
 				<div class="text-center">
 					<a href="Artists/Artists.php" class="btn-view-more">Xem tất cả nghệ sĩ</a>
-							</div>
-						</div>
+				</div>
+			</div>
 		</section><!--/.artists-->
 		<!--feature end -->
 
@@ -1005,21 +1235,21 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 					<h2>Genres</h2>
 				</div>
 				<div class="grid-container" id="genresGrid">
-				<?php 
-				$genre_icons = [
-					'Rock' => 'fa fa-music',
-					'Pop' => 'fa fa-music',
-					'Jazz' => 'fa fa-music',
-					'Classical' => 'fa fa-music',
-					'Electronic' => 'fa fa-music',
-					'Hip Hop' => 'fa fa-music',
-					'Country' => 'fa fa-music',
-					'R&B' => 'fa fa-music'
-				];
-				foreach ($genres as $genre): 
-					$icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
-				?>
-					<a href="genre/genres-detail.php?id=<?php echo $genre['genre_id']; ?>" class="genre-card">
+					<?php 
+					$genre_icons = [
+						'Rock' => 'fa fa-music',
+						'Pop' => 'fa fa-music',
+						'Jazz' => 'fa fa-music',
+						'Classical' => 'fa fa-music',
+						'Electronic' => 'fa fa-music',
+						'Hip Hop' => 'fa fa-music',
+						'Country' => 'fa fa-music',
+						'R&B' => 'fa fa-music'
+					];
+					foreach ($genres as $genre): 
+						$icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
+					?>
+					<div class="genre-card">
 						<div class="genre-header">
 							<span class="genre-icon"><i class="<?php echo $icon; ?>"></i></span>
 							<div class="genre-name"><?php echo htmlspecialchars($genre['genre_name']); ?></div>
@@ -1027,11 +1257,11 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 						<div class="genre-info">
 							<div class="genre-description"><?php echo htmlspecialchars($genre['description']); ?></div>
 						</div>
-					</a>
-				<?php endforeach; ?>
+					</div>
+					<?php endforeach; ?>
 				</div>
 				<div class="text-center">
-					<a href="genres.php" class="btn-view-more">Xem tất cả dòng nhạc</a>
+					<a href="genre/genres.php" class="btn-view-more">Xem tất cả dòng nhạc</a>
 				</div>
 			</div>
 		</section><!--/.genres-->
@@ -1166,123 +1396,6 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         <!-- Banner Slider CSS -->
         <style>
-        /* Navigation adjustments when no hero section */
-        .top-area {
-            position: relative;
-            z-index: 999;
-            background: #412D3B !important; /* Synchronized with accessories.php dark theme */
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        /* Index page navigation styling - white text with glow effect */
-        .navbar-nav > li > a {
-            color: #FFFFFF !important;
-            text-shadow: none; /* Removed glow effect */
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .navbar-nav > li > a:hover {
-            color: #deccca !important; /* Synchronized with accessories.php light theme */
-            text-shadow: none; /* Removed glow effect */
-            transform: translateY(-2px);
-        }
-        
-        /* Navigation icons styling */
-        .navbar-nav > li > a i {
-            color: #FFFFFF !important;
-            text-shadow: none; /* Removed glow effect */
-            transition: all 0.3s ease;
-        }
-        
-        .navbar-nav > li > a:hover i {
-            color: #deccca !important; /* Synchronized with accessories.php light theme */
-            text-shadow: none; /* Removed glow effect */
-            transform: scale(1.1);
-        }
-        
-        /* Brand logo styling */
-        .navbar-brand {
-            color: #FFFFFF !important;
-            text-shadow: none; /* Removed glow effect */
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .navbar-brand:hover {
-            color: #deccca !important; /* Synchronized with accessories.php light theme */
-            text-shadow: none; /* Removed glow effect */
-        }
-        
-        /* Navigation background with gradient overlay */
-        /* Removed original top-area gradient, now using solid color */
-        
-        /* Mobile menu button styling */
-        .navbar-toggle {
-            border-color: #fff !important;
-        }
-        
-        .navbar-toggle .icon-bar {
-            background-color: #fff !important;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-        }
-        
-        /* Dropdown menu styling for index page */
-        .dropdown-menu {
-            background: #412D3B !important; /* Synchronized with accessories.php dark theme */
-            border: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-        
-        .dropdown-menu > li > a {
-            color: #fff !important;
-            text-shadow: none; /* Removed glow effect */
-            transition: all 0.3s ease;
-        }
-        
-        .dropdown-menu > li > a:hover {
-            background: rgba(255, 255, 255, 0.2) !important; /* Light transparent overlay */
-            color: #fff !important;
-            text-shadow: none; /* Removed glow effect */
-        }
-        
-        /* Search box styling */
-        .navbar-form input {
-            background: rgba(255, 255, 255, 0.2) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            color: #fff !important;
-        }
-        
-        .navbar-form input::placeholder {
-            color: rgba(255, 255, 255, 0.7) !important;
-        }
-        
-        .navbar-form input:focus {
-            background: rgba(255, 255, 255, 0.3) !important;
-            border-color: #fff !important;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-        
-        /* Animation for navigation items */
-        /* Removed @keyframes navGlow */
-        
-        .navbar-nav > li > a {
-            animation: none; /* Removed animation */
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .navbar-nav > li > a {
-                text-shadow: none;
-            }
-            
-            .top-area {
-                background: #412D3B !important; /* Synchronized with accessories.php dark theme */
-            }
-        }
-        
         /* Banner Slider Styles */
         .banner-slider {
             margin: 0;
@@ -1324,7 +1437,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(65, 45, 59, 0.8), rgba(65, 45, 59, 0.6)); /* Synchronized with accessories.php dark theme */
+            background: linear-gradient(135deg, rgba(65, 45, 59, 0.8), rgba(65, 45, 59, 0.6));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1383,7 +1496,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         .btn-banner.btn-primary {
             background: #fff;
-            color: #412D3B; /* Synchronized with accessories.php dark theme */
+            color: #412D3B;
             border: 2px solid #fff;
         }
         
@@ -1403,7 +1516,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         
         .btn-banner.btn-secondary:hover {
             background: #fff;
-            color: #412D3B; /* Synchronized with accessories.php dark theme */
+            color: #412D3B;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
@@ -1435,7 +1548,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         #bannerCarousel .carousel-control span {
             font-size: 24px;
             color: #fff;
-            background: rgba(65, 45, 59, 0.8); /* Synchronized with accessories.php dark theme */
+            background: rgba(65, 45, 59, 0.8);
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -1446,7 +1559,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         }
         
         #bannerCarousel .carousel-control:hover span {
-            background: rgba(65, 45, 59, 1); /* Synchronized with accessories.php dark theme */
+            background: rgba(65, 45, 59, 1);
             transform: scale(1.1);
         }
         
@@ -1466,8 +1579,8 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         }
         
         #bannerCarousel .carousel-indicators li.active {
-            background: #412D3B; /* Synchronized with accessories.php dark theme */
-            border-color: #412D3B; /* Synchronized with accessories.php dark theme */
+            background: #412D3B;
+            border-color: #412D3B;
             transform: scale(1.2);
         }
         
