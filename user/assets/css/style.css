@@ -822,7 +822,47 @@ span.feature-review {margin-left: 10px;}
 /*-------------------------------------
         10. News-letter
 --------------------------------------*/
-.newsletter{padding:120px 0 75px;}
+.newsletter{padding:40px 0 30px; background: #7c6e78;}
+.newsletter, .newsletter * {
+    color: #111 !important;
+}
+
+.newsletter .container {
+    padding-left: 32px;
+}
+.newsletter .hm-footer-widget:first-child {
+    margin-left: -25px;
+}
+
+.newsletter .hm-footer-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.newsletter .hm-foot-title {
+    margin-bottom: 0;
+    width: 100%;
+}
+.newsletter .hm-foot-title h4 {
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+}
+.newsletter .hm-foot-menu ul, .newsletter .hm-foot-para, .newsletter .hm-foot-menu ul p {
+    margin-bottom: 0;
+    width: 100%;
+    text-align: left;
+}
+.newsletter .hm-foot-menu ul li, .newsletter .hm-foot-menu ul p, .newsletter .hm-foot-para p {
+    margin-bottom: 0;
+}
+.newsletter .hm-footer-widget > *:not(:last-child) {
+    margin-bottom: 12px;
+}
 
 .hm-footer-widget{margin-bottom: 30px;}
 .hm-foot-title h4 {
@@ -895,7 +935,7 @@ span.feature-review {margin-left: 10px;}
     background: #f8f9fd;
     display: flex;
     align-items: center;
-    height: 154px;
+    height: 80px;
 }
 .hm-footer-copyright p,.hm-footer-copyright p a {
     color: #a5adb3;
