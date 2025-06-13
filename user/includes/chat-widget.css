@@ -256,6 +256,8 @@
     /* Default height for bot mode (no admin controls) */
     max-height: calc(100vh - 300px);
     min-height: 180px;
+    /* Đệm phía dưới để tin nhắn cuối không bị ô nhập che khuất */
+    padding-bottom: 120px;
 }
 
 /* Chat Messages - When admin controls are visible */

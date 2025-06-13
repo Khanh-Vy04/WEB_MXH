@@ -3,10 +3,6 @@ require_once '../../config/database.php';
 require_once '../includes/session.php';
 
 
-// Sử dụng biến môi trường hoặc file config để lưu API key
-define('OPENAI_API_KEY', $_ENV['OPENAI_API_KEY'] ?? 'your-openai-api-key-here');
-define('OPENAI_API_URL', 'https://api.openai.com/v1/chat/completions');
-
 // Lấy action từ request
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 
@@ -200,8 +196,7 @@ function sendMessageToBot() {
             return;
         }
         
-        // Lấy lịch sử hội thoại từ session
-        session_start();
+        // Lấy lịch sử hội thoại từ session (session đã được khởi tạo trong session.php)
         if (!isset($_SESSION['bot_conversation'])) {
             $_SESSION['bot_conversation'] = [];
         }
@@ -243,7 +238,7 @@ function sendMessageToBot() {
 // Hàm lấy lịch sử hội thoại với bot
 function getBotConversation() {
     try {
-        session_start();
+        // session đã được khởi tạo trong session.php
         
         $conversation = $_SESSION['bot_conversation'] ?? [];
         $messages = [];

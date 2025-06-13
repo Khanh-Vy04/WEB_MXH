@@ -391,7 +391,7 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .search-box:focus {
             border-color: #412d3b;
-            box-shadow: 0 0 0 3px rgba(65, 45, 59, 0.1);
+            box-shadow: #f3eeeb;
             outline: none;
         }
         
@@ -405,9 +405,13 @@ while ($stat = $stats_result->fetch_assoc()) {
         
         .form-select:focus {
             border-color: #412d3b;
-            box-shadow: 0 0 0 3px rgba(65, 45, 59, 0.1);
+            box-shadow: #f3eeeb !important;
         }
-        
+        .form-control:focus {
+            border-color: #412d3b;
+            box-shadow: #f3eeeb !important;
+            background-color: #ffffff !important;
+        }
         .btn-primary {
             background: #412d3b !important;
             border-color: #412d3b !important;
@@ -429,12 +433,6 @@ while ($stat = $stats_result->fetch_assoc()) {
             background: #c4b5b0 !important;
             border-color: #c4b5b0 !important;
             color: #412d3b !important;
-        }
-        
-        .bg-secondary {
-            background-color: white !important;
-            border-radius: 15px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
         }
         
         .text-primary {
@@ -467,19 +465,19 @@ while ($stat = $stats_result->fetch_assoc()) {
         <div class="container-fluid pt-4 px-4">
             <!-- Header -->
             <div class="header-section">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h2>
-                            <i class="fas fa-shopping-cart me-2" style="color: #000 !important;"></i>
-                            <span style="color: #000 !important;">Quản lý đơn hàng</span>
+                <div class="row align-items-center header-row" style="display:flex;justify-content:space-between;gap:20px;">
+                    <div class="flex-grow-1 d-flex align-items-center">
+                        <h2 class="mb-0">
+                            <i class="fas fa-shopping-cart me-2" style="color:#000 !important;"></i>
+                            <span style="color:#000 !important;">Quản lý đơn hàng</span>
                         </h2>
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary me-2" onclick="window.location.reload()">
+                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                        <button class="btn btn-primary me-2 d-flex align-items-center" onclick="window.location.reload()">
                             <i class="fas fa-sync-alt me-1"></i> Làm mới
                         </button>
-                        <button class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;" onclick="exportOrders()">
-                            <i class="fas fa-file-export me-2"></i>Xuất excel
+                        <button class="btn btn-lg d-flex align-items-center" style="background-color:#deccca !important;color:#412d3b !important;border-color:#deccca !important;" onclick="exportOrders()">
+                            <i class="fas fa-file-export me-2"></i> Xuất excel
                         </button>
                     </div>
                 </div>
