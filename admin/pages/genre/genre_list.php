@@ -415,7 +415,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                             <!-- Header -->
                             <div class="header-section">
                                 <h2 class="page-title">
-                                    <i class="fas fa-music me-3"></i>Quản Lý Dòng Nhạc
+                                    <i class="fas fa-music me-3"></i>Quản lý dòng nhạc
                                 </h2>
                             </div>
                             
@@ -448,7 +448,7 @@ $end = min($start + $rowsPerPage, $totalRows);
                                     </form>
                                     
                                     <a href="/WEB_MXH/admin/pages/genre/add_genre.php" class="btn-add">
-                                        <i class="fas fa-plus me-2"></i>Thêm Dòng Nhạc
+                                        <i class="fas fa-plus me-2"></i>Thêm dòng nhạc
                                     </a>
                                 </div>
                             </div>
@@ -459,9 +459,9 @@ $end = min($start + $rowsPerPage, $totalRows);
                                 <thead>
                                     <tr>
                                         <th style="width: 80px;">ID</th>
-                                        <th style="width: 200px;">Dòng Nhạc</th>
-                                        <th style="width: 400px;">Mô Tả</th>
-                                        <th style="width: 120px;">Thao Tác</th>
+                                        <th style="width: 200px;">Dòng nhạc</th>
+                                        <th style="width: 400px;">Mô tả</th>
+                                        <th style="width: 120px;">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>

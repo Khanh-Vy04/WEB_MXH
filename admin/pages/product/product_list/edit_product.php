@@ -250,92 +250,157 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             outline: none;
         }
         
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+        .btn-primary {
+            background: #412d3b;
+            border-color: #412d3b;
             padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
             font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            color: #fff;
         }
         
-        .btn-submit:hover {
+        .btn-primary:hover {
+            background: #2d1e26;
+            border-color: #2d1e26;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-            color: white;
+            color: #fff;
         }
         
-        .btn-cancel {
-            background: #6c757d;
-            color: white;
-            border: none;
+        .btn-secondary {
+            background: #deccca;
+            border-color: #deccca;
             padding: 15px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
             font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
             transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            color: #412d3b;
         }
         
-        .btn-cancel:hover {
-            background: #5a6268;
-            color: white;
-            text-decoration: none;
+        .btn-secondary:hover {
+            background: #c9b5b0;
+            border-color: #c9b5b0;
             transform: translateY(-2px);
+            color: #412d3b;
         }
         
         .alert {
-            border-radius: 10px;
-            padding: 15px 20px;
+            border-radius: 8px;
+            padding: 15px;
             margin-bottom: 25px;
-            border: none;
             font-weight: 500;
         }
         
         .alert-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
+            background: #D4EDDA;
+            border-color: #C3E6CB;
+            color: #155724;
         }
         
         .alert-danger {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            color: white;
+            background: #F8D7DA;
+            border-color: #F5C6CB;
+            color: #721C24;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .page-title {
             color: #333;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
         }
         
-        .form-row {
+        .btn-back {
+            background: #deccca;
+            color: #412d3b;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            background: #c9b5b0;
+            color: #412d3b;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+        
+        .form-buttons {
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
         
-        .form-row .form-group {
-            flex: 1;
+        .required {
+            color: #dc3545;
         }
         
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
+        .form-help {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
         
         .image-preview {
             max-width: 200px;
             max-height: 200px;
-            object-fit: cover;
             border-radius: 8px;
             margin-top: 10px;
             border: 2px solid #ddd;
+        }
+        
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+        
+        .col-md-6 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 0 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .form-container {
+                max-width: 90%;
+            }
         }
     </style>
   </head>
@@ -355,10 +420,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- Form Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="form-container">
-                <h2 class="page-title">
-                    <i class="fas fa-edit me-2"></i>
-                    Chỉnh Sửa Sản Phẩm #<?php echo $product_id; ?>
-                </h2>
+                <!-- Header -->
+                <div class="page-header">
+                    <h2 class="page-title">
+                        <i class="fas fa-edit me-3"></i>Chỉnh sửa sản phẩm #<?php echo $product_id; ?>
+                    </h2>
+                    <a href="product_list.php" class="btn-back">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại
+                    </a>
+                </div>
                 
                 <?php if ($message): ?>
                     <div class="alert alert-<?php echo $messageType === 'success' ? 'success' : 'danger'; ?>">
@@ -368,101 +438,120 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php endif; ?>
 
                 <form method="POST" action="">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="product_name" class="form-label">
-                                <i class="fas fa-tag me-2"></i>Tên Sản Phẩm *
-                            </label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="product_name" 
-                                   name="product_name" 
-                                   value="<?php echo htmlspecialchars($product['product_name']); ?>"
-                                   placeholder="Nhập tên sản phẩm..." 
-                                   required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="product_name" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>Tên sản phẩm <span class="required">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="product_name" 
+                                       name="product_name" 
+                                       value="<?php echo htmlspecialchars($product['product_name']); ?>"
+                                       placeholder="Nhập tên sản phẩm..." 
+                                       required>
+                                <div class="form-help">Tối đa 255 ký tự</div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="price" class="form-label">
-                                <i class="fas fa-money-bill-wave me-2"></i>Giá (VNĐ) *
-                            </label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="price" 
-                                   name="price" 
-                                   value="<?php echo number_format($product['price'], 0, '', ','); ?>"
-                                   placeholder="Ví dụ: 800,000" 
-                                   pattern="[0-9,]*"
-                                   required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="genre_id" class="form-label">
-                                <i class="fas fa-music me-2"></i>Thể Loại
-                            </label>
-                            <select class="form-select" id="genre_id" name="genre_id">
-                                <option value="">-- Chọn thể loại --</option>
-                                <?php foreach ($genres as $genre): ?>
-                                    <option value="<?php echo $genre['genre_id']; ?>" 
-                                            <?php echo ($product['genre_id'] == $genre['genre_id']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($genre['genre_name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="artist_id" class="form-label">
-                                <i class="fas fa-user-tie me-2"></i>Nghệ Sĩ
-                            </label>
-                            <select class="form-select" id="artist_id" name="artist_id">
-                                <option value="">-- Chọn nghệ sĩ --</option>
-                                <?php foreach ($artists as $artist): ?>
-                                    <option value="<?php echo $artist['artist_id']; ?>"
-                                            <?php echo ($product['artist_id'] == $artist['artist_id']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($artist['artist_name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="price" class="form-label">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Giá (VNĐ) <span class="required">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="price" 
+                                       name="price" 
+                                       value="<?php echo number_format($product['price'], 0, '', ','); ?>"
+                                       placeholder="Ví dụ: 800,000" 
+                                       pattern="[0-9,]*"
+                                       required>
+                                <div class="form-help">Đơn vị: VNĐ</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="stock" class="form-label">
-                            <i class="fas fa-boxes me-2"></i>Số Lượng Tồn Kho *
-                        </label>
-                        <input type="number" 
-                               class="form-control" 
-                               id="stock" 
-                               name="stock" 
-                               value="<?php echo $product['stock']; ?>"
-                               placeholder="Nhập số lượng tồn kho..." 
-                               min="0" 
-                               required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="genre_id" class="form-label">
+                                    <i class="fas fa-music me-2"></i>Thể loại
+                                </label>
+                                <select class="form-select" id="genre_id" name="genre_id">
+                                    <option value="">-- Chọn thể loại --</option>
+                                    <?php foreach ($genres as $genre): ?>
+                                        <option value="<?php echo $genre['genre_id']; ?>" 
+                                                <?php echo ($product['genre_id'] == $genre['genre_id']) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($genre['genre_name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="form-help">Chọn thể loại phù hợp</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="artist_id" class="form-label">
+                                    <i class="fas fa-user-tie me-2"></i>Nghệ Sĩ
+                                </label>
+                                <select class="form-select" id="artist_id" name="artist_id">
+                                    <option value="">-- Chọn nghệ sĩ --</option>
+                                    <?php foreach ($artists as $artist): ?>
+                                        <option value="<?php echo $artist['artist_id']; ?>"
+                                                <?php echo ($product['artist_id'] == $artist['artist_id']) ? 'selected' : ''; ?>>
+                                            <?php echo htmlspecialchars($artist['artist_name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <div class="form-help">Chọn nghệ sĩ thực hiện</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="image_url" class="form-label">
-                            <i class="fas fa-image me-2"></i>URL Hình Ảnh *
-                        </label>
-                        <input type="url" 
-                               class="form-control" 
-                               id="image_url" 
-                               name="image_url" 
-                               value="<?php echo htmlspecialchars($product['image_url']); ?>"
-                               placeholder="https://example.com/image.jpg" 
-                               required>
-                        <?php if (!empty($product['image_url'])): ?>
-                            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
-                                 alt="Preview" 
-                                 class="image-preview" 
-                                 id="imagePreview">
-                        <?php endif; ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stock" class="form-label">
+                                    <i class="fas fa-boxes me-2"></i>Số lượng tồn kho <span class="required">*</span>
+                                </label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="stock" 
+                                       name="stock" 
+                                       value="<?php echo $product['stock']; ?>"
+                                       placeholder="Nhập số lượng tồn kho..." 
+                                       min="0" 
+                                       required>
+                                <div class="form-help">Số lượng sản phẩm có sẵn</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="image_url" class="form-label">
+                                    <i class="fas fa-image me-2"></i>URL hình ảnh <span class="required">*</span>
+                                </label>
+                                <input type="url" 
+                                       class="form-control" 
+                                       id="image_url" 
+                                       name="image_url" 
+                                       value="<?php echo htmlspecialchars($product['image_url']); ?>"
+                                       placeholder="https://example.com/image.jpg" 
+                                       required>
+                                <div class="form-help">URL hình ảnh sản phẩm</div>
+                                <?php if (!empty($product['image_url'])): ?>
+                                    <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                                         alt="Preview" 
+                                         class="image-preview" 
+                                         id="imagePreview">
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description" class="form-label">
-                            <i class="fas fa-align-left me-2"></i>Mô Tả Sản Phẩm *
+                            <i class="fas fa-align-left me-2"></i>Mô tả sản phẩm <span class="required">*</span>
                         </label>
                         <textarea class="form-control" 
                                   id="description" 
@@ -470,15 +559,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                   rows="6" 
                                   placeholder="Nhập mô tả chi tiết về sản phẩm..."
                                   required><?php echo htmlspecialchars($product['description']); ?></textarea>
+                        <div class="form-help">Mô tả đầy đủ về sản phẩm, bao gồm thông tin về album, ca khúc, v.v.</div>
                     </div>
 
-                    <div class="text-center">
-                        <a href="product_list.php" class="btn-cancel me-3">
-                            <i class="fas fa-times me-2"></i>Hủy Bỏ
-                        </a>
-                        <button type="submit" class="btn-submit">
-                            <i class="fas fa-save me-2"></i>Cập Nhật Sản Phẩm
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Cập nhật sản phẩm
                         </button>
+                        <a href="product_list.php" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Hủy bỏ
+                        </a>
                     </div>
                 </form>
             </div>

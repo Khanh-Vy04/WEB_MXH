@@ -444,11 +444,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="page-header">
                                 <h1 class="page-title">
                                     <i class="fas fa-edit"></i>
-                                    Chỉnh Sửa Dòng Nhạc
+                                    Chỉnh sửa dòng nhạc
                                 </h1>
                                 <a href="genre_list.php" class="btn-back">
                                     <i class="fas fa-arrow-left"></i>
-                                    Quay Lại
+                                    Quay lại
                                 </a>
                             </div>
                             
@@ -466,14 +466,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="form-section">
                                         <h3 class="section-title">
                                             <i class="fas fa-music"></i>
-                                            Thông Tin Dòng Nhạc
+                                            Thông tin dòng nhạc
                                         </h3>
                                         
                                         <form method="POST" id="editGenreForm">
                                             <div class="form-group">
                                                 <label for="genre_name" class="form-label">
                                                     <i class="fas fa-tag"></i>
-                                                    Tên Dòng Nhạc <span class="required">*</span>
+                                                    Tên dòng nhạc <span class="required">*</span>
                                                 </label>
                                                 <input type="text" 
                                                        class="form-control" 
@@ -503,11 +503,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <div class="form-buttons">
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="fas fa-save"></i>
-                                                    Cập Nhật
+                                                    Cập nhật
                                                 </button>
                                                 <button type="reset" class="btn btn-secondary">
                                                     <i class="fas fa-undo"></i>
-                                                    Đặt Lại
+                                                    Đặt lại
                                                 </button>
                                             </div>
                                         </form>
@@ -515,7 +515,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <!-- Preview Section -->
                                         <div class="preview-section">
                                             <div class="preview-title">
-                                                <i class="fas fa-eye me-2"></i>Xem Trước
+                                                <i class="fas fa-eye me-2"></i>Xem trước
                                             </div>
                                             <div class="preview-content">
                                                 <div class="preview-genre-name" id="previewGenreName">
@@ -532,7 +532,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="sidebar-section">
                                         <h3 class="section-title">
                                             <i class="fas fa-info-circle"></i>
-                                            Thông Tin Chi Tiết
+                                            Thông tin chi tiết
                                         </h3>
                                         
                                         <div class="info-card">
@@ -544,7 +544,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             </div>
                                             <div class="info-item">
                                                 <span class="info-label">
-                                                    <i class="fas fa-music me-2"></i>Số Sản Phẩm
+                                                    <i class="fas fa-music me-2"></i>Số sản phẩm
                                                 </span>
                                                 <span class="info-value"><?php echo number_format($product_count); ?></span>
                                             </div>
@@ -553,27 +553,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <div class="stats-grid">
                                             <div class="stat-card">
                                                 <div class="stat-number"><?php echo $genre['genre_id']; ?></div>
-                                                <div class="stat-label">Mã Dòng Nhạc</div>
+                                                <div class="stat-label">Mã dòng nhạc</div>
                                             </div>
                                             <div class="stat-card">
                                                 <div class="stat-number"><?php echo $product_count; ?></div>
-                                                <div class="stat-label">Sản Phẩm</div>
+                                                <div class="stat-label">Sản phẩm</div>
                                             </div>
                                         </div>
                                         
                                         <!-- Quick Actions -->
                                         <div style="margin-top: 25px;">
                                             <h4 style="font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 15px;">
-                                                <i class="fas fa-bolt me-2"></i>Thao Tác Nhanh
+                                                <i class="fas fa-bolt me-2"></i>Thao tác nhanh
                                             </h4>
                                             <div style="display: flex; flex-direction: column; gap: 10px;">
                                                 <a href="genre_list.php" class="btn" style="background: #f8f9fa; color: #333; justify-content: center;">
                                                     <i class="fas fa-list"></i>
-                                                    Danh Sách Dòng Nhạc
+                                                    Danh sách dòng nhạc
                                                 </a>
                                                 <a href="add_genre.php" class="btn" style="background: #28a745; color: white; justify-content: center;">
                                                     <i class="fas fa-plus"></i>
-                                                    Thêm Dòng Nhạc Mới
+                                                    Thêm dòng nhạc mới
                                                 </a>
                                             </div>
                                         </div>

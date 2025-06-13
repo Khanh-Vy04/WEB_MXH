@@ -328,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <!-- Header -->
                         <div class="page-header">
                             <h2 class="page-title">
-                                <i class="fas fa-plus-circle me-3"></i>Thêm Accessory Mới
+                                <i class="fas fa-plus-circle me-3"></i>Thêm accessory mới
                             </h2>
                             <a href="accessory_list.php" class="btn-back">
                                 <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="accessory_name" class="form-label">
-                                            <i class="fas fa-tag me-2"></i>Tên Accessory <span class="required">*</span>
+                                            <i class="fas fa-tag me-2"></i>Tên accessory <span class="required">*</span>
                                         </label>
                                         <input type="text" 
                                                class="form-control" 
@@ -401,7 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="stock" class="form-label">
-                                            <i class="fas fa-boxes me-2"></i>Số Lượng Tồn Kho <span class="required">*</span>
+                                            <i class="fas fa-boxes me-2"></i>Số lượng tồn kho <span class="required">*</span>
                                         </label>
                                         <input type="number" 
                                                class="form-control" 
@@ -418,7 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="image_url" class="form-label">
-                                            <i class="fas fa-image me-2"></i>URL Hình Ảnh
+                                            <i class="fas fa-image me-2"></i>URL hình ảnh
                                         </label>
                                         <input type="url" 
                                                class="form-control" 
@@ -434,7 +434,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             
                             <div class="form-group">
                                 <label for="description" class="form-label">
-                                    <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
+                                    <i class="fas fa-align-left me-2"></i>Mô tả <span class="required">*</span>
                                 </label>
                                 <textarea class="form-control" 
                                           id="description" 
@@ -447,10 +447,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             
                             <div class="form-buttons">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Thêm Accessory
+                                    <i class="fas fa-save me-2"></i>Thêm accessory
                                 </button>
                                 <button type="reset" class="btn btn-secondary">
-                                    <i class="fas fa-undo me-2"></i>Đặt Lại
+                                    <i class="fas fa-undo me-2"></i>Đặt lại
                                 </button>
                             </div>
                         </form>

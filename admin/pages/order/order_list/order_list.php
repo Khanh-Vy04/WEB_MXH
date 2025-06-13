@@ -471,7 +471,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                     <div class="col-md-6">
                         <h2>
                             <i class="fas fa-shopping-cart me-2" style="color: #000 !important;"></i>
-                            <span style="color: #000 !important;">Quản Lý Đơn Hàng</span>
+                            <span style="color: #000 !important;">Quản lý đơn hàng</span>
                         </h2>
                     </div>
                     <div class="col-md-6 text-end">
@@ -479,7 +479,7 @@ while ($stat = $stats_result->fetch_assoc()) {
                             <i class="fas fa-sync-alt me-1"></i> Làm mới
                         </button>
                         <button class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;" onclick="exportOrders()">
-                            <i class="fas fa-file-export me-2"></i>Xuất Excel
+                            <i class="fas fa-file-export me-2"></i>Xuất excel
                         </button>
                     </div>
                 </div>

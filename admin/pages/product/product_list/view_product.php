@@ -323,7 +323,7 @@ function getStatusText($stock) {
                             <!-- Header với nút quay lại -->
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="mb-0" style="color: #333; font-weight: bold;">
-                                    <i class="fas fa-eye me-2"></i>Chi Tiết Sản Phẩm
+                                    <i class="fas fa-eye me-2"></i>Chi tiết sản phẩm
                                 </h4>
                                 <a href="product_list.php" class="btn btn-secondary-custom btn-custom">
                                     <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách

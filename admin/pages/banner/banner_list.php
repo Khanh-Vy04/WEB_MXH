@@ -326,12 +326,12 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .bg-success {
-            background-color: #28a745 !important;
+            background-color:rgb(171, 208, 180) !important;
             color: white;
         }
         
         .bg-danger {
-            background-color: #dc3545 !important;
+            background-color:rgb(225, 179, 184) !important;
             color: white;
         }
         
@@ -359,51 +359,51 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: rgb(182, 195, 208);
+            border-color: rgb(182, 195, 208);
             color: white;
         }
         
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+            background-color:rgb(182, 195, 208);
+            border-color: #rgb(182, 195, 208);
             color: white;
             text-decoration: none;
         }
         
         .btn-warning {
-            background-color: #ffc107;
-            border-color: #ffc107;
+            background-color: #deccca;
+            border-color:  #deccca;
             color: #212529;
         }
         
         .btn-warning:hover {
-            background-color: #e0a800;
-            border-color: #d39e00;
+            background-color: #deccca;
+            border-color:  #deccca;
             color: #212529;
         }
         
         .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color:rgb(168, 193, 174);
+            border-color:rgb(167, 214, 178);
             color: white;
         }
         
         .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
+            background-color:rgb(168, 193, 174);
+            border-color:rgb(167, 214, 178);
             color: white;
         }
         
         .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
+            background-color: #412d3b;
+            border-color:  #412d3b;
             color: white;
         }
         
         .btn-danger:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
+            background-color: #412d3b;
+            border-color: #412d3b;
             color: white;
         }
         
@@ -457,9 +457,9 @@ $end = min($start + $rowsPerPage, $totalRows);
         }
         
         .alert-success {
-            background: #D4EDDA;
-            color: #155724;
-            border: 1px solid #C3E6CB;
+            background: #deccca;
+            color: #412d3b;
+            border: 1px solid #deccca ;
         }
         
         .alert-error {

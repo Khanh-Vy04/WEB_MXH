@@ -453,17 +453,17 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                     $stats_result = $conn->query($stats_sql);
                     $stats = $stats_result->fetch_assoc();
                     ?>
-                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div><div class="stat-label">Tổng Phụ Kiện</div></div></div>
-                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div><div class="stat-label">Tổng Tồn Kho</div></div></div>
-                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['avg_price'], 0, '', ','); ?>đ</div><div class="stat-label">Giá Trung Bình</div></div></div>
-                <div class="col-xl-3 col-md-6"><div class="stat-card low-stock"><div class="stat-number"><?php echo $stats['low_stock']; ?></div><div class="stat-label">Sắp Hết Hàng</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_accessories']); ?></div><div class="stat-label">Tổng phụ kiện</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['total_stock']); ?></div><div class="stat-label">Tổng tồn kho</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card"><div class="stat-number"><?php echo number_format($stats['avg_price'], 0, '', ','); ?>đ</div><div class="stat-label">Giá trung bình</div></div></div>
+                <div class="col-xl-3 col-md-6"><div class="stat-card low-stock"><div class="stat-number"><?php echo $stats['low_stock']; ?></div><div class="stat-label">Sắp hết hàng</div></div></div>
             </div>
             <div class="table-section">
                 <div class="search-bar">
                         <form method="GET" class="d-flex flex-grow-1">
                         <input type="text" class="form-control" placeholder="Tìm kiếm phụ kiện..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                         </form>
-                    <a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Phụ Kiện</a>
+                    <a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm phụ kiện</a>
                 </div>
             <?php if ($result->num_rows > 0): ?>
             <div class="table-responsive">
@@ -471,12 +471,12 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Hình Ảnh</th>
-                            <th>Tên Phụ Kiện</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên phụ kiện</th>
                             <th>Giá</th>
-                            <th>Tồn Kho</th>
-                            <th>Ngày Tạo</th>
-                            <th>Thao Tác</th>
+                            <th>Tồn kho</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -504,7 +504,7 @@ if (isset($_POST['delete']) && isset($_POST['accessory_id'])) {
             </nav>
             <?php endif; ?>
             <?php else: ?>
-                <div class="text-center py-5"><i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i><h5 style="color: #333;">Không có phụ kiện nào</h5><p style="color: #6c757d; "><?php if (!empty($search)): ?>Không tìm thấy phụ kiện nào với từ khóa "<?php echo htmlspecialchars($search); ?>"<?php else: ?>Chưa có phụ kiện nào trong hệ thống<?php endif; ?></p><a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm Phụ Kiện Đầu Tiên</a></div>
+                <div class="text-center py-5"><i class="fas fa-inbox fa-3x mb-3" style="color: #6c757d;"></i><h5 style="color: #333;">Không có phụ kiện nào</h5><p style="color: #6c757d; "><?php if (!empty($search)): ?>Không tìm thấy phụ kiện nào với từ khóa "<?php echo htmlspecialchars($search); ?>"<?php else: ?>Chưa có phụ kiện nào trong hệ thống<?php endif; ?></p><a href="add_accessory.php" class="add-btn"><i class="fas fa-plus"></i> Thêm phụ kiện đầu tiên</a></div>
             <?php endif; ?>
             </div>
         </div>

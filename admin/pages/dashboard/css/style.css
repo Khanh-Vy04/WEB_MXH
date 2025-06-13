@@ -118,7 +118,7 @@
 .content {
   margin-left: 250px;
   min-height: 100vh;
-  background: var(--dark);
+  background: #f7f8f9;
   transition: 0.5s;
 }
 /* Ví dụ nếu là .navbar hoặc .search-bar */
@@ -468,7 +468,7 @@ input.form-control.bg-dark {
 
 /* Ensure white text for voucher codes with dark gray background */
 .badge[style*="background-color: #412d3b"] {
-    color: #fff !important;
+  color: #fff !important;
 }
 
 /* Cập nhật màu cho các nút thao tác */
@@ -544,4 +544,15 @@ input.form-control.bg-dark {
 
 .table tbody tr:hover {
   background-color: #f9fafb;
+}
+
+.page-title {
+  color: #333333 !important;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.controls-section {
+  gap: 15px;
 }

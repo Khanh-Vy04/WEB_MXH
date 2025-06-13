@@ -99,89 +99,213 @@ $product_count = $count_result->fetch_assoc()['product_count'];
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .form-container {
-            background: #fff;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1.5px 8px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
+            background: #ebecef;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 95%;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+        
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 25px;
         }
+        
         .form-label {
+            color: #333;
             font-weight: 600;
-            color: #222;
-            margin-bottom: 0.5rem;
+            margin-bottom: 10px;
             display: block;
-        }
-        .form-control {
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
             font-size: 1rem;
-            transition: border-color 0.2s;
         }
+        
+        .form-control {
+            background: #fff;
+            border: 2px solid #ddd;
+            color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
         .form-control:focus {
-            border-color: #7b61ff;
+            background: #fff;
+            border-color: #412d3b;
+            color: #333;
+            box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25);
             outline: none;
-            box-shadow: 0 0 0 2px #edeaff;
         }
+        
+        .form-control::placeholder {
+            color: #888;
+        }
+        
         .btn-primary {
+            background: #412d3b;
+            border-color: #412d3b;
+            padding: 15px 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background: #2d1e26;
+            border-color: #2d1e26;
+            transform: translateY(-2px);
+            color: #fff;
+        }
+        
+        .btn-secondary {
             background: #deccca;
             border-color: #deccca;
-            color: #412d3b;
+            padding: 15px 30px;
             font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: 10px;
-            transition: all 0.2s;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            color: #412d3b;
         }
-        .btn-primary:hover {
+        
+        .btn-secondary:hover {
             background: #c9b5b0;
             border-color: #c9b5b0;
+            transform: translateY(-2px);
             color: #412d3b;
-            transform: translateY(-1px);
         }
-        .btn-secondary {
-            background: #6c757d;
-            border-color: #6c757d;
-            color: #fff;
-            font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: 10px;
-            transition: all 0.2s;
+        
+        .alert {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: #D4EDDA;
+            border-color: #C3E6CB;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: #F8D7DA;
+            border-color: #F5C6CB;
+            color: #721C24;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .page-title {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .btn-back {
+            background: #deccca;
+            color: #412d3b;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
             text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .btn-secondary:hover {
-            background: #5a6268;
-            border-color: #5a6268;
-            color: #fff;
-            transform: translateY(-1px);
+        
+        .btn-back:hover {
+            background: #c9b5b0;
+            color: #412d3b;
+            text-decoration: none;
+            transform: translateY(-2px);
         }
-        .artist-preview {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 1.5rem;
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-help {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 2px solid #ddd;
+        }
+        
+        .image-preview-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
+            border: 2px dashed #ddd;
+            margin-bottom: 20px;
         }
-        .artist-preview img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-            border: 3px solid #e5e7eb;
+        
+        .info-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
         }
+        
+        .info-box h6 {
+            color: #412d3b;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .info-box .small {
+            color: #666;
+        }
+        
+        .row {
+            margin-left: -15px;
+            margin-right: -15px;
+        }
+        
+        .col-md-6 {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        /* Status Switch Styles */
         .status-switch {
             position: relative;
             display: inline-block;
             width: 60px;
             height: 34px;
         }
+        
         .status-switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
+        
         .slider {
             position: absolute;
             cursor: pointer;
@@ -193,6 +317,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
             transition: .4s;
             border-radius: 34px;
         }
+        
         .slider:before {
             position: absolute;
             content: "";
@@ -204,25 +329,60 @@ $product_count = $count_result->fetch_assoc()['product_count'];
             transition: .4s;
             border-radius: 50%;
         }
+        
         input:checked + .slider {
-            background-color: #4caf50;
+            background-color: #412d3b;
         }
+        
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-        .alert {
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            border: none;
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                margin: 0 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
         }
-        .alert-success {
-            background: #dcfce7;
-            color: #166534;
+        
+        @media (min-width: 1200px) {
+            .form-container {
+                max-width: 90%;
+            }
         }
-        .alert-danger {
-            background: #fee2e2;
-            color: #991b1b;
+        
+        .artist-preview {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border: 2px dashed #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .artist-preview img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 2px solid #ddd;
         }
     </style>
 </head>
@@ -245,7 +405,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h2 style="color: #222; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.7rem; margin-left: 0.1rem;">
-                            <i class="fas fa-edit me-2"></i>Chỉnh Sửa Nghệ Sĩ
+                            <i class="fas fa-edit me-2"></i>Chỉnh sửa Nghệ sĩ
                         </h2>
                         <p style="color: #444; margin-bottom: 0;">Cập nhật thông tin nghệ sĩ: <?php echo htmlspecialchars($artist['artist_name']); ?></p>
                     </div>
@@ -273,13 +433,13 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                 <div class="col-lg-8">
                     <div class="form-container">
                         <h4 style="color: #222; margin-bottom: 1.5rem; font-weight: 600;">
-                            <i class="fas fa-user-edit me-2"></i>Thông Tin Nghệ Sĩ
+                            <i class="fas fa-user-edit me-2"></i>Thông tin Nghệ sĩ
                         </h4>
                         
                         <form method="POST">
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-user me-2"></i>Tên Nghệ Sĩ *
+                                    <i class="fas fa-user me-2"></i>Tên Nghệ sĩ *
                                 </label>
                                 <input type="text" class="form-control" name="artist_name" 
                                        value="<?php echo htmlspecialchars($artist['artist_name']); ?>" 
@@ -288,7 +448,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                             
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-image me-2"></i>URL Ảnh Đại Diện
+                                    <i class="fas fa-image me-2"></i>URL Ảnh đại diện
                                 </label>
                                 <input type="url" class="form-control" name="image_url" 
                                        value="<?php echo htmlspecialchars($artist['image_url']); ?>" 
@@ -298,7 +458,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                             
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-book me-2"></i>Tiểu Sử *
+                                    <i class="fas fa-book me-2"></i>Tiểu sử *
                                 </label>
                                 <textarea class="form-control" name="bio" rows="6" 
                                           placeholder="Nhập tiểu sử của nghệ sĩ..." required><?php echo htmlspecialchars($artist['bio']); ?></textarea>
@@ -306,7 +466,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                             
                             <div class="form-group">
                                 <label class="form-label">
-                                    <i class="fas fa-toggle-on me-2"></i>Trạng Thái
+                                    <i class="fas fa-toggle-on me-2"></i>Trạng thái
                                 </label>
                                 <div class="d-flex align-items-center">
                                     <label class="status-switch">
@@ -322,7 +482,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                             
                             <div class="d-flex gap-3">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Cập Nhật
+                                    <i class="fas fa-save me-2"></i>Cập nhật
                                 </button>
                                 <a href="artist_list.php" class="btn btn-secondary">
                                     <i class="fas fa-times me-2"></i>Hủy
@@ -336,7 +496,7 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                 <div class="col-lg-4">
                     <div class="form-container">
                         <h4 style="color: #222; margin-bottom: 1.5rem; font-weight: 600;">
-                            <i class="fas fa-eye me-2"></i>Xem Trước
+                            <i class="fas fa-eye me-2"></i>Xem trước
                         </h4>
                         
                         <div class="artist-preview">
@@ -354,24 +514,24 @@ $product_count = $count_result->fetch_assoc()['product_count'];
                         
                         <!-- Thống kê -->
                         <div class="mt-4">
-                            <h6 style="color: #222; margin-bottom: 1rem;">Thống Kê</h6>
+                            <h6 style="color: #222; margin-bottom: 1rem;">Thống kê</h6>
                             <div class="row g-3">
                                 <div class="col-6">
-                                    <div style="background: #e0f2fe; padding: 1rem; border-radius: 8px; text-align: center;">
-                                        <div style="font-size: 1.5rem; font-weight: bold; color: #0277bd;">
+                                    <div style="background: #412d3b; padding: 1rem; border-radius: 8px; text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #deccca;">
                                             <?php echo $product_count; ?>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: #555; text-transform: uppercase;">
+                                        <div style="font-size: 0.8rem; color: #fff; text-transform: uppercase;">
                                             Sản Phẩm
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div style="background: #f3e5f5; padding: 1rem; border-radius: 8px; text-align: center;">
-                                        <div style="font-size: 1.5rem; font-weight: bold; color: #7b1fa2;">
+                                    <div style="background: #deccca; padding: 1rem; border-radius: 8px; text-align: center;">
+                                        <div style="font-size: 1.5rem; font-weight: bold; color: #412d3b;">
                                             #<?php echo $artist['artist_id']; ?>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: #555; text-transform: uppercase;">
+                                        <div style="font-size: 0.8rem; color: #412d3b; text-transform: uppercase;">
                                             ID
                                         </div>
                                     </div>

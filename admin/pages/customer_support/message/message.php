@@ -138,7 +138,7 @@ function timeAgo($datetime) {
                     <div class="col-md-4 border-end">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0" style="color: #412d3b; font-weight: 700;">
-                                <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách Chat
+                                <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách chat
                             </h5>
                         </div>
                         

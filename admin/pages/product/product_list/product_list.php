@@ -188,7 +188,7 @@ function getUrlWithParams($params) {
             <!-- Header Section -->
             <div class="header-section" style="background: #fff; border-radius: 18px; padding: 1.1rem 1.5rem 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);">
                 <h2 style="color: #222; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.7rem; margin-left: 0.1rem;">
-                    <i class="fas fa-compact-disc me-2"></i>Quản Lý Sản Phẩm
+                    <i class="fas fa-compact-disc me-2"></i>Quản lý sản phẩm
                 </h2>
                 <p style="color: #444; margin-bottom: 0;">Quản lý các sản phẩm âm nhạc và album</p>
             </div>
@@ -206,7 +206,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['total_products']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Tổng Sản Phẩm
+                            Tổng sản phẩm
                         </div>
                     </div>
                 </div>
@@ -216,7 +216,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['total_stock']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Tổng Tồn Kho
+                            Tổng tồn kho
                         </div>
                     </div>
                 </div>
@@ -226,7 +226,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['avg_price'], 0, '', ','); ?>đ
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Giá Trung Bình
+                            Giá trung bình
                         </div>
                     </div>
                 </div>
@@ -236,7 +236,7 @@ function getUrlWithParams($params) {
                             <?php echo $stats['low_stock']; ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Sắp Hết Hàng
+                            Sắp hết hàng
                         </div>
                     </div>
                 </div>
@@ -248,7 +248,7 @@ function getUrlWithParams($params) {
                         <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                     </form>
                     <a href="/WEB_MXH/admin/pages/product/add_product/add_product.php" class="add-btn">
-                        <i class="fas fa-plus"></i> Thêm Sản Phẩm
+                        <i class="fas fa-plus"></i> Thêm sản phẩm
                     </a>
                 </div>
                 <script>console.log('Rendering product table...');</script>
@@ -297,26 +297,26 @@ function getUrlWithParams($params) {
                             <td><?php echo number_format($product['price'], 0, '.', ','); ?>đ</td>
                             <td>
                                 <?php if($product['stock']): ?>
-                                    <span class="badge-stock-in">Còn Hàng</span>
+                                    <span class="badge-stock-in">Còn hàng</span>
                                 <?php else: ?>
-                                    <span class="badge-stock-out">Hết Hàng</span>
+                                    <span class="badge-stock-out">Hết hàng</span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <?php if($product['status']=='active'): ?>
-                                    <span class="badge-status-active">Hoạt Động</span>
+                                    <span class="badge-status-active">Hoạt động</span>
                                 <?php elseif($product['status']=='inactive'): ?>
-                                    <span class="badge-status-inactive">Không Hoạt Động</span>
+                                    <span class="badge-status-inactive">Không hoạt động</span>
                                 <?php else: ?>
-                                    <span class="badge-status-scheduled">Đã Lên Lịch</span>
+                                    <span class="badge-status-scheduled">Đã lên lịch</span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn"><i class="fas fa-ellipsis-v"></i></button>
                                     <div class="dropdown-menu">
-                                        <a href="view_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-eye"></i> Xem Chi Tiết</a>
-                                        <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
+                                        <a href="view_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-eye"></i> Xem chi tiết</a>
+                                        <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Chỉnh sửa</a>
                                         <a href="delete_product.php?id=<?php echo $product['product_id']; ?>" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')"><i class="fas fa-trash-alt"></i> Xóa</a>
                                     </div>
                                 </div>

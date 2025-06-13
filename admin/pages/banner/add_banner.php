@@ -422,7 +422,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <!-- URL Banner -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-link me-2"></i>URL Hình Ảnh <span class="required">*</span>
+                                            <i class="fas fa-link me-2"></i>URL hình ảnh <span class="required">*</span>
                                         </label>
                                         <input type="url" 
                                                name="banner_url" 
@@ -447,7 +447,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <!-- Tiêu đề Banner -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-heading me-2"></i>Tiêu Đề Banner <span class="required">*</span>
+                                            <i class="fas fa-heading me-2"></i>Tiêu đề banner <span class="required">*</span>
                                         </label>
                                         <input type="text" 
                                                name="banner_title" 
@@ -464,7 +464,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <!-- Mô tả Banner -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-align-left me-2"></i>Mô Tả Banner
+                                            <i class="fas fa-align-left me-2"></i>Mô tả banner
                                         </label>
                                         <textarea name="banner_description" 
                                                   class="form-control" 
@@ -478,7 +478,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <!-- Thứ tự hiển thị -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-sort-numeric-up me-2"></i>Thứ Tự Hiển Thị
+                                            <i class="fas fa-sort-numeric-up me-2"></i>Thứ tự hiển thị
                                         </label>
                                         <input type="number" 
                                                name="display_order" 
@@ -494,7 +494,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                         
                                         <?php if (!empty($used_orders)): ?>
                                         <div class="order-suggestion">
-                                            <h6><i class="fas fa-info-circle me-2"></i>Thông Tin Thứ Tự</h6>
+                                            <h6><i class="fas fa-info-circle me-2"></i>Thông tin thứ tự</h6>
                                             <div>
                                                 <strong>Đã sử dụng:</strong>
                                                 <div class="order-list">
@@ -514,7 +514,7 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <!-- Trạng thái -->
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <i class="fas fa-toggle-on me-2"></i>Trạng Thái
+                                            <i class="fas fa-toggle-on me-2"></i>Trạng thái
                                         </label>
                                         <div class="checkbox-container">
                                             <input type="checkbox" 
@@ -532,11 +532,11 @@ while ($row = $used_orders_result->fetch_assoc()) {
                                     <div class="form-buttons">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save"></i>
-                                            Thêm Banner
+                                            Thêm banner
                                         </button>
                                         <button type="reset" class="btn btn-secondary">
                                             <i class="fas fa-undo"></i>
-                                            Đặt Lại
+                                            Đặt lại
                                         </button>
                                     </div>
                                 </form>

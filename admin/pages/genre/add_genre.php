@@ -324,10 +324,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 
                                 <div class="form-buttons">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Thêm Dòng Nhạc
+                                        <i class="fas fa-save me-2"></i>Thêm dòng nhạc
                                     </button>
                                     <button type="reset" class="btn btn-secondary">
-                                        <i class="fas fa-undo me-2"></i>Đặt Lại
+                                        <i class="fas fa-undo me-2"></i>Đặt lại
                                     </button>
                                 </div>
                             </form>

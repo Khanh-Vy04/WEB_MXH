@@ -282,7 +282,7 @@ while ($item = $items_result->fetch_assoc()) {
                         <div class="col-md-6">
                             <h2>
                                 <i class="fas fa-file-invoice me-2" style="color: #000 !important;"></i>
-                                <span style="color: #000 !important;">Chi Tiết Đơn Hàng #<?php echo $order_id; ?></span>
+                                <span style="color: #000 !important;">Chi tiết đơn hàng #<?php echo $order_id; ?></span>
                             </h2>
                         </div>
                         <div class="col-md-6 text-end">

@@ -388,7 +388,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Header -->
                             <div class="page-header">
                                 <h2 class="page-title">
-                                    <i class="fas fa-plus-circle me-3"></i>Thêm Sản Phẩm Mới
+                                    <i class="fas fa-plus-circle me-3"></i>Thêm sản phẩm mới
                                 </h2>
                                 <a href="../product_list/product_list.php" class="btn-back">
                                     <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -408,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="col-md-6">
               <div class="form-group">
                                             <label for="product_name" class="form-label">
-                                                <i class="fas fa-tag me-2"></i>Tên Sản Phẩm <span class="required">*</span>
+                                                <i class="fas fa-tag me-2"></i>Tên sản phẩm <span class="required">*</span>
                                             </label>
                                             <input type="text" 
                                                    class="form-control" 
@@ -445,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="stock" class="form-label">
-                                                <i class="fas fa-boxes me-2"></i>Số Lượng Tồn Kho <span class="required">*</span>
+                                                <i class="fas fa-boxes me-2"></i>Số lượng tồn kho <span class="required">*</span>
                                             </label>
                                             <input type="number" 
                                                    class="form-control" 
@@ -462,7 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="genre_id" class="form-label">
-                                                <i class="fas fa-music me-2"></i>Dòng Nhạc
+                                                <i class="fas fa-music me-2"></i>Dòng nhạc
                                             </label>
                                             <select class="form-select" id="genre_id" name="genre_id">
                                                 <option value="">-- Chọn dòng nhạc --</option>
@@ -500,7 +500,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="col-md-6">
               <div class="form-group">
                                             <label for="image_url" class="form-label">
-                                                <i class="fas fa-image me-2"></i>URL Hình Ảnh <span class="required">*</span>
+                                                <i class="fas fa-image me-2"></i>URL hình ảnh <span class="required">*</span>
                                             </label>
                                             <input type="url" 
                                                    class="form-control" 
@@ -517,7 +517,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 
               <div class="form-group">
                                     <label for="description" class="form-label">
-                                        <i class="fas fa-align-left me-2"></i>Mô Tả <span class="required">*</span>
+                                        <i class="fas fa-align-left me-2"></i>Mô tả <span class="required">*</span>
                                     </label>
                                     <textarea class="form-control" 
                                               id="description" 
@@ -530,10 +530,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 
                                 <div class="form-buttons">
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Thêm Sản Phẩm
+                                        <i class="fas fa-save me-2"></i>Thêm sản phẩm
                                     </button>
                                     <button type="reset" class="btn btn-secondary">
-                                        <i class="fas fa-undo me-2"></i>Đặt Lại
+                                        <i class="fas fa-undo me-2"></i>Đặt lại
                                     </button>
                   </div>
                             </form>

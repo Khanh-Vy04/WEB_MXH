@@ -177,12 +177,12 @@ try {
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <h2 style="color: #000; font-size: 1.5rem; font-weight: 600; margin-bottom: 0; margin-left: 0.1rem;">
-                            <i class="fas fa-ticket-alt me-2" style="color: #000 !important;"></i>Quản Lý Voucher
+                            <i class="fas fa-ticket-alt me-2" style="color: #000 !important;"></i>Quản lý voucher
                         </h2>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="voucher_add.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
-                            <i class="fas fa-plus fa-sm me-2"></i> Thêm Voucher Mới
+                            <i class="fas fa-plus fa-sm me-2"></i> Thêm voucher mới
                         </a>
                     </div>
                 </div>
@@ -218,12 +218,12 @@ try {
                                     <h4 class="text-muted">Chưa có voucher nào</h4>
                                     <p class="text-muted">Hãy tạo voucher đầu tiên của bạn!</p>
                                     <a href="voucher_add.php" class="btn btn-primary">
-                                        <i class="fas fa-plus me-2"></i>Thêm Voucher Mới
+                                        <i class="fas fa-plus me-2"></i>Thêm voucher mới
                                     </a>
                                     
                                     <!-- Nút tạo voucher mẫu -->
                                     <button class="btn btn-secondary ms-2" onclick="createSampleVouchers()">
-                                        <i class="fas fa-magic me-2"></i>Tạo Voucher Mẫu
+                                        <i class="fas fa-magic me-2"></i>Tạo voucher mẫu
                                     </button>
                                 </div>
                             <?php else: ?>
@@ -232,15 +232,15 @@ try {
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%;">ID</th>
-                                                <th style="width: 10%;">Mã Voucher</th>
-                                                <th style="text-align: left !important; width: 20%;">Tên Voucher</th>
-                                                <th style="width: 10%;">Loại Giảm Giá</th>
-                                                <th style="width: 10%;">Giá Trị</th>
-                                                <th style="width: 15%;">Điều Kiện</th>
-                                                <th style="width: 8%;">Sử Dụng</th>
-                                                <th style="width: 12%;">Thời Gian</th>
-                                                <th style="width: 10%;">Trạng Thái</th>
-                                                <th style="width: 10%;">Thao Tác</th>
+                                                <th style="width: 10%;">Mã voucher</th>
+                                                <th style="text-align: left !important; width: 20%;">Tên voucher</th>
+                                                <th style="width: 10%;">Loại giảm giá</th>
+                                                <th style="width: 10%;">Giá trị</th>
+                                                <th style="width: 15%;">Điều kiện</th>
+                                                <th style="width: 8%;">Sử dụng</th>
+                                                <th style="width: 12%;">Thời gian</th>
+                                                <th style="width: 10%;">Trạng thái</th>
+                                                <th style="width: 10%;">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>

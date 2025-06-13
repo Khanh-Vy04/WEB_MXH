@@ -87,7 +87,7 @@ if (isset($_POST['add_voucher'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm Voucher - AuraDisc Admin</title>
+    <title>Thêm voucher - AuraDisc Admin</title>
     <link href="/WEB_MXH/admin/img/favicon.ico" rel="icon">
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -95,8 +95,8 @@ if (isset($_POST['add_voucher'])) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .preview-voucher {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: linear-gradient(135deg, #deccca);
+            color: #412d3b;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
@@ -156,11 +156,11 @@ if (isset($_POST['add_voucher'])) {
             <div class="header-section">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <h2><i class="fas fa-plus-circle me-2" style="color: #000 !important;"></i><span style="color: #000 !important;">Thêm Voucher Mới</span></h2>
+                        <h2><i class="fas fa-plus-circle me-2" style="color: #000 !important;"></i><span style="color: #000 !important;">Thêm voucher mới</span></h2>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="voucher_list.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
-                            <i class="fas fa-arrow-left me-2"></i>Quay lại Danh sách
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
                         </a>
                     </div>
                 </div>
@@ -294,7 +294,7 @@ if (isset($_POST['add_voucher'])) {
 
                             <div class="text-center">
                                 <button type="submit" name="add_voucher" class="btn btn-lg" style="background-color: #deccca !important; color: #000 !important;">
-                                    <i class="fas fa-save me-2"></i>Thêm Voucher
+                                    <i class="fas fa-save me-2"></i>Thêm voucher
                                 </button>
                                 <a href="voucher_list.php" class="btn btn-secondary btn-lg ms-2">
                                     <i class="fas fa-times me-2"></i>Hủy

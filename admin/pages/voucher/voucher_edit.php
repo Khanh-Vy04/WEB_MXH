@@ -152,8 +152,8 @@ if (!empty($errors)) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <style>
         .preview-voucher {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-            color: white;
+            background: linear-gradient(135deg, #deccca);
+            color: #412d3b;
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
@@ -227,7 +227,7 @@ if (!empty($errors)) {
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="voucher_list.php" class="btn btn-lg" style="background-color: #deccca !important; color: #412d3b !important; border-color: #deccca !important;">
-                            <i class="fas fa-arrow-left me-2"></i>Quay lại Danh sách
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
                         </a>
                     </div>
                 </div>

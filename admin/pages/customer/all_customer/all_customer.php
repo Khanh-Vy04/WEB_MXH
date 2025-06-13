@@ -124,256 +124,16 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
     <!-- Main Style -->
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="all_customer.css" />
-    
     <style>
-        /* Strong footer positioning fix */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        
-        .container-fluid.position-relative.d-flex.p-0 {
-            min-height: 100vh;
-            display: flex;
-        }
-        
-        .content {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-        
-        .content > .container-fluid.pt-4.px-4:first-of-type {
-            flex: 1;
-        }
-        
-        /* Target footer specifically */
-        .content > .container-fluid.pt-4.px-4:last-of-type {
-            margin-top: auto;
-        }
-
-        .customer-container {
-            background: #F5F5F5;
-            border-radius: 10px;
-            padding: 25px;
-            border: 1px solid #E0E0E0;
-        }
-        
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
         .page-title {
-            color: #333;
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 0;
-        }
-        
-        .controls-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .search-box {
-            background: #FFFFFF;
-            border: 1px solid #DDD;
-            border-radius: 8px;
-            padding: 10px 15px;
-            color: #333;
-            width: 300px;
-            max-width: 100%;
-        }
-        
-        .search-box:focus {
-            outline: none;
-            border-color: #deccca;
-            box-shadow: 0 0 0 2px rgba(222, 204, 202, 0.2);
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .entries-select {
-            background: #FFFFFF;
-            border: 1px solid #DDD;
-            color: #333;
-            padding: 8px 12px;
-            border-radius: 5px;
-        }
-        
-        .btn-add {
-            background: #deccca;
-            color: #412d3b;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-add:hover {
-            background: #c9b5b0;
-            color: #412d3b;
-            text-decoration: none;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(65, 45, 59, 0.15);
-        }
-        
-        .table-modern {
-            width: 100%;
-            background: #FFFFFF;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: 1px solid #E0E0E0;
-        }
-        
-        .table-modern th {
-            background: #F8F9FA;
-            color: #333;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 1rem;
-            border-bottom: 2px solid #412d3b;
-            white-space: nowrap;
-        }
-        
-        .table-modern td {
-            padding: 15px;
-            color: #333;
-            border-bottom: 1px solid #E0E0E0;
-            vertical-align: middle;
-            background: #FFFFFF;
-        }
-        
-        .table-modern tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .table-modern tr:hover {
-            background: #F8F9FA;
-        }
-        
-        .customer-avatar {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .admin-badge {
-            background: linear-gradient(135deg, #412d3b, #6c4a57) !important;
-            color: white !important;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .user-badge {
-            background: linear-gradient(135deg, #deccca, #c4b5b0) !important;
-            color: #412d3b !important;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .pagination-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .pagination-info {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .pagination {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .pagination a, .pagination span {
-            padding: 8px 12px;
-            background: #FFFFFF;
-            color: #333;
-            text-decoration: none;
-            border-radius: 5px;
-            border: 1px solid #DDD;
-            transition: all 0.3s;
-        }
-        
-        .pagination a:hover {
-            background: #deccca;
-            color: #412d3b;
-            text-decoration: none;
-            border-color: #deccca;
-        }
-        
-        .pagination .current {
-            background: #deccca;
-            color: #412d3b;
-            border-color: #deccca;
-        }
-        
-        .no-data {
-            text-align: center;
-            color: #666;
-            padding: 40px;
-            font-style: italic;
-        }
-        
-        @media (max-width: 768px) {
-            .header-section, .controls-section {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-            
-            .table-modern {
-                font-size: 0.9rem;
-            }
-            
-            .table-modern th, .table-modern td {
-                padding: 10px;
-            }
+            color: #333333 !important;
         }
     </style>
   </head>
   <body>
     <div class="container-fluid position-relative d-flex p-0">
       <!-- Sidebar -->
-      vậy hãy tiếp tục so với<?php 
+      <?php 
             if (file_exists(__DIR__.'/../../dashboard/sidebar.php')) {
             include __DIR__.'/../../dashboard/sidebar.php'; 
             }
@@ -386,199 +146,196 @@ $current_admin_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
         <!-- Main content -->
         <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="col-12">
-                    <div class="customer-container">
-                        <!-- Header -->
-                        <div class="header-section">
-                            <h2 class="page-title">
-                                <i class="fas fa-users me-3"></i>Quản Lý Khách Hàng
-                            </h2>
-                            <button type="button" class="btn-add" onclick="exportCustomers()">
-                                <i class="fas fa-file-export me-2"></i>Xuất Excel
-                            </button>
+            <div class="customer-container">
+                <!-- Header -->
+                <div class="header-section">
+                    <h2 class="page-title" style="color: #333333 !important;">
+                        <i class="fas fa-users me-3"></i>Quản lý khách hàng
+                    </h2>
+                </div>
+                
+                <!-- Action Bar: Search & Export -->
+                <div class="action-bar">
+                    <form method="GET" class="search-form">
+                        <input type="text" 
+                               name="search" 
+                               class="form-control"
+                               placeholder="Tìm kiếm theo ID, tên, email, số điện thoại..." 
+                               value="<?php echo htmlspecialchars($search); ?>">
+                    </form>
+                    <button type="button" class="add-btn" onclick="exportCustomers()">
+                        <i class="fas fa-file-export me-2"></i>Xuất Excel
+                    </button>
+                </div>
+
+                <!-- Entries & Total Count -->
+                <div class="entries-info-bar">
+                    <form method="GET" style="margin: 0;" class="entries-form">
+                        <select name="entries" class="entries-select" onchange="this.form.submit()">
+                            <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
+                            <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
+                            <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
+                            <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
+                        </select>
+                    </form>
+                    <small class="text-muted">
+                        Tổng số: <strong><?php echo $totalRows; ?></strong> khách hàng
+                    </small>
+                </div>
+
+                <!-- Customers Table -->
+                <div class="table-modern">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="border-radius: 15px 0 0 0;">
+                                    <i class="fas fa-user me-2"></i>Khách hàng
+                                </th>
+                                <th>
+                                    <i class="fas fa-id-card me-2"></i>ID & Loại
+                                </th>
+                                <th style="text-align: center;">
+                                    <i class="fas fa-envelope me-2"></i>Liên hệ
+                                </th>
+                                <th style="text-align: center;">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Địa chỉ
+                                </th>
+                                <th>
+                                    <i class="fas fa-shopping-cart me-2"></i>Đơn hàng
+                                </th>
+                                <th style="border-radius: 0 15px 0 0;">
+                                    <i class="fas fa-money-bill me-2"></i>Tổng chi tiêu
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($users)): ?>
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">Không tìm thấy khách hàng nào</h5>
+                                        <p class="text-muted">Hãy thử thay đổi từ khóa tìm kiếm</p>
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($users as $user): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="customer-avatar me-3">
+                                                    <?php echo generateAvatar($user['full_name']); ?>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold"><?php echo htmlspecialchars($user['full_name']); ?></div>
+                                                    <div class="text-muted small">@<?php echo htmlspecialchars($user['username']); ?></div>
+                                                    <?php if ($user['gender']): ?>
+                                                        <small class="text-muted"><?php echo $user['gender']; ?></small>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">#<?php echo $user['user_id']; ?></div>
+                                            <div class="d-flex align-items-center justify-content-between">
+                                            <?php if (isAdmin($user)): ?>
+                                                <span class="admin-badge">
+                                                    <i class="fas fa-crown me-1"></i>ADMIN
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="user-badge">
+                                                    <i class="fas fa-user me-1"></i>USER
+                                                </span>
+                                            <?php endif; ?>
+                                                
+                                                <?php if ($user['user_id'] != $current_admin_id): ?>
+                                                    <button type="button" 
+                                                            class="btn btn-sm ms-2 toggle-role-btn" 
+                                                            data-user-id="<?php echo $user['user_id']; ?>"
+                                                            data-current-role="<?php echo isAdmin($user) ? 'admin' : 'user'; ?>"
+                                                            title="<?php echo isAdmin($user) ? 'Chuyển thành User' : 'Chuyển thành Admin'; ?>"
+                                                            style="<?php echo isAdmin($user) ? 'background: #deccca; border-color: #deccca; color: #412d3b;' : 'background: #412d3b; border-color: #412d3b; color: white;'; ?>">
+                                                        <i class="fas fa-exchange-alt"></i>
+                                                    </button>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div class="mb-1">
+                                                <i class="fas fa-envelope text-primary me-2"></i>
+                                                <small><?php echo htmlspecialchars($user['email']); ?></small>
+                                            </div>
+                                            <?php if ($user['phone']): ?>
+                                                <div>
+                                                    <i class="fas fa-phone text-success me-2"></i>
+                                                    <small><?php echo htmlspecialchars($user['phone']); ?></small>
+                                                </div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php if ($user['address']): ?>
+                                                <small class="text-muted"><?php echo htmlspecialchars(substr($user['address'], 0, 50)) . (strlen($user['address']) > 50 ? '...' : ''); ?></small>
+                                            <?php else: ?>
+                                                <small class="text-muted">Chưa cập nhật</small>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info"><?php echo $user['total_orders']; ?> đơn</span>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold text-success"><?php echo number_format($user['total_spent'], 0, '.', ','); ?>đ</div>
+                                            <?php if ($user['balance'] > 0): ?>
+                                                <small class="text-muted">Số dư: <?php echo number_format($user['balance'], 0, '.', ','); ?>đ</small>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <?php if ($totalPages > 1): ?>
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted">
+                            Hiển thị <?php echo ($currentPageNumber - 1) * $rowsPerPage + 1; ?> - 
+                            <?php echo min($currentPageNumber * $rowsPerPage, $totalRows); ?> 
+                            trong tổng số <?php echo $totalRows; ?> khách hàng
                         </div>
                         
-                        <!-- Controls -->
-                        <div class="controls-section">
-                            <form method="GET" style="margin: 0;">
-                                <input type="text" 
-                                       name="search" 
-                                       class="search-box"
-                                       placeholder="Tìm kiếm theo ID, tên, email, số điện thoại..." 
-                                       value="<?php echo htmlspecialchars($search); ?>">
-                            </form>
-                            
-                            <div class="btn-group">
-                                <form method="GET" style="margin: 0;">
-                                    <select name="entries" class="entries-select" onchange="this.form.submit()">
-                                        <option value="10" <?php echo $rowsPerPage == 10 ? 'selected' : ''; ?>>10</option>
-                                        <option value="25" <?php echo $rowsPerPage == 25 ? 'selected' : ''; ?>>25</option>
-                                        <option value="50" <?php echo $rowsPerPage == 50 ? 'selected' : ''; ?>>50</option>
-                                        <option value="100" <?php echo $rowsPerPage == 100 ? 'selected' : ''; ?>>100</option>
-                                    </select>
-                                </form>
-                                <small class="text-muted">
-                                    Tổng số: <strong><?php echo $totalRows; ?></strong> khách hàng
-                                </small>
-                            </div>
-                        </div>
-
-                        <!-- Customers Table -->
-                        <div class="table-modern">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="border-radius: 15px 0 0 0;">
-                                            <i class="fas fa-user me-2"></i>Khách hàng
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-id-card me-2"></i>ID & Loại
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <i class="fas fa-envelope me-2"></i>Liên hệ
-                                        </th>
-                                        <th style="text-align: center;">
-                                            <i class="fas fa-map-marker-alt me-2"></i>Địa chỉ
-                                        </th>
-                                        <th>
-                                            <i class="fas fa-shopping-cart me-2"></i>Đơn hàng
-                                        </th>
-                                        <th style="border-radius: 0 15px 0 0;">
-                                            <i class="fas fa-money-bill me-2"></i>Tổng chi tiêu
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (empty($users)): ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center py-4">
-                                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                                                <h5 class="text-muted">Không tìm thấy khách hàng nào</h5>
-                                                <p class="text-muted">Hãy thử thay đổi từ khóa tìm kiếm</p>
-                                            </td>
-                                        </tr>
-                                    <?php else: ?>
-                                        <?php foreach ($users as $user): ?>
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="customer-avatar me-3">
-                                                            <?php echo generateAvatar($user['full_name']); ?>
-                                                        </div>
-                                                        <div>
-                                                            <div class="fw-bold"><?php echo htmlspecialchars($user['full_name']); ?></div>
-                                                            <div class="text-muted small">@<?php echo htmlspecialchars($user['username']); ?></div>
-                                                            <?php if ($user['gender']): ?>
-                                                                <small class="text-muted"><?php echo $user['gender']; ?></small>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="fw-bold">#<?php echo $user['user_id']; ?></div>
-                                                    <div class="d-flex align-items-center justify-content-between">
-                                                    <?php if (isAdmin($user)): ?>
-                                                        <span class="admin-badge">
-                                                            <i class="fas fa-crown me-1"></i>ADMIN
-                                                        </span>
-                                                    <?php else: ?>
-                                                        <span class="user-badge">
-                                                            <i class="fas fa-user me-1"></i>USER
-                                                        </span>
-                                                    <?php endif; ?>
-                                                        
-                                                        <?php if ($user['user_id'] != $current_admin_id): ?>
-                                                            <button type="button" 
-                                                                    class="btn btn-sm ms-2 toggle-role-btn" 
-                                                                    data-user-id="<?php echo $user['user_id']; ?>"
-                                                                    data-current-role="<?php echo isAdmin($user) ? 'admin' : 'user'; ?>"
-                                                                    title="<?php echo isAdmin($user) ? 'Chuyển thành User' : 'Chuyển thành Admin'; ?>"
-                                                                    style="<?php echo isAdmin($user) ? 'background: #deccca; border-color: #deccca; color: #412d3b;' : 'background: #412d3b; border-color: #412d3b; color: white;'; ?>">
-                                                                <i class="fas fa-exchange-alt"></i>
-                                                            </button>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <div class="mb-1">
-                                                        <i class="fas fa-envelope text-primary me-2"></i>
-                                                        <small><?php echo htmlspecialchars($user['email']); ?></small>
-                                                    </div>
-                                                    <?php if ($user['phone']): ?>
-                                                        <div>
-                                                            <i class="fas fa-phone text-success me-2"></i>
-                                                            <small><?php echo htmlspecialchars($user['phone']); ?></small>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td style="text-align: center;">
-                                                    <?php if ($user['address']): ?>
-                                                        <small class="text-muted"><?php echo htmlspecialchars(substr($user['address'], 0, 50)) . (strlen($user['address']) > 50 ? '...' : ''); ?></small>
-                                                    <?php else: ?>
-                                                        <small class="text-muted">Chưa cập nhật</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-info"><?php echo $user['total_orders']; ?> đơn</span>
-                                                </td>
-                                                <td>
-                                                    <div class="fw-bold text-success"><?php echo number_format($user['total_spent'], 0, '.', ','); ?>đ</div>
-                                                    <?php if ($user['balance'] > 0): ?>
-                                                        <small class="text-muted">Số dư: <?php echo number_format($user['balance'], 0, '.', ','); ?>đ</small>
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Pagination -->
-                        <?php if ($totalPages > 1): ?>
-                            <div class="d-flex justify-content-between align-items-center mt-4">
-                                <div class="text-muted">
-                                    Hiển thị <?php echo ($currentPageNumber - 1) * $rowsPerPage + 1; ?> - 
-                                    <?php echo min($currentPageNumber * $rowsPerPage, $totalRows); ?> 
-                                    trong tổng số <?php echo $totalRows; ?> khách hàng
-                                </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <!-- Previous -->
+                                <li class="page-item <?php echo $currentPageNumber <= 1 ? 'disabled' : ''; ?>">
+                                    <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
                                 
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination">
-                                        <!-- Previous -->
-                                        <li class="page-item <?php echo $currentPageNumber <= 1 ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber - 1]); ?>">
-                                                <i class="fas fa-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                        
-                                        <!-- Page Numbers -->
-                                        <?php
-                                        $start_page = max(1, $currentPageNumber - 2);
-                                        $end_page = min($totalPages, $currentPageNumber + 2);
-                                        
-                                        for ($i = $start_page; $i <= $end_page; $i++):
-                                        ?>
-                                            <li class="page-item <?php echo $i == $currentPageNumber ? 'active' : ''; ?>">
-                                                <a class="page-link" href="<?php echo getUrlWithParams(['page' => $i]); ?>">
-                                                    <?php echo $i; ?>
-                                                </a>
-                                            </li>
-                                        <?php endfor; ?>
-                                        
-                                        <!-- Next -->
-                                        <li class="page-item <?php echo $currentPageNumber >= $totalPages ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber + 1]); ?>">
-                                                <i class="fas fa-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        <?php endif; ?>
+                                <!-- Page Numbers -->
+                                <?php
+                                $start_page = max(1, $currentPageNumber - 2);
+                                $end_page = min($totalPages, $currentPageNumber + 2);
+                                
+                                for ($i = $start_page; $i <= $end_page; $i++):
+                                ?>
+                                    <li class="page-item <?php echo $i == $currentPageNumber ? 'active' : ''; ?>">
+                                        <a class="page-link" href="<?php echo getUrlWithParams(['page' => $i]); ?>">
+                                            <?php echo $i; ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                
+                                <!-- Next -->
+                                <li class="page-item <?php echo $currentPageNumber >= $totalPages ? 'disabled' : ''; ?>">
+                                    <a class="page-link" href="<?php echo getUrlWithParams(['page' => $currentPageNumber + 1]); ?>">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
         

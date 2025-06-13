@@ -353,6 +353,39 @@ try {
         .export-btn i {
             margin-right: 8px;
         }
+
+        /* Custom Week Selector Styles */
+        input[type="week"] {
+            background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="week"]:hover {
+            background: linear-gradient(135deg, #6c4a57 0%, #412d3b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(65, 45, 59, 0.2);
+        }
+
+        input[type="week"]:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(222, 204, 202, 0.3);
+        }
+
+        /* Custom Calendar Icon Color */
+        input[type="week"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        input[type="week"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 

@@ -426,7 +426,7 @@ div[style*="height: calc(100% - 50px)"] {
 .admin-message,
 div[style*="background"]:has(.admin-message),
 .message-content .message-bubble:not(.customer-message) {
-  background: rgb(247, 251, 255) !important;
+  background: #f7f8f9 !important;
   color: #191c24 !important;
   border: none !important;
 }

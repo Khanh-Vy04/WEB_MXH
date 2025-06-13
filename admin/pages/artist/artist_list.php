@@ -152,7 +152,7 @@ function getUrlWithParams($params) {
             <!-- Header Section -->
             <div class="header-section" style="background: #fff; border-radius: 18px; padding: 1.1rem 1.5rem 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);">
                 <h2 style="color: #222; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.7rem; margin-left: 0.1rem;">
-                    <i class="fas fa-user-music me-2"></i>Quản Lý Nghệ Sĩ
+                    <i class="fas fa-user-music me-2"></i>Quản lý Nghệ Sĩ
                 </h2>
                 <p style="color: #444; margin-bottom: 0;">Quản lý thông tin nghệ sĩ và ca sĩ</p>
             </div>
@@ -170,7 +170,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['total_artists']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Tổng Nghệ Sĩ
+                            Tổng Nghệ sĩ
                         </div>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['active_artists']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Đang Hoạt Động
+                            Đang hoạt động
                         </div>
                     </div>
                 </div>
@@ -190,7 +190,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['inactive_artists']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Ngừng Hoạt Động
+                            Ngừng hoạt động
                         </div>
                     </div>
                 </div>
@@ -200,7 +200,7 @@ function getUrlWithParams($params) {
                             <?php echo number_format($stats['total_products']); ?>
                         </div>
                         <div class="stat-label" style="color: #444; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">
-                            Tổng Sản Phẩm
+                            Tổng sản phẩm
                         </div>
                     </div>
                 </div>
@@ -243,21 +243,21 @@ function getUrlWithParams($params) {
                             <td><?php echo htmlspecialchars(substr($artist['bio'], 0, 100)) . (strlen($artist['bio']) > 100 ? '...' : ''); ?></td>
                             <td>
                                 <span class="badge-product-count">
-                                    <?php echo $artist['product_count']; ?> sản phẩm
+                                    <?php echo $artist['product_count']; ?> Sản phẩm
                                 </span>
                             </td>
                             <td>
                                 <?php if($artist['status'] == 'active'): ?>
-                                    <span class="badge-status-active">Hoạt Động</span>
+                                    <span class="badge-status-active">Hoạt động</span>
                                 <?php else: ?>
-                                    <span class="badge-status-inactive">Ngừng Hoạt Động</span>
+                                    <span class="badge-status-inactive">Ngừng hoạt động</span>
                                 <?php endif; ?>
                             </td>
                             <td>
                                 <div class="action-dropdown">
                                     <button type="button" class="action-btn"><i class="fas fa-ellipsis-v"></i></button>
                                     <div class="dropdown-menu">
-                                        <a href="edit_artist.php?id=<?php echo $artist['artist_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Chỉnh Sửa</a>
+                                        <a href="edit_artist.php?id=<?php echo $artist['artist_id']; ?>" class="dropdown-item"><i class="fas fa-edit"></i> Chỉnh sửa</a>
                                         <a href="?action=toggle_status&id=<?php echo $artist['artist_id']; ?>" class="dropdown-item <?php echo $artist['status'] == 'active' ? 'text-warning' : 'text-success'; ?>">
                                             <i class="fas fa-<?php echo $artist['status'] == 'active' ? 'pause' : 'play'; ?>"></i> 
                                             <?php echo $artist['status'] == 'active' ? 'Vô Hiệu Hóa' : 'Kích Hoạt'; ?>

@@ -1,0 +1,48 @@
+.custom-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background-color: #deccca;
+  color: #412d3b;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  display: none;
+  animation: slideIn 0.3s ease-out;
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 350px;
+  text-align: center;
+}
+
+.custom-alert.show {
+  display: block;
+  animation: slideIn 0.3s ease-out;
+}
+
+.custom-alert.hide {
+  animation: slideOut 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
