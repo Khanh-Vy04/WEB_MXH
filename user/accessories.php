@@ -320,7 +320,7 @@ if ($result->num_rows > 0) {
                         
                         <?php if ($stock <= 0): ?>
                             <button class="btn btn-add-to-cart" disabled>
-                                <i class="fa fa-times"></i> Hết Hàng
+                                <i class="fa fa-times"></i> Hết hàng
                             </button>
                         <?php endif; ?>
                     </div>

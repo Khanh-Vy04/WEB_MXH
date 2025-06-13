@@ -313,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <?php echo $reset_link_display; ?>
                     </a>
                     <button type="button" class="btn-copy-link" onclick="copyResetLink()">
-                        <i class="fa fa-copy"></i> Copy Link
+                        <i class="fa fa-copy"></i> Copy link
                     </button>
                 </div>
             <?php endif; ?>

@@ -38,7 +38,7 @@
 						</div><!--/.hm-foot-title-->
 						<div class="hm-foot-menu">
 							<ul>
-								<p>Aura Disc tôn trọng và bảo mật thông tin cá nhân của khách hàng. Sản phẩm được hỗ trợ đổi trả trong vòng 7 ngày nếu có lỗi do vận chuyển hoặc sản xuất. Chúng tôi giao hàng toàn quốc với chi phí và thời gian được thông báo khi xác nhận đơn. Hình thức thanh toán linh hoạt: chuyển khoản, thanh toán khi nhận hàng hoặc qua ví điện tử.</p>
+								<p>AuraDisc tôn trọng và bảo mật thông tin cá nhân của khách hàng. Sản phẩm được hỗ trợ đổi trả trong vòng 7 ngày nếu có lỗi do vận chuyển hoặc sản xuất. Chúng tôi giao hàng toàn quốc với chi phí và thời gian được thông báo khi xác nhận đơn. Hình thức thanh toán linh hoạt: chuyển khoản, thanh toán khi nhận hàng hoặc qua ví điện tử.</p>
 							</ul><!--/ul-->
 						</div><!--/.hm-foot-menu-->
 					</div><!--/.hm-footer-widget-->

@@ -1140,10 +1140,10 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 											
 											<div class="banner-actions">
 												<a href="products.php" class="btn-banner btn-primary">
-													<i class="fa fa-music"></i> Khám Phá Ngay
+													<i class="fa fa-music"></i> Khám phá ngay
 												</a>
 												<a href="Artists/Artists.php" class="btn-banner btn-secondary">
-													<i class="fa fa-users"></i> Nghệ Sĩ
+													<i class="fa fa-users"></i> Nghệ sĩ
 												</a>
 												</div>
 											</div>
