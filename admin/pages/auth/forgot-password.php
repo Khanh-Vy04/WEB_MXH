@@ -14,7 +14,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #deccca;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -23,7 +23,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .auth-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #f3eeeb;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             overflow: hidden;
@@ -34,10 +34,10 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .auth-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #412d3b;
             padding: 30px;
             text-align: center;
-            color: white;
+            color: #f3eeeb;
         }
 
         .auth-header h1 {
@@ -78,7 +78,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #ff6b35;
+            color: #412d3b;
             font-size: 1.1rem;
         }
 
@@ -92,7 +92,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .form-control:focus {
-            border-color: #ff6b35;
+            border-color: #412d3b;
             box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
             outline: none;
         }
@@ -108,14 +108,14 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .toggle-password:hover {
-            color: #ff6b35;
+            color: #412d3b;
         }
 
         .btn-auth {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #deccca;
             border: none;
             border-radius: 12px;
-            color: white;
+            color: #412d3b;
             padding: 15px;
             width: 100%;
             font-weight: 600;
@@ -126,7 +126,8 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .btn-auth:hover {
-            background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+            background: #412d3b;
+            color: #deccca;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
         }
@@ -143,7 +144,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .back-link a {
-            color: #ff6b35;
+            color: #412d3b;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
@@ -151,7 +152,7 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .back-link a:hover {
-            color: #f7931e;
+            color: #412d3b;
             text-decoration: underline;
         }
 
@@ -239,13 +240,13 @@ include $_SERVER['DOCUMENT_ROOT'] . "/WEB_MXH/config/database.php";
         }
 
         .step.active {
-            background: #ff6b35;
-            color: white;
+            background:#deccca;
+            color: #412d3b;
         }
 
         .step.completed {
-            background: #4ade80;
-            color: white;
+            background: #deccca;
+            color: #412d3b;
         }
 
         .username-info {

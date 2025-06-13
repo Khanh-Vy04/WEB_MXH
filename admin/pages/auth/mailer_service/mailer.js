@@ -1,16 +1,17 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
-require('dotenv').config();
 
-console.log("🔧 DEBUG EMAIL_USER:", process.env.EMAIL_USER);
-console.log("🔧 DEBUG EMAIL_PASS:", process.env.EMAIL_PASS ? "(Đã có mật khẩu ✅)" : "(Thiếu mật khẩu ❌)");
+// Thay thế import từ .env bằng khai báo trực tiếp
+const EMAIL_USER = 'trinhngo1909@gmail.com';
+const EMAIL_PASS = 'oafw ursq uasm libn';
+
+console.log("🔧 DEBUG EMAIL_USER:", EMAIL_USER);
+console.log("🔧 DEBUG EMAIL_PASS:", EMAIL_PASS ? "(Đã có mật khẩu ✅)" : "(Thiếu mật khẩu ❌)");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-const { EMAIL_USER, EMAIL_PASS } = process.env;
 
 app.post('/send-verification', async (req, res) => {
   const { email, verificationCode } = req.body;

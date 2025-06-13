@@ -100,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .forgot-password-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #412d3b;
             padding: 40px 30px 30px;
             text-align: center;
-            color: white;
+            color: #deccca;
         }
         
         .forgot-password-header h2 {

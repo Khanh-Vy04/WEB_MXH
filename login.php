@@ -145,14 +145,14 @@ if (isset($_POST['register'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #deccca;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .auth-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: #f3eeeb;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
@@ -179,17 +179,18 @@ if (isset($_POST['register'])) {
             margin-bottom: 15px;
         }
         .btn-auth {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #deccca;
             border: none;
             border-radius: 10px;
-            color: white;
+            color: #412d3b;
             padding: 12px;
             width: 100%;
             font-weight: 600;
             margin-top: 10px;
         }
         .btn-auth:hover {
-            background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+            background: #412d3b;
+            color: #deccca;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
         }
@@ -204,7 +205,7 @@ if (isset($_POST['register'])) {
         }
         .text-center a {
             text-decoration: none;
-            color: #ff6b35;
+            color: #412d3b;
             font-weight: 600;
         }
         .text-center a:hover {

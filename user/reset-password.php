@@ -116,10 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
         }
         
         .reset-password-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            background: #412d3b;
             padding: 40px 30px 30px;
             text-align: center;
-            color: white;
+            color: #deccca;
         }
         
         .reset-password-header h2 {
