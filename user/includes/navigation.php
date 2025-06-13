@@ -205,7 +205,9 @@ nav.navbar.bootsnav .navbar-toggle i {
 
 /* Giữ lại các style cần thiết cho dropdown menu và cart */
 .user-menu {
-    min-width: 200px;
+    min-width: 240px; /* Tăng width để chứa text dài */
+    width: max-content; /* Tự động điều chỉnh theo nội dung */
+    max-width: 280px; /* Giới hạn width tối đa */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     border: none;
@@ -227,6 +229,9 @@ nav.navbar.bootsnav .navbar-toggle i {
     color: #333;
     text-decoration: none;
     transition: all 0.3s ease;
+    white-space: nowrap; /* Ngăn text xuống dòng */
+    overflow: hidden; /* Ẩn text tràn nếu có */
+    text-overflow: ellipsis; /* Hiển thị "..." nếu text quá dài */
 }
 
 .user-menu-link i {
@@ -255,6 +260,288 @@ nav.navbar.bootsnav .navbar-toggle i {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Cart Dropdown Styles */
+.cart-dropdown .dropdown-menu {
+    min-width: 380px !important; /* Tăng width để chứa sản phẩm */
+    max-width: 420px !important;
+    max-height: 500px !important; /* Giới hạn height */
+    overflow-y: auto !important; /* Scroll nếu quá nhiều sản phẩm */
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 15px !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+    background: white !important;
+    right: 0 !important;
+    left: auto !important;
+}
+
+.cart-header {
+    background: linear-gradient(135deg, #412d3b, #deccca) !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    border-radius: 15px 15px 0 0 !important;
+    margin: 0 !important;
+    border-bottom: none !important;
+}
+
+.cart-header h6 {
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    color: white !important;
+}
+
+.cart-loading, .cart-empty {
+    padding: 30px 20px !important;
+    text-align: center !important;
+    color: #666 !important;
+    border-bottom: none !important;
+}
+
+.cart-loading .loading-spinner, .cart-empty .empty-cart {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.cart-loading i {
+    font-size: 24px !important;
+    color: #412d3b !important;
+}
+
+.cart-empty i {
+    font-size: 36px !important;
+    color: #ddd !important;
+    margin-bottom: 10px !important;
+}
+
+#cart-items {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+}
+
+.cart-item {
+    display: flex !important;
+    align-items: center !important;
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    transition: background 0.3s ease !important;
+    gap: 12px !important;
+}
+
+.cart-item:hover {
+    background: #f8f9fa !important;
+}
+
+.cart-item:last-child {
+    border-bottom: none !important;
+}
+
+.cart-item-image {
+    width: 50px !important;
+    height: 50px !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+}
+
+.cart-item-details {
+    flex: 1 !important;
+    min-width: 0 !important; /* Cho phép text truncate */
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+}
+
+.cart-item-name {
+    font-weight: 600 !important;
+    color: #333 !important;
+    font-size: 14px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.cart-item-type {
+    font-size: 11px !important;
+    color: #666 !important;
+    text-transform: capitalize !important;
+    margin: 0 !important;
+}
+
+.cart-item-quantity {
+    background: #f0f0f0 !important;
+    color: #412d3b !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    text-align: center !important;
+    min-width: 50px !important;
+}
+
+.cart-total {
+    background: #f8f9fa !important;
+    padding: 20px !important;
+    border-top: 2px solid #dee2e6 !important;
+    border-radius: 0 0 15px 15px !important;
+    margin: 0 !important;
+}
+
+.total-info {
+    text-align: center !important;
+}
+
+.total-text {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    margin-bottom: 15px !important;
+}
+
+#total-amount {
+    color: #412d3b !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+.btn-cart {
+    background: #deccca !important;
+    color: #412d3b !important;
+    border: none !important;
+    padding: 12px 25px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    font-size: 14px !important;
+}
+
+.btn-cart:hover {
+    background: #412d3b !important;
+    color: #deccca !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(65, 45, 59, 0.3) !important;
+}
+
+/* Responsive cho dropdown user menu */
+@media (max-width: 768px) {
+    .user-menu {
+        min-width: 220px; /* Giảm width trên mobile */
+        max-width: 250px;
+        right: 0; /* Đảm bảo dropdown align phải */
+        left: auto;
+    }
+    
+    .user-menu-link {
+        padding: 14px 18px; /* Tăng padding cho touch-friendly */
+        font-size: 14px;
+    }
+    
+    .user-menu-link span {
+        font-size: 14px;
+    }
+    
+    /* Cart dropdown responsive */
+    .cart-dropdown .dropdown-menu {
+        min-width: 320px !important;
+        max-width: 350px !important;
+        right: -10px !important;
+    }
+    
+    .cart-item {
+        padding: 12px 15px !important;
+        gap: 10px !important;
+    }
+    
+    .cart-item-image {
+        width: 45px !important;
+        height: 45px !important;
+    }
+    
+    .cart-item-name {
+        font-size: 13px !important;
+    }
+    
+    .cart-item-type {
+        font-size: 10px !important;
+    }
+    
+    .cart-item-quantity {
+        font-size: 10px !important;
+        padding: 3px 6px !important;
+        min-width: 45px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-menu {
+        min-width: 200px;
+        max-width: 220px;
+    }
+    
+    .user-menu-link {
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    .user-menu-link span {
+        font-size: 13px;
+    }
+    
+    /* Cart dropdown mobile */
+    .cart-dropdown .dropdown-menu {
+        min-width: 280px !important;
+        max-width: 300px !important;
+        right: -20px !important;
+    }
+    
+    .cart-item {
+        padding: 10px 12px !important;
+        gap: 8px !important;
+    }
+    
+    .cart-item-image {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .cart-item-name {
+        font-size: 12px !important;
+    }
+    
+    .cart-item-type {
+        font-size: 9px !important;
+    }
+    
+    .cart-item-quantity {
+        font-size: 9px !important;
+        padding: 2px 5px !important;
+        min-width: 40px !important;
+    }
+    
+    .cart-header h6 {
+        font-size: 14px !important;
+    }
+    
+    .total-text {
+        font-size: 14px !important;
+    }
+    
+    #total-amount {
+        font-size: 16px !important;
+    }
 }
 </style>
 
@@ -481,21 +768,23 @@ nav.navbar.bootsnav .navbar-toggle i {
             const imageUrl = item.image_url || '<?php echo $base_path; ?>assets/images/default-product.jpg';
             cartHTML += `
                 <li class="cart-item">
-                    <div class="cart-item-content">
-                        <img src="${imageUrl}" 
-                             alt="${item.item_name}" class="cart-item-image"
-                             onerror="this.src='<?php echo $base_path; ?>assets/images/default-product.jpg'">
-                        <div class="cart-item-details">
-                            <div class="cart-item-name">${item.item_name}</div>
-                            <div class="cart-item-qty">Số lượng: ${item.quantity}</div>
-                        </div>
+                    <img src="${imageUrl}" 
+                         alt="${item.item_name}" class="cart-item-image"
+                         onerror="this.src='<?php echo $base_path; ?>assets/images/default-product.jpg'">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.item_name || item.name}</div>
+                        <div class="cart-item-type">${item.item_type === 'product' ? 'Album nhạc' : 'Phụ kiện'}</div>
                     </div>
+                    <div class="cart-item-quantity">SL: ${item.quantity}</div>
                 </li>
             `;
         });
 
         $('#cart-items').html(cartHTML);
-        $('#total-amount').text('$' + parseFloat(totalAmount).toFixed(2));
+        
+        // Format giá tiền VND
+        const vndAmount = parseFloat(totalAmount);
+        $('#total-amount').text(vndAmount.toLocaleString('vi-VN') + '₫');
         $('#cart-total').show();
         console.log('✨ Navigation: Cart display completed');
     }

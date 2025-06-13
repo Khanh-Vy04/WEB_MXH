@@ -71,12 +71,7 @@
 		</div><!--/.text-center-->
 	</div><!--/.container-->
 
-	<div id="scroll-Top">
-		<div class="return-to-top">
-			<i class="fa fa-angle-up " id="scroll-top" data-toggle="tooltip" data-placement="top" title="" data-original-title="Về đầu trang" aria-hidden="true"></i>
-		</div>
-		
-	</div><!--/.scroll-Top-->
+	<!-- Scroll to top button removed -->
 	
 </footer><!--/.footer-->
 <!--footer end-->
@@ -161,40 +156,7 @@
     margin: 0;
 }
 
-/* Scroll Top */
-#scroll-Top .return-to-top {
-    position: fixed;
-    right: 30px;
-    bottom: 30px;
-    display: none;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    font-size: 20px;
-    cursor: pointer;
-    color: #fff;
-    background: #e99c2e;
-    border: 1px solid #e99c2e;
-    border-radius: 50%;
-    transition: .5s;
-    z-index: 2;
-}
-
-#scroll-Top .return-to-top:hover {
-    background: #fff;
-    color: #e99c2e;
-}
-
-#scroll-Top .return-to-top i {
-    position: relative;
-    animation: example 1s alternate infinite;
-}
-
-@keyframes example {
-    0%   { bottom: 0px; }
-    100% { bottom: 7px; }
-}
+/* Scroll to top styles removed */
 
 /* Responsive adjustments */
 @media (max-width: 991px) {

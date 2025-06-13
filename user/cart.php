@@ -67,6 +67,8 @@ $cart_count = getCartItemCount();
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
+            width: 100%;
+            max-width: none; /* Remove max-width constraint */
         }
 
         .cart-header {
@@ -88,12 +90,15 @@ $cart_count = getCartItemCount();
 
         .cart-content {
             padding: 30px;
+            overflow-x: auto; /* Allow horizontal scroll if needed */
         }
 
         .cart-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
+            min-width: 1000px; /* Minimum width to prevent cramping */
+            table-layout: auto; /* Allow table to adjust column widths */
         }
 
         .cart-table th {
@@ -109,6 +114,11 @@ $cart_count = getCartItemCount();
             padding: 25px 15px;
             border-bottom: 1px solid #dee2e6;
             vertical-align: middle;
+        }
+
+        .cart-table td:first-child {
+            padding: 25px 5px; /* Consistent checkbox column padding */
+            text-align: center;
         }
 
         .cart-item-image {
@@ -133,6 +143,68 @@ $cart_count = getCartItemCount();
             color: #666;
             font-size: 0.9rem;
             text-transform: capitalize;
+        }
+
+        /* Improved layout: Item info with name and quantity on same row */
+        .cart-item-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cart-item-main-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 15px;
+        }
+
+        .cart-item-name-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin: 0;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cart-item-type {
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: capitalize;
+            margin-top: 2px;
+        }
+
+        .cart-item-quantity-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #412d3b;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .cart-item-stock {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 4px;
         }
 
         .cart-item-price {
@@ -197,83 +269,23 @@ $cart_count = getCartItemCount();
             transform: translateY(-1px);
         }
 
-        /* Out of Stock Styles */
+        /* Out of Stock - Simple Background Overlay */
         .out-of-stock-item {
-            background: #f8f9fa !important;
-            opacity: 0.7;
-            position: relative;
-        }
-
-        .out-of-stock-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(220, 53, 69, 0.1) 10px,
-                rgba(220, 53, 69, 0.1) 20px
-            );
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .out-of-stock-item .cart-item-image {
-            filter: grayscale(100%);
-            opacity: 0.5;
-        }
-
-        .out-of-stock-item .cart-item-name {
-            color: #6c757d !important;
-            text-decoration: line-through;
-        }
-
-        .out-of-stock-item .cart-item-price {
-            color: #6c757d !important;
-        }
-
-        .out-of-stock-item .quantity-controls {
-            opacity: 0.5;
-        }
-
-        .out-of-stock-item .quantity-btn:disabled,
-        .out-of-stock-item .quantity-input:disabled {
-            background: #e9ecef;
-            color: #6c757d;
-            cursor: not-allowed;
-            border-color: #dee2e6;
+            background: rgba(128, 128, 128, 0.3) !important;
         }
 
         .out-of-stock-item .item-checkbox:disabled {
             cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .out-of-stock-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #dc3545;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            z-index: 2;
         }
 
         .out-of-stock-warning {
-            background: linear-gradient(135deg, #ffe6e6 0%, #ffecec 100%);
-            border: 2px solid #dc3545;
-            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-left: 4px solid #6c757d;
+            border-radius: 8px;
             margin: 20px 0;
             padding: 0;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
         }
 
         .warning-content {
@@ -284,30 +296,33 @@ $cart_count = getCartItemCount();
         }
 
         .warning-content i {
-            font-size: 2rem;
-            color: #dc3545;
+            font-size: 2.5rem;
+            color: #6c757d;
             flex-shrink: 0;
         }
 
         .warning-text strong {
-            color: #dc3545;
+            color: #495057;
             font-size: 1.1rem;
             display: block;
             margin-bottom: 5px;
+            font-weight: 600;
         }
 
         .warning-text p {
-            color: #721c24;
+            color: #6c757d;
             margin: 0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
         }
 
         .cart-summary {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 30px;
-            margin-top: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border: 2px solid #deccca;
+            border-radius: 15px;
+            padding: 35px;
+            margin-top: 40px;
+            box-shadow: 0 6px 25px rgba(65, 45, 59, 0.1);
         }
 
         .summary-row {
@@ -316,6 +331,7 @@ $cart_count = getCartItemCount();
             align-items: center;
             margin-bottom: 15px;
             font-size: 1.1rem;
+            padding: 8px 0;
         }
 
         .summary-row:last-child {
@@ -324,7 +340,7 @@ $cart_count = getCartItemCount();
             border-top: 2px solid #dee2e6;
             font-weight: 700;
             font-size: 1.3rem;
-            color: #ff6b35;
+            color: #412d3b;
         }
 
         .cart-actions {
@@ -357,8 +373,8 @@ $cart_count = getCartItemCount();
         }
 
         .btn-checkout {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
+            background: #deccca;
+            color: #412d3b;
             padding: 15px 40px;
             border: none;
             border-radius: 50px;
@@ -374,13 +390,16 @@ $cart_count = getCartItemCount();
         }
 
         .btn-checkout:hover {
+            background: #412d3b;
+            color: #deccca;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(65, 45, 59, 0.4);
         }
 
         .btn-checkout:disabled,
         .btn-checkout.disabled {
             background: #ccc !important;
+            color: #412d3b !important;
             cursor: not-allowed !important;
             transform: none !important;
             box-shadow: none !important;
@@ -392,7 +411,7 @@ $cart_count = getCartItemCount();
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #ff6b35;
+            accent-color: #deccca;
         }
 
         #select-all-checkbox:indeterminate {
@@ -400,7 +419,7 @@ $cart_count = getCartItemCount();
         }
 
         .selected-row {
-            background: rgba(255, 107, 53, 0.05);
+            background: rgba(222, 204, 202, 0.1);
         }
 
         .empty-cart {
@@ -495,18 +514,58 @@ $cart_count = getCartItemCount();
         }
 
         @media (max-width: 768px) {
+            .container-fluid {
+                max-width: 100% !important;
+                padding: 0 15px;
+            }
+            
+            .cart-content {
+                padding: 20px 15px;
+                overflow-x: auto;
+            }
+            
             .cart-table {
                 font-size: 14px;
+                min-width: 800px; /* Reduced for mobile but still prevents cramping */
             }
             
             .cart-table th,
             .cart-table td {
-                padding: 15px 10px;
+                padding: 15px 8px;
             }
+            
+            .cart-table td:first-child {
+                padding: 15px 3px;
+            }
+            
+
             
             .cart-item-image {
                 width: 60px;
                 height: 60px;
+            }
+            
+            .cart-item-content {
+                gap: 10px;
+            }
+            
+            .cart-item-main-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .cart-item-name {
+                font-size: 0.9rem;
+                white-space: normal;
+                line-height: 1.2;
+            }
+            
+            .cart-item-quantity-display {
+                align-self: flex-start;
+                min-width: 60px;
+                font-size: 0.8rem;
+                padding: 3px 8px;
             }
             
             .cart-actions {
@@ -521,39 +580,90 @@ $cart_count = getCartItemCount();
             
             .cart-title {
                 font-size: 2rem;
+                color: #f3eeeb;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cart-content {
+                padding: 15px 10px;
+            }
+            
+            .cart-table {
+                min-width: 700px; /* Further reduced but still functional */
+                font-size: 13px;
+            }
+            
+            .cart-table th,
+            .cart-table td {
+                padding: 12px 6px;
+            }
+            
+            .cart-table td:first-child {
+                padding: 12px 2px;
+            }
+            
+
+            
+            .cart-item-content {
+                gap: 8px;
+            }
+            
+            .cart-item-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .cart-item-name {
+                font-size: 0.85rem;
+            }
+            
+            .cart-item-type {
+                font-size: 0.7rem;
+            }
+            
+            .cart-item-quantity-display {
+                font-size: 0.7rem;
+                padding: 2px 5px;
+                min-width: 50px;
+            }
+            
+            .cart-item-stock {
+                font-size: 0.65rem;
             }
         }
         
-        /* Cart Page Navigation Override - Force Cart Dropdown to Show */
-        .cart-dropdown {
-            position: relative !important;
+        /* Ensure navbar consistency with other pages */
+        nav.navbar.bootsnav {
+            background-color: #412d3b !important;
+            border-bottom: none !important;
+            z-index: 9999 !important;
         }
-        
+
+        nav.navbar.bootsnav ul.nav > li > a {
+            color: #ffffff !important;
+        }
+
+        nav.navbar.bootsnav ul.nav li.active > a {
+            color: #deccca !important;
+        }
+
+        nav.navbar.bootsnav .navbar-brand {
+            color: #deccca !important;
+        }
+
+        .attr-nav > ul > li > a {
+            color: #ffffff !important;
+        }
+
+        .attr-nav > ul > li > a span.badge {
+            background-color: #deccca !important;
+            color: #412d3b !important;
+        }
+
+        /* Ensure cart dropdown works properly on cart page */
         .cart-dropdown .dropdown-menu {
-            position: absolute !important;
-            top: 100% !important;
-            right: 0 !important;
-            left: auto !important;
             z-index: 99999 !important;
-            display: none !important;
-            min-width: 350px !important;
-            background: white !important;
-            border: 1px solid #ddd !important;
-            border-radius: 8px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
-            margin-top: 5px !important;
-        }
-        
-        .cart-dropdown:hover .dropdown-menu,
-        .cart-dropdown.show .dropdown-menu {
-            display: block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-        }
-        
-        /* Ensure cart dropdown appears above all cart page elements */
-        .cart-dropdown .dropdown-menu * {
-            z-index: inherit !important;
         }
         
         /* Voucher Section Styles */
@@ -570,23 +680,26 @@ $cart_count = getCartItemCount();
         }
         
         .btn-voucher {
-            background: linear-gradient(135deg, #ff6b35, #f7931e);
-            color: white;
-            border: none;
+            background: #deccca;
+            color: #412d3b;
+            border: 1px solid #412d3b;
             padding: 8px 16px;
             border-radius: 6px;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
         
         .btn-voucher:hover {
+            background: #412d3b;
+            color: #deccca;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            box-shadow: 0 4px 12px rgba(65, 45, 59, 0.3);
         }
         
         .discount-row {
-            color: #dc3545 !important;
+            color: #412d3b !important;
             font-weight: 600 !important;
         }
         
@@ -674,44 +787,55 @@ $cart_count = getCartItemCount();
             justify-content: center;
             align-items: center;
             animation: fadeIn 0.3s ease;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .checkout-popup.show {
             display: flex;
         }
+        
+        .checkout-popup .checkout-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
         .checkout-content {
             background: white;
             border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
+            max-width: 500px;
+            width: 100%;
+            max-height: calc(100vh - 40px);
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideUp 0.3s ease;
+            margin: 0;
+            position: relative;
         }
 
         .checkout-header {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 25px 30px;
+            background: #deccca;
+            color: #412d3b;
+            padding: 20px 25px;
             border-radius: 20px 20px 0 0;
             text-align: center;
         }
 
         .checkout-header h3 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
         }
 
         .checkout-body {
-            padding: 30px;
+            padding: 25px;
         }
 
         .checkout-section {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
 
@@ -721,9 +845,9 @@ $cart_count = getCartItemCount();
         }
 
         .checkout-section-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #333;
             display: flex;
             align-items: center;
@@ -733,11 +857,11 @@ $cart_count = getCartItemCount();
         .checkout-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px;
+            gap: 12px;
+            padding: 12px;
             background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
         }
 
         .checkout-item:last-child {
@@ -745,9 +869,9 @@ $cart_count = getCartItemCount();
         }
 
         .checkout-item-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
             object-fit: cover;
         }
 
@@ -758,78 +882,81 @@ $cart_count = getCartItemCount();
         .checkout-item-name {
             font-weight: 600;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            font-size: 0.95rem;
         }
 
         .checkout-item-details {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .checkout-item-price {
             font-weight: 600;
             color: #ff6b35;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .checkout-summary {
             background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 15px;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-size: 1.5rem;
         }
 
         .summary-row:last-child {
             margin-bottom: 0;
-            padding-top: 10px;
+            padding-top: 8px;
             border-top: 1px solid #dee2e6;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .voucher-info {
             background: #e7f3ff;
             border: 1px solid #b3d9ff;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 6px;
+            padding: 12px;
         }
 
         .voucher-code-display {
             font-weight: 600;
             color: #0066cc;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .checkout-actions {
             display: flex;
-            gap: 15px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .checkout-btn {
             flex: 1;
-            padding: 15px;
+            padding: 12px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-confirm-payment {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
+            background: linear-gradient(135deg, #deccca, #f3eeeb);
+            color: #412d3b;
         }
 
         .btn-confirm-payment:hover {
-            background: linear-gradient(135deg, #218838, #1ea087);
+            background: linear-gradient(135deg, #cc8889, #cc8889);
+            color: #f3eeeb;
             transform: translateY(-2px);
         }
 
@@ -863,8 +990,8 @@ $cart_count = getCartItemCount();
         }
 
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
         @keyframes spin {
@@ -910,13 +1037,13 @@ $cart_count = getCartItemCount();
 
         .payment-method-card {
             border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             position: relative;
             background: white;
         }
@@ -948,15 +1075,15 @@ $cart_count = getCartItemCount();
         }
 
         .payment-method-icon {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff6b35, #f7931e);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 20px;
+            font-size: 16px;
             flex-shrink: 0;
         }
 
@@ -973,32 +1100,32 @@ $cart_count = getCartItemCount();
         }
 
         .payment-method-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .payment-method-desc {
             color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            margin-bottom: 3px;
+            font-size: 0.8rem;
+            line-height: 1.3;
+            margin-bottom: 2px;
         }
 
         .payment-method-balance {
             color: #ff6b35;
             font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 8px;
+            font-size: 0.8rem;
+            margin-top: 6px;
         }
 
         .payment-method-check {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 12px;
             color: #ff6b35;
-            font-size: 20px;
+            font-size: 18px;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -1014,6 +1141,62 @@ $cart_count = getCartItemCount();
         .wallet-sufficient {
             color: #28a745 !important;
         }
+        
+        /* Responsive cho checkout popup */
+        @media (max-width: 768px) {
+            .checkout-popup {
+                padding: 15px;
+            }
+            
+            .checkout-content {
+                max-width: 100%;
+                width: 100%;
+                max-height: calc(100vh - 30px);
+            }
+            
+            .checkout-header {
+                padding: 15px 20px;
+            }
+            
+            .checkout-header h3 {
+                font-size: 1.3rem;
+            }
+            
+            .checkout-body {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .checkout-popup {
+                padding: 10px;
+            }
+            
+            .checkout-content {
+                max-height: calc(100vh - 20px);
+            }
+            
+            .checkout-header {
+                padding: 12px 15px;
+            }
+            
+            .checkout-header h3 {
+                font-size: 1.2rem;
+            }
+            
+            .checkout-body {
+                padding: 15px;
+            }
+            
+            .checkout-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .checkout-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1025,10 +1208,10 @@ $cart_count = getCartItemCount();
 
     <!-- Cart Section -->
     <section class="cart-section">
-        <div class="container">
+        <div class="container-fluid" style="max-width: 1400px; margin: 0 auto;">
             <div class="cart-container">
                 <div class="cart-header">
-                    <h1 class="cart-title">
+                    <h1 class="cart-title" style="color: #f3eeeb;">
                         <i class="fa fa-shopping-cart"></i>
                         Giỏ hàng của bạn
                     </h1>
@@ -1150,28 +1333,11 @@ $cart_count = getCartItemCount();
 
         $(document).ready(function() {
             console.log('🛒 Cart page JavaScript ready');
-            console.log('🔍 Cart page: Found cart dropdown elements:', $('.cart-dropdown').length);
             
-            // Force navigation dropdown to work on cart page
-            if ($('.cart-dropdown').length > 0) {
-                console.log('🎯 Cart page: Ensuring cart dropdown works');
-                
-                $('.cart-dropdown').off('mouseenter mouseleave').hover(
-                    function() {
-                        console.log('🖱️ Cart page: HOVER ENTER on cart dropdown');
-                        $(this).addClass('show');
-                        $('#cart-dropdown-menu').addClass('show').css('display', 'block');
-                    },
-                    function() {
-                        console.log('🖱️ Cart page: HOVER LEAVE on cart dropdown');
-                        setTimeout(() => {
-                            if (!$('.cart-dropdown:hover').length && !$('#cart-dropdown-menu:hover').length) {
-                                $('.cart-dropdown').removeClass('show');
-                                $('#cart-dropdown-menu').removeClass('show').css('display', 'none');
-                            }
-                        }, 300);
-                    }
-                );
+            // Đảm bảo cart dropdown hoạt động đúng trên trang cart
+            if (typeof initCartDropdown === 'function') {
+                console.log('🔄 Re-initializing cart dropdown for cart page');
+                initCartDropdown();
             }
             
             // Chỉ load cart nếu đã đăng nhập
@@ -1243,11 +1409,11 @@ $cart_count = getCartItemCount();
                             <th style="width: 5%;">
                                 <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()" title="Chọn tất cả">
                             </th>
-                            <th style="width: 40%;">Sản phẩm</th>
+                            <th style="width: 45%;">Sản phẩm</th>
                             <th style="width: 15%;">Đơn giá</th>
                             <th style="width: 15%;">Số lượng</th>
                             <th style="width: 15%;">Thành tiền</th>
-                            <th style="width: 10%;">Xóa</th>
+                            <th style="width: 5%;">Xóa</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1271,16 +1437,21 @@ $cart_count = getCartItemCount();
                                    ${isOutOfStock ? 'disabled' : 'checked'}>
                         </td>
                         <td>
-                            <div style="display: flex; align-items: center;">
+                            <div class="cart-item-content">
                                 <img src="${imageUrl}" 
                                      alt="${item.item_name}" class="cart-item-image"
                                      onerror="this.src='assets/images/default-product.jpg'">
-                                <div class="cart-item-info">
-                                    <div class="cart-item-name">${item.item_name}</div>
-                                    <div class="cart-item-type">
-                                        ${item.item_type === 'product' ? 'Album nhạc' : 'Phụ kiện'}
+                                <div class="cart-item-details">
+                                    <div class="cart-item-main-info">
+                                        <div class="cart-item-name-wrapper">
+                                            <div class="cart-item-name">${item.item_name}</div>
+                                            <div class="cart-item-type">
+                                                ${item.item_type === 'product' ? 'Album nhạc' : 'Phụ kiện'}
+                                            </div>
+                                        </div>
+                                        <div class="cart-item-quantity-display">SL: ${item.quantity}</div>
                                     </div>
-                                    <div style="color: ${isOutOfStock ? '#dc3545' : '#999'}; font-size: 0.8rem; font-weight: ${isOutOfStock ? '600' : 'normal'};">
+                                    <div class="cart-item-stock" style="color: ${isOutOfStock ? '#dc3545' : '#999'}; font-weight: ${isOutOfStock ? '600' : 'normal'};">
                                         ${isOutOfStock ? 
                                             '<i class="fa fa-times-circle"></i> Đã hết hàng' : 
                                             `Còn lại: ${item.stock} sản phẩm`
@@ -1328,7 +1499,7 @@ $cart_count = getCartItemCount();
                                 <span>Tổng tất cả (${cartData.items.length} sản phẩm):</span>
                                 <span id="total-all-items">${formatVND(cartData.total)}</span>
                             </div>
-                            <div class="summary-row" style="color: #ff6b35; font-weight: 600;">
+                            <div class="summary-row" style="color: #412d3b; font-weight: 600;">
                                 <span>Đã chọn (<span id="selected-count">0</span> sản phẩm):</span>
                                 <span id="selected-subtotal">0₫</span>
                             </div>
@@ -1352,11 +1523,11 @@ $cart_count = getCartItemCount();
                         </div>
                         <div class="col-md-6">
                             <div class="payment-summary">
-                                <div class="summary-row" style="font-size: 1.5rem; color: #ff6b35; padding: 20px; background: white; border-radius: 8px; border: 2px solid #ff6b35;">
+                                <div class="summary-row" style="font-size: 1.5rem; color: #412d3b; padding: 20px; background: #deccca; border-radius: 12px; border: 2px solid #412d3b; font-weight: 700;">
                                     <span>Thanh toán:</span>
                                     <span id="final-total-display">0₫</span>
                                 </div>
-                                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 0.9rem; color: #666;">
+                                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px; font-size: 1.5rem; color: #666;">
                                     <i class="fa fa-info-circle"></i> Chỉ thanh toán cho sản phẩm đã chọn
                                 </div>
                             </div>
@@ -1507,6 +1678,15 @@ $cart_count = getCartItemCount();
                 success: function(response) {
                     if (response.success && $('#cart-badge').length) {
                         $('#cart-badge').text(response.total_items || 0);
+                        
+                        // Trigger navigation cart dropdown refresh if function exists
+                        if (typeof loadCartItems === 'function' && window.location.pathname.includes('cart.php')) {
+                            console.log('🔄 Refreshing navigation cart dropdown from cart page');
+                            // Small delay to ensure the cart data is updated
+                            setTimeout(function() {
+                                loadCartItems();
+                            }, 100);
+                        }
                     }
                 }
             });

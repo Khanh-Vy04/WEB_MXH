@@ -526,6 +526,7 @@ if ($is_logged_in) {
         }
 
         .profile-tabs li a {
+            text-decoration: none;
             border: none !important;
             border-radius: 8px 8px 0 0;
             color: #666;
@@ -534,7 +535,6 @@ if ($is_logged_in) {
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s ease;
             font-size: 16px;
             background: #f8f9fa;
         }
@@ -617,12 +617,10 @@ if ($is_logged_in) {
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-left: 5px solid #ff6b35;
         }
 
         .voucher-card:hover {
-            transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
@@ -1015,7 +1013,6 @@ if ($is_logged_in) {
             align-items: center;
             gap: 8px;
             margin-top: 15px;
-            transition: all 0.3s ease;
             position: relative;
             z-index: 2;
             font-size: 14px;
@@ -1024,7 +1021,6 @@ if ($is_logged_in) {
         .btn-add-balance:hover {
             background: rgba(255,255,255,0.3);
             border-color: rgba(255,255,255,0.5);
-            transform: translateY(-2px);
         }
 
         /* Add Balance Modal Styles */
@@ -1123,7 +1119,6 @@ if ($is_logged_in) {
             border-radius: 12px;
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -1150,7 +1145,6 @@ if ($is_logged_in) {
             background: #deccca;
             color: #412d3b;
             border-color: #deccca;
-            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
         }
 
@@ -1158,7 +1152,6 @@ if ($is_logged_in) {
             background: #deccca;
             color: #412d3b;
             border-color: #deccca;
-            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
         }
 
@@ -1211,7 +1204,6 @@ if ($is_logged_in) {
             border: 2px solid #e9ecef;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .payment-option.active {
@@ -1302,7 +1294,6 @@ if ($is_logged_in) {
             border-radius: 5px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
         
         .btn-test-connection:hover {
@@ -1405,7 +1396,6 @@ if ($is_logged_in) {
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1414,7 +1404,6 @@ if ($is_logged_in) {
         .btn-refresh:hover {
             background: #412d3b;
             color: #deccca;
-            transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(65, 45, 59, 0.2);
         }
 
@@ -1441,14 +1430,6 @@ if ($is_logged_in) {
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .invoice-card:hover {
-            border-color: #deccca;
-            box-shadow: 0 5px 15px rgba(255, 57, 57, 0.1);
-            transform: translateY(-2px);
         }
 
         .invoice-header {
@@ -1579,16 +1560,15 @@ if ($is_logged_in) {
             border: 2px solid #e1e1e1;
             border-radius: 6px;
             cursor: pointer;
-            color: #666;
+            color: #cc8889;
             text-decoration: none;
-            transition: all 0.3s ease;
         }
 
         .page-btn:hover,
         .page-btn.active {
-            background: #ff3939;
-            border-color: #ff3939;
-            color: white;
+            background: #deccca;
+            border-color: #cc8889;
+            color: #412d3b;
         }
 
         .page-btn.disabled {
@@ -1666,14 +1646,12 @@ if ($is_logged_in) {
             border: 2px solid #e1e1e1;
             border-radius: 15px;
             overflow: hidden;
-            transition: all 0.3s ease;
             position: relative;
         }
 
         .favorite-card:hover {
             border-color: #ff6b35;
             box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
-            transform: translateY(-3px);
         }
 
         .favorite-image-container {
@@ -1685,7 +1663,6 @@ if ($is_logged_in) {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
         .favorite-card:hover .favorite-image {
@@ -1760,7 +1737,6 @@ if ($is_logged_in) {
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1775,7 +1751,6 @@ if ($is_logged_in) {
         .btn-add-to-cart-fav:hover {
             background: #412d3b;
             color: #deccca;
-            transform: translateY(-1px);
         }
 
         .btn-remove-favorite {
@@ -1785,7 +1760,6 @@ if ($is_logged_in) {
 
         .btn-remove-favorite:hover {
             background: #5a6268;
-            transform: translateY(-1px);
         }
 
         .btn-view-detail {
@@ -1859,6 +1833,7 @@ if ($is_logged_in) {
         }
 
         .profile-tabs li a {
+            text-decoration: none;
             border: none !important;
             border-radius: 8px 8px 0 0;
             color: #666;
@@ -1867,7 +1842,6 @@ if ($is_logged_in) {
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s ease;
             font-size: 16px;
             background: #f8f9fa;
         }
@@ -2691,7 +2665,7 @@ if ($is_logged_in) {
                 const statusKey = String(invoice.status);
                 
                 html += `
-                    <div class="invoice-card" onclick="viewInvoiceDetail(${invoice.id})">
+                    <div class="invoice-card">
                         <div class="invoice-header">
                             <div>
                                 <div class="invoice-id">#${invoice.id}</div>
@@ -2777,10 +2751,7 @@ if ($is_logged_in) {
             loadInvoices(1);
         }
 
-        function viewInvoiceDetail(invoiceId) {
-            console.log('🔍 Viewing invoice detail:', invoiceId);
-            window.open(`invoice_detail.php?id=${invoiceId}`, '_blank');
-        }
+
 
         function formatCurrency(amount) {
             // Chuyển đổi string thành number nếu cần

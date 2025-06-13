@@ -95,6 +95,7 @@ $total_count = $week_count + $month_count;
     <style>
         .main-content {
             padding-top: 100px;
+            padding-bottom: 80px; /* Thêm khoảng cách với newsletter */
         }
 
         .grid-container {
@@ -443,6 +444,9 @@ $total_count = $week_count + $month_count;
                 </a>
             </div>
             <?php endif; ?>
+            
+            <!-- Thêm khoảng trống cuối trang -->
+            <div style="height: 60px;"></div>
         </div>
     </div>
     

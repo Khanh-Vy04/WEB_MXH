@@ -153,7 +153,7 @@ if (!empty($reviews)) {
     <style>
         /* Product Detail Styles */
         .product-detail-section {
-            padding: 140px 0 80px;
+            padding: 140px 0 120px; /* Tăng padding-bottom để có khoảng cách với newsletter */
             background: #f8f9fa;
             margin-top: 20px;
         }
@@ -824,6 +824,9 @@ if (!empty($reviews)) {
                 </div>
             </div>
             <?php endif; ?>
+            
+            <!-- Thêm khoảng trống cuối trang -->
+            <div style="height: 60px;"></div>
         </div>
     </section>
     <!-- Product Detail Section End -->
