@@ -1,93 +1,9 @@
 <?php
 $currentPage = 'messages';
 require_once __DIR__.'/../../../../config/database.php';
+require_once __DIR__.'/../../../../includes/session.php';
 
-// Lấy danh sách sessions từ database
-function getChatSessions($conn) {
-    $sql = "SELECT 
-                sr.support_id,
-                u.full_name as customer_name,
-                u.user_id,
-                COUNT(sr.reply_id) as message_count,
-                MAX(sr.created_at) as last_message_time,
-                (SELECT reply_message FROM support_replies sr2 
-                 WHERE sr2.support_id = sr.support_id 
-                 ORDER BY created_at DESC LIMIT 1) as last_message,
-                (SELECT is_customer_reply FROM support_replies sr3 
-                 WHERE sr3.support_id = sr.support_id 
-                 ORDER BY created_at DESC LIMIT 1) as last_message_is_customer,
-                SUM(CASE WHEN sr.is_customer_reply = 1 AND sr.created_at > COALESCE(
-                    (SELECT MAX(created_at) FROM support_replies sr3 
-                     WHERE sr3.support_id = sr.support_id AND sr3.is_customer_reply = 0), '2000-01-01'
-                ) THEN 1 ELSE 0 END) as unread_count
-            FROM support_replies sr
-            LEFT JOIN users u ON sr.user_id = u.user_id
-            WHERE sr.user_id IS NOT NULL
-            GROUP BY sr.support_id, u.full_name, u.user_id
-            ORDER BY last_message_time DESC";
-    
-    $result = $conn->query($sql);
-    return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
-}
-
-// Lấy tin nhắn theo support_id
-function getChatMessages($conn, $support_id) {
-    $sql = "SELECT 
-                sr.reply_id,
-                sr.reply_message,
-                sr.is_customer_reply,
-                sr.created_at,
-                u.full_name as customer_name
-            FROM support_replies sr
-            LEFT JOIN users u ON sr.user_id = u.user_id
-            WHERE sr.support_id = ?
-            ORDER BY sr.created_at ASC";
-    
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $support_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
-}
-
-// Xử lý gửi tin nhắn admin
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'send_message') {
-    $support_id = intval($_POST['support_id']);
-    $message = trim($_POST['message']);
-    
-    if (!empty($message) && $support_id > 0) {
-        $sql = "INSERT INTO support_replies (support_id, reply_message, is_customer_reply) VALUES (?, ?, 0)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $support_id, $message);
-        
-        if ($stmt->execute()) {
-            header("Location: message.php?id=" . $support_id . "&success=1");
-            exit();
-        }
-    }
-}
-
-// Lấy dữ liệu
-$sessions = getChatSessions($conn);
-$selected_id = isset($_GET['id']) ? intval($_GET['id']) : ($sessions[0]['support_id'] ?? 0);
-$current_messages = $selected_id ? getChatMessages($conn, $selected_id) : [];
-$current_session = null;
-
-foreach ($sessions as $session) {
-    if ($session['support_id'] == $selected_id) {
-        $current_session = $session;
-        break;
-    }
-}
-
-function timeAgo($datetime) {
-    $time = strtotime($datetime);
-    $diff = time() - $time;
-    if ($diff < 60) return $diff . ' giây trước';
-    if ($diff < 3600) return floor($diff/60) . ' phút trước';
-    if ($diff < 86400) return floor($diff/3600) . ' giờ trước';
-    return floor($diff/86400) . ' ngày trước';
-}
+$current_user_id = 1; 
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -100,6 +16,24 @@ function timeAgo($datetime) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="message.css?v=<?= time() ?>">
+    <style>
+        .message-image { max-width: 200px; border-radius: 8px; cursor: pointer; }
+        .message-file { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #dee2e6; }
+        .message-quote { width: 100%; max-width: 350px; background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+        .quote-head { background: #2d3436; color: white; padding: 8px 12px; font-weight: bold; font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .quote-content { padding: 12px; font-size: 0.9rem; }
+        .quote-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .btn-complete-disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Timeline CSS */
+        .timeline { position: relative; padding-left: 20px; margin-top: 20px; border-left: 2px solid #e4e6eb; margin-left: 10px; }
+        .timeline-item { position: relative; padding-bottom: 20px; padding-left: 20px; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-dot { position: absolute; left: -26px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: #e4e6eb; border: 2px solid #fff; box-shadow: 0 0 0 1px #e4e6eb; }
+        .timeline-item.active .timeline-dot { background: #28a745; box-shadow: 0 0 0 1px #28a745; }
+        .timeline-content { font-size: 13px; color: #666; }
+        .timeline-item.active .timeline-content { color: #000; font-weight: 500; }
+    </style>
 </head>
 <body>
 <div class="container-fluid position-relative d-flex p-0">
@@ -109,290 +43,94 @@ function timeAgo($datetime) {
         <?php include __DIR__.'/../../dashboard/navbar.php'; ?>
 
         <div class="container-fluid pt-4 px-4" style="background:rgb(247, 251, 255); min-height: calc(100vh - 80px);">
-            <!-- Header Section -->
             <div class="header-section mb-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0" style="color: #412d3b; font-weight: 700; font-size: 1.8rem;">
                         <i class="fas fa-comments" style="color: #deccca; margin-right: 10px;"></i>
                         Quản Lý Chat Support
                     </h2>
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="badge bg-primary px-3 py-2" style="font-size: 0.9rem;"><?= count($sessions) ?> cuộc trò chuyện</span>
-                        <button class="btn btn-outline-primary btn-sm" onclick="refreshPage()">
-                            <i class="fas fa-sync-alt"></i> Làm mới
-                        </button>
-                    </div>
                 </div>
             </div>
 
             <div class="bg-white rounded p-4 mb-4 shadow-sm" style="border: 1px solid #e9ecef;">
-                
-                <?php if (isset($_GET['success'])): ?>
-                <div class="alert alert-success alert-dismissible fade show">
-                    <i class="fas fa-check"></i> Tin nhắn đã được gửi thành công!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                <?php endif; ?>
-
                 <div class="row" style="height: 65vh;">
+                    <!-- Left: Conversations -->
                     <div class="col-md-3 border-end">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5 class="mb-0" style="color: #412d3b; font-weight: 700;">
-                                <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách chat
+                                <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách
                             </h5>
                         </div>
-                        
-                        <!-- Added Filter Tabs -->
-                        <div class="chat-filter-tabs">
-                            <button class="chat-filter-tab active" onclick="filterChat('all', this)">Tất cả</button>
-                            <button class="chat-filter-tab" onclick="filterChat('unanswered', this)">Chưa trả lời</button>
-                            <button class="chat-filter-tab" onclick="filterChat('unquoted', this)">Chưa báo giá</button>
-                            <button class="chat-filter-tab" onclick="filterChat('incomplete', this)">Chưa hoàn thành</button>
-                        </div>
-                        
-                        <div style="height: calc(100% - 90px); max-height: 280px; overflow-y: auto;">
-                            <?php if (empty($sessions)): ?>
-                                <div class="text-center text-muted py-5">
-                                    <i class="fas fa-comments fa-3x mb-3"></i>
-                                    <p>Chưa có cuộc trò chuyện nào</p>
-                                </div>
-                            <?php else: ?>
-                                <?php foreach($sessions as $index => $session): 
-                                    // Simulation: Mark the 2nd session as completed for demo
-                                    $is_completed = ($index === 1); 
-                                    $completed_class = $is_completed ? 'completed' : '';
-                                ?>
-                                <div class="session-item p-3 mb-2 rounded <?= $session['support_id'] == $selected_id ? 'active' : '' ?> <?= $completed_class ?>" 
-                                     onclick="selectSession(<?= $session['support_id'] ?>)" style="cursor: pointer;"
-                                     data-status="<?= $session['last_message_is_customer'] ? 'unanswered' : 'answered' ?>"
-                                     data-completed="<?= $is_completed ? 'true' : 'false' ?>">
-                                    <div class="d-flex align-items-start">
-                                        <div class="session-avatar me-3">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                 style="width:40px;height:40px;background:linear-gradient(135deg, #412d3b 0%, #deccca 100%);color:white;font-weight:700;font-size:0.9em;">
-                                                <?= strtoupper(substr($session['customer_name'] ?? 'U', 0, 1)) ?>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="flex-grow-1 min-width-0">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <h6 class="mb-0 text-truncate" style="font-weight: 600; color: #412d3b; max-width: 150px;">
-                                                    <?= htmlspecialchars($session['customer_name'] ?? 'Khách hàng') ?>
-                                                </h6>
-                                                <small class="text-muted" style="flex-shrink: 0;"><?= timeAgo($session['last_message_time']) ?></small>
-                                            </div>
-                                            
-                                            <p class="mb-1 text-muted small text-truncate" style="max-width: 200px;">
-                                                <?php 
-                                                    $lastMsg = $session['last_message'];
-                                                    if (strpos($lastMsg, '{"type":"quote"') === 0) {
-                                                        $lastMsg = '[Báo giá]';
-                                                    }
-                                                    echo htmlspecialchars(substr($lastMsg, 0, 35));
-                                                    echo strlen($lastMsg) > 35 ? '...' : '';
-                                                ?>
-                                                <?php if ($session['last_message_is_customer'] == 1): ?>
-                                                    <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6em;">chưa phản hồi</span>
-                                                <?php endif; ?>
-                                            </p>
-                                            
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <small style="color:rgb(255, 243, 251); max-width: 90px; overflow: hidden; text-overflow: ellipsis;">
-                                                    <i class="fas fa-hashtag"></i> <?= $session['support_id'] ?>
-                                                </small>
-                                                <div class="d-flex align-items-center gap-1">
-                                                    <span class="badge text-dark" style="background: #deccca; font-size: 0.6em;"><?= $session['message_count'] ?></span>
-                                                    <?php if ($session['unread_count'] > 0): ?>
-                                                        <span class="badge bg-danger" style="font-size: 0.6em;"><?= $session['unread_count'] ?></span>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <div id="sessionList" style="height: calc(100% - 50px); overflow-y: auto;">
+                            <div class="text-center text-muted mt-4">Đang tải...</div>
                         </div>
                     </div>
 
+                    <!-- Center: Chat -->
                     <div class="col-md-6 border-end d-flex flex-column">
-                        <?php if ($current_session): ?>
-                            <div class="chat-header p-3 border-bottom" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
-                                <div class="d-flex align-items-center">
-                                    <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                                         style="width:40px;height:40px;background:rgba(255,255,255,0.2);color:white;font-weight:700;border:2px solid rgba(255,255,255,0.3);">
-                                        <?= strtoupper(substr($current_session['customer_name'] ?? 'U', 0, 1)) ?>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-0" style="font-weight: 600; color: white;">
-                                            <?= htmlspecialchars($current_session['customer_name'] ?? 'Khách hàng') ?>
-                                        </h6>
-                                        <small style="color: rgba(255,255,255,0.8);">
-                                            <i class="fas fa-hashtag"></i> Support ID: <?= $current_session['support_id'] ?>
-                                            • <?= $current_session['message_count'] ?> tin nhắn
-                                        </small>
-                                    </div>
-                                    <div class="text-end">
-                                        <?php if ($current_session['last_message_is_customer'] == 1): ?>
-                                            <span class="badge bg-warning text-dark mb-1">
-                                                <i class="fas fa-exclamation-triangle me-1"></i>
-                                                Chưa trả lời
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">
-                                                <i class="fas fa-check-circle me-1" style="font-size: 0.6em; color: #4caf50;"></i>
-                                                Đã trả lời
-                                            </span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                        <div class="chat-header p-3 border-bottom" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
+                            <div class="d-flex align-items-center" id="chatHeaderInfo">
+                                <div style="flex:1;">Chọn một cuộc trò chuyện</div>
                             </div>
+                        </div>
 
-                            <div class="chat-messages flex-grow-1 p-3" id="chat-box" style="background:#f8f9fa; overflow-y: auto;">
-                                <?php foreach($current_messages as $msg): ?>
-                                    <div class="message-item mb-3 d-flex <?= $msg['is_customer_reply'] ? '' : 'justify-content-end' ?>">
-                                        <?php if ($msg['is_customer_reply']): ?>
-                                            <div class="message-avatar me-2">
-                                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #412d3b 0%, #deccca 100%);color:white;font-weight:600;font-size:0.9em;">
-                                                    <?= strtoupper(substr($msg['customer_name'] ?? 'U', 0, 1)) ?>
-                                                </div>
-                                            </div>
-                                            <div class="message-content">
-                                                <div class="message-bubble customer-message">
-                                                    <?= nl2br(htmlspecialchars($msg['reply_message'])) ?>
-                                                </div>
-                                                <small class="text-muted">
-                                                    <?= date('H:i d/m/Y', strtotime($msg['created_at'])) ?>
-                                                </small>
-                                            </div>
-                                        <?php else: ?>
-                                            <div class="message-content text-end">
-                                                <div class="message-bubble admin-message">
-                                                    <?php 
-                                                        // Check if message is a JSON "fake quote"
-                                                        if (strpos($msg['reply_message'], '{"type":"quote"') === 0) {
-                                                            $quoteData = json_decode($msg['reply_message'], true);
-                                                            echo '<div class="quote-message">
-                                                                    <div class="quote-header"><i class="fas fa-file-invoice-dollar"></i> BÁO GIÁ</div>
-                                                                    <div class="quote-body">
-                                                                        <div class="quote-row"><span>Dịch vụ:</span> <strong>'.htmlspecialchars($quoteData['service']).'</strong></div>
-                                                                        <div class="quote-row"><span>Mã dự án:</span> <span>'.htmlspecialchars($quoteData['projectCode']).'</span></div>
-                                                                        <div class="quote-total">Tổng cộng: '.htmlspecialchars($quoteData['price']).'</div>
-                                                                    </div>
-                                                                  </div>';
-                                                        } else {
-                                                            echo nl2br(htmlspecialchars($msg['reply_message']));
-                                                        }
-                                                    ?>
-                                                </div>
-                                                <small class="text-muted">
-                                                    Admin • <?= date('H:i d/m/Y', strtotime($msg['created_at'])) ?>
-                                                </small>
-                                            </div>
-                                            <div class="message-avatar ms-2">
-                                                <div class="rounded-circle d-flex align-items-center justify-content-center" 
-                                                     style="width:35px;height:35px;background:linear-gradient(135deg, #deccca 0%, #412d3b 100%);color:white;font-weight:600;">
-                                                    A
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
+                        <div class="chat-messages flex-grow-1 p-3" id="chat-box" style="background:#f8f9fa; overflow-y: auto;"></div>
 
-                            <!-- Chat Input Toolbar & Form -->
-                            <div class="chat-input border-top" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-                                <div class="chat-toolbar">
-                                    <div class="toolbar-actions">
-                                        <button class="btn-toolbar" title="Gửi file"><i class="fas fa-paperclip"></i></button>
-                                        <button class="btn-toolbar" title="Gửi ảnh"><i class="far fa-image"></i></button>
-                                    </div>
-                                    <div class="toolbar-actions">
-                                        <button type="button" class="btn-action-large btn-quote" data-bs-toggle="modal" data-bs-target="#quoteModal">
-                                            <i class="fas fa-file-invoice-dollar me-1"></i> Gửi báo giá
-                                        </button>
-                                        <button type="button" class="btn-action-large btn-complete" onclick="confirmCompletion()">
-                                            <i class="fas fa-check-circle me-1"></i> Xác nhận hoàn tất
-                                        </button>
-                                    </div>
+                        <!-- Chat Input -->
+                        <div class="chat-input border-top" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); display:none;" id="inputArea">
+                            <div class="chat-toolbar">
+                                <div class="toolbar-actions">
+                                    <label class="btn-toolbar mb-0 cursor-pointer"><i class="fas fa-paperclip"></i><input type="file" hidden onchange="uploadFile(this.files[0])"></label>
+                                    <label class="btn-toolbar mb-0 cursor-pointer"><i class="far fa-image"></i><input type="file" accept="image/*" hidden onchange="uploadFile(this.files[0])"></label>
                                 </div>
-                                <form method="POST" class="d-flex align-items-end gap-2 p-3">
-                                    <input type="hidden" name="action" value="send_message">
-                                    <input type="hidden" name="support_id" value="<?= $current_session['support_id'] ?>">
-                                    
-                                    <div class="flex-grow-1">
-                                        <textarea name="message" class="form-control" rows="2" 
-                                                placeholder="Nhập tin nhắn phản hồi khách hàng..." 
-                                                required style="resize: none; border: 2px solid #e9ecef; border-radius: 15px; padding: 12px 16px; background: white;"></textarea>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-paper-plane"></i> Gửi
+                                <div class="toolbar-actions">
+                                    <button type="button" class="btn-action-large btn-quote" data-bs-toggle="modal" data-bs-target="#quoteModal">
+                                        <i class="fas fa-file-invoice-dollar me-1"></i> Gửi báo giá
                                     </button>
-                                </form>
-                            </div>
-                        <?php else: ?>
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <div class="text-center text-muted">
-                                    <i class="fas fa-comments fa-4x mb-4"></i>
-                                    <h5>Chọn một cuộc trò chuyện để bắt đầu</h5>
-                                    <p>Chọn từ danh sách bên trái để xem và trả lời tin nhắn</p>
+                                    <button type="button" class="btn-action-large btn-primary me-2" id="btnWorkDone" onclick="confirmWorkDone()" style="display:none;">
+                                        <i class="fas fa-clipboard-check me-1"></i> XN hoàn thành CV
+                                    </button>
+                                    <button type="button" class="btn-action-large btn-complete btn-complete-disabled" id="btnComplete" onclick="confirmCompletion()" disabled title="Chờ khách hàng xác nhận trước">
+                                        <i class="fas fa-check-circle me-1"></i> Hoàn tất đơn
+                                    </button>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                            <div class="d-flex align-items-end gap-2 p-3">
+                                <textarea id="msgInput" class="form-control" rows="2" placeholder="Nhập tin nhắn..." style="resize:none;border-radius:15px;"></textarea>
+                                <button onclick="sendMessage()" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Project Documents Sidebar -->
+                    <!-- Right: Docs -->
                     <div class="col-md-3 d-flex flex-column bg-white">
                         <div class="p-3 border-bottom">
-                            <h6 class="mb-0" style="color: #412d3b; font-weight: 700;">
-                                <i class="fas fa-folder-open me-2" style="color: #deccca;"></i> Tài liệu dự án
-                            </h6>
+                            <h6 class="mb-0 fw-bold"><i class="fas fa-folder-open me-2 text-warning"></i> Tài liệu dự án</h6>
                         </div>
-                        <div class="flex-grow-1 p-3" style="overflow-y: auto;">
-                            <?php if ($current_session): ?>
-                                <div class="doc-list">
-                                    <!-- Mock Documents -->
-                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
-                                        <div class="doc-icon me-3 text-danger"><i class="fas fa-file-pdf fa-lg"></i></div>
-                                        <div class="flex-grow-1 min-width-0">
-                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Yeu_cau_du_an.pdf</div>
-                                            <div class="text-muted" style="font-size: 0.75rem;">2.5 MB • 10:30 AM</div>
-                                        </div>
-                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
-                                    </div>
-                                    
-                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
-                                        <div class="doc-icon me-3 text-primary"><i class="fas fa-file-word fa-lg"></i></div>
-                                        <div class="flex-grow-1 min-width-0">
-                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Hop_dong.docx</div>
-                                            <div class="text-muted" style="font-size: 0.75rem;">1.2 MB • Hôm qua</div>
-                                        </div>
-                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
-                                    </div>
+                        <div class="flex-grow-1 p-3" style="overflow-y: auto;" id="docList">
+                            <div class="text-center text-muted small">Chọn dự án để xem</div>
+                        </div>
 
-                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
-                                        <div class="doc-icon me-3 text-success"><i class="fas fa-file-image fa-lg"></i></div>
-                                        <div class="flex-grow-1 min-width-0">
-                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Logo_final.png</div>
-                                            <div class="text-muted" style="font-size: 0.75rem;">500 KB • 2 ngày trước</div>
-                                        </div>
-                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
-                                    </div>
+                        <div class="p-3 border-top">
+                             <h6 class="mb-3 fw-bold"><i class="fas fa-tasks me-2 text-primary"></i> Tiến độ</h6>
+                             <div class="timeline" id="projectTimeline">
+                                <div class="timeline-item" id="step1">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">Hoàn thành báo giá</div>
                                 </div>
-                                
-                                <div class="mt-3 text-center">
-                                    <button class="btn btn-outline-primary btn-sm w-100 border-dashed" style="border-style: dashed;">
-                                        <i class="fas fa-plus me-1"></i> Thêm tài liệu mới
-                                    </button>
+                                <div class="timeline-item" id="step2">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">Freelancer hoàn thành công việc</div>
                                 </div>
-                            <?php else: ?>
-                                <div class="text-center text-muted mt-5">
-                                    <i class="fas fa-folder-open fa-3x mb-3" style="opacity: 0.3;"></i>
-                                    <p class="small">Chọn cuộc trò chuyện để xem tài liệu</p>
+                                <div class="timeline-item" id="step3">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">Người mua xác nhận</div>
                                 </div>
-                            <?php endif; ?>
+                                <div class="timeline-item" id="step4">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">Người bán xác nhận</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -406,53 +144,20 @@ function timeAgo($datetime) {
 <div class="modal fade" id="quoteModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
+      <div class="modal-header bg-dark text-white">
         <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i>Tạo Báo Giá</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form id="quoteForm">
-            <div class="mb-3">
-                <label class="form-label">Tên công việc</label>
-                <input type="text" class="form-control" name="jobName" required placeholder="VD: Thiết kế logo">
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Dịch vụ</label>
-                    <select class="form-select" name="service">
-                        <option value="Thiết kế đồ họa">Thiết kế đồ họa</option>
-                        <option value="Lập trình web">Lập trình web</option>
-                        <option value="Content Marketing">Content Marketing</option>
-                    </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Mã dự án</label>
-                    <input type="text" class="form-control" name="projectCode" required placeholder="VD: PRJ-001">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Người gửi</label>
-                    <input type="text" class="form-control" name="sender" value="Admin" readonly>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Người nhận</label>
-                    <input type="text" class="form-control" name="receiver" value="<?= $current_session['customer_name'] ?? '' ?>" readonly>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Đơn giá (VNĐ)</label>
-                <input type="text" class="form-control" name="price" required placeholder="300,000">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Điều khoản</label>
-                <textarea class="form-control" name="terms" rows="3">Thanh toán 50% trước khi bắt đầu. Hoàn thành trong 3 ngày.</textarea>
-            </div>
+            <div class="mb-3"><label>Dịch vụ</label><input type="text" class="form-control" name="service" required></div>
+            <div class="mb-3"><label>Mã dự án</label><input type="text" class="form-control" name="projectCode" required></div>
+            <div class="mb-3"><label>Giá (VNĐ)</label><input type="text" class="form-control" name="price" required></div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button type="button" class="btn btn-primary" onclick="sendQuote()">Gửi Báo Giá</button>
+        <button type="button" class="btn btn-primary" onclick="sendQuote()">Gửi</button>
       </div>
     </div>
   </div>
@@ -460,118 +165,220 @@ function timeAgo($datetime) {
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/WEB_MXH/admin/pages/dashboard/dashboard.js"></script>
+<script src="/WEB_MXH/admin/pages/dashboard/js/main.js"></script>
 <script>
-function selectSession(supportId) {
-    window.location.href = 'message.php?id=' + supportId;
-}
+    const CURRENT_USER_ID = 1; 
+    let currentProjectId = 0;
+    let currentReceiverId = 0;
+    let lastMsgCount = 0;
+    let projectStatus = {};
 
-function refreshPage() {
-    window.location.reload();
-}
-
-// Filter Logic
-function filterChat(type, btn) {
-    // Update active tab
-    document.querySelectorAll('.chat-filter-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    
-    // Filter items
-    const items = document.querySelectorAll('.session-item');
-    items.forEach(item => {
-        if (type === 'all') {
-            item.style.display = 'block';
-        } else if (type === 'unanswered') {
-            if (item.dataset.status === 'unanswered') item.style.display = 'block';
-            else item.style.display = 'none';
-        } else if (type === 'incomplete') {
-             if (item.dataset.completed === 'false') item.style.display = 'block';
-             else item.style.display = 'none';
-        } else {
-             // Mockup for unquoted - show all for now or random
-             item.style.display = 'block';
-        }
-    });
-}
-
-function confirmCompletion() {
-    // Toggle visual state of current active session
-    const activeSession = document.querySelector('.session-item.active');
-    if (activeSession) {
-        if (activeSession.classList.contains('completed')) {
-             if(confirm('Đánh dấu dự án này là chưa hoàn thành?')) {
-                 activeSession.classList.remove('completed');
-             }
-        } else {
-             if(confirm('Xác nhận hoàn tất dự án này?')) {
-                 activeSession.classList.add('completed');
-                 // Create tick icon if not exists
-                 // (Handled by CSS ::after)
-                 // Also add "Completed" system message (Mock)
-                 appendSystemMessage('Dự án đã được đánh dấu hoàn tất.');
-             }
-        }
-    }
-}
-
-function sendQuote() {
-    const form = document.getElementById('quoteForm');
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    
-    // In real app, you would send this to backend to generate PDF
-    // Here we simulate by sending a special JSON message to be rendered as a quote card
-    
-    const quoteJson = JSON.stringify({
-        type: 'quote',
-        service: data.service,
-        projectCode: data.projectCode,
-        price: data.price + ' VNĐ'
-    });
-    
-    // We will submit the main form with this content
-    const msgInput = document.querySelector('textarea[name="message"]');
-    msgInput.value = quoteJson;
-    
-    // Close modal
-    var modal = bootstrap.Modal.getInstance(document.getElementById('quoteModal'));
-    modal.hide();
-    
-    // Submit
-    msgInput.closest('form').submit();
-}
-
-function appendSystemMessage(text) {
-    const chatBox = document.getElementById('chat-box');
-    const msgHtml = `
-        <div class="message-item mb-3 d-flex justify-content-center">
-            <div class="badge bg-success p-2">
-                <i class="fas fa-check-circle"></i> ${text}
-            </div>
-        </div>
-    `;
-    chatBox.insertAdjacentHTML('beforeend', msgHtml);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-window.onload = function() {
-    var chatBox = document.getElementById('chat-box');
-    if(chatBox) {
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.querySelector('textarea[name="message"]');
-    if (textarea) {
-        textarea.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.closest('form').submit();
+    function loadSessions() {
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            data: { action: 'get_conversations', user_id: CURRENT_USER_ID },
+            success: function(res) {
+                if(res.success) {
+                    let html = '';
+                    res.data.forEach(s => {
+                        const active = s.project_id == currentProjectId ? 'background:#e9ecef;' : '';
+                        const otherId = (s.sender_id == CURRENT_USER_ID) ? s.receiver_id : s.sender_id;
+                        html += `<div class="p-3 mb-2 rounded border" style="cursor:pointer;${active}" 
+                                 onclick="selectSession(${s.project_id}, ${otherId}, '${s.other_name}')">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2" style="width:40px;height:40px;font-weight:bold;">${s.other_name.charAt(0).toUpperCase()}</div>
+                                    <div style="flex:1;overflow:hidden;"><div class="fw-bold text-truncate">${s.other_name}</div><div class="small text-muted text-truncate">${s.message_type == 'text' ? s.message_content : '['+s.message_type+']'}</div></div>
+                                    ${s.unread > 0 ? `<span class="badge bg-danger rounded-pill">${s.unread}</span>` : ''}
+                                </div></div>`;
+                    });
+                    $('#sessionList').html(html);
+                }
             }
         });
     }
-});
+
+    function selectSession(projectId, receiverId, name) {
+        currentProjectId = projectId;
+        currentReceiverId = receiverId;
+        $('#chatHeaderInfo').html(`<div><h6 class="mb-0 text-white">${name}</h6><small class="text-white-50">Project #${projectId}</small></div>`);
+        $('#inputArea').show(); 
+        lastMsgCount = 0;
+        loadMessages();
+        loadDocs();
+    }
+
+    function loadMessages() {
+        if(!currentProjectId) return;
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            data: { action: 'get_messages', project_id: currentProjectId, current_user_id: CURRENT_USER_ID },
+            success: function(res) {
+                if(res.success) {
+                    projectStatus = res.data.status || {};
+                    updateStatusUI();
+                    if(res.data.messages.length !== lastMsgCount) {
+                        renderMessages(res.data.messages);
+                        lastMsgCount = res.data.messages.length;
+                    }
+                }
+            }
+        });
+    }
+    
+    function updateStatusUI() {
+        const btnComplete = document.getElementById('btnComplete');
+        const btnWorkDone = document.getElementById('btnWorkDone');
+
+        // Logic for Work Done Button (Only show if quote accepted and not yet marked done)
+        if (projectStatus.quote_accepted == 1 && projectStatus.freelancer_work_done == 0) {
+            btnWorkDone.style.display = 'inline-block';
+        } else {
+            btnWorkDone.style.display = 'none';
+        }
+
+        // Logic for Complete Button
+        if (projectStatus.freelancer_confirmed == 1) {
+            btnComplete.innerHTML = '<i class="fas fa-check-double me-1"></i> Đã hoàn thành';
+            btnComplete.classList.remove('btn-complete-disabled');
+            btnComplete.classList.add('btn-success');
+            btnComplete.disabled = true;
+        } else if (projectStatus.user_confirmed == 1) {
+            btnComplete.innerHTML = '<i class="fas fa-check-circle me-1"></i> Hoàn tất đơn';
+            btnComplete.classList.remove('btn-complete-disabled');
+            btnComplete.disabled = false;
+            btnComplete.title = "Khách hàng đã xác nhận, bạn có thể hoàn tất";
+        } else {
+            btnComplete.innerHTML = '<i class="fas fa-check-circle me-1"></i> Hoàn tất đơn';
+            btnComplete.classList.add('btn-complete-disabled');
+            btnComplete.disabled = true;
+            btnComplete.title = "Chờ khách hàng xác nhận trước";
+        }
+
+        // Timeline Update
+        const steps = [
+            { id: 'step1', done: projectStatus.quote_accepted == 1 },
+            { id: 'step2', done: projectStatus.freelancer_work_done == 1 },
+            { id: 'step3', done: projectStatus.user_confirmed == 1 },
+            { id: 'step4', done: projectStatus.freelancer_confirmed == 1 }
+        ];
+
+        steps.forEach(s => {
+            const el = document.getElementById(s.id);
+            if(el) {
+                if(s.done) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        });
+    }
+    
+    function confirmWorkDone() {
+        if(confirm('Xác nhận bạn đã hoàn thành công việc và gửi cho khách hàng?')) {
+            $.ajax({
+                url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+                type: 'POST',
+                data: { action: 'update_status', project_id: currentProjectId, field: 'freelancer_work_done' },
+                success: function(res) { if(res.success) loadMessages(); }
+            });
+        }
+    }
+    
+    function confirmCompletion() {
+        if(confirm('Xác nhận hoàn tất đơn hàng và nhận thanh toán?')) {
+            $.ajax({
+                url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+                type: 'POST',
+                data: { action: 'update_status', project_id: currentProjectId, field: 'freelancer_confirmed' },
+                success: function(res) { if(res.success) loadMessages(); }
+            });
+        }
+    }
+
+    function renderMessages(msgs) {
+        const box = $('#chat-box');
+        box.empty();
+        msgs.forEach(msg => {
+            let content = '';
+            if(msg.message_type === 'text') content = msg.message_content;
+            else if(msg.message_type === 'image') content = `<img src="${msg.message_content}" class="message-image" onclick="window.open(this.src)">`;
+            else if(msg.message_type === 'file') content = `<div class="message-file"><i class="fas fa-download me-2"></i><a href="${msg.message_content}" download>${msg.file_name}</a></div>`;
+            else if(msg.message_type === 'quote') {
+                const q = msg.quote_data;
+                const statusBadge = projectStatus.quote_accepted == 1 ? '<span class="badge bg-success ms-auto">Đã chấp nhận</span>' : '<span class="badge bg-warning text-dark ms-auto">Chờ duyệt</span>';
+                content = `<div class="message-quote"><div class="quote-head"><span>BÁO GIÁ</span>${statusBadge}</div><div class="quote-content"><div class="quote-row"><span>Dịch vụ:</span> <b>${q.service}</b></div><div class="quote-row"><span>Mã:</span> <span>${q.projectCode}</span></div><div class="quote-total">${q.price}</div></div></div>`;
+            }
+
+            const align = msg.is_self ? 'text-end' : 'text-start';
+            const bubble = msg.is_self ? 'bg-primary text-white' : 'bg-white border text-dark';
+            let bubbleStyle = `display:inline-block;padding:10px;border-radius:15px;max-width:70%;text-align:left;`;
+            if (['image', 'quote'].includes(msg.message_type)) bubbleStyle = 'display:inline-block;max-width:70%;text-align:left;';
+
+            box.append(`<div class="mb-3 ${align}"><div class="${['image','quote'].includes(msg.message_type) ? '' : bubble}" style="${bubbleStyle}">${content}</div><div class="small text-muted mt-1">${new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div>`);
+        });
+        box.scrollTop(box[0].scrollHeight);
+    }
+
+    function loadDocs() {
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            data: { action: 'get_documents', project_id: currentProjectId },
+            success: function(res) {
+                if(res.success) {
+                    let html = '';
+                    if(res.data.length === 0) html = '<div class="text-center text-muted small">Chưa có tài liệu</div>';
+                    res.data.forEach(d => {
+                        html += `<div class="p-2 mb-2 bg-light border rounded d-flex align-items-center"><i class="fas fa-file me-2 text-secondary"></i><div class="text-truncate flex-grow-1 small"><a href="${d.message_content}" download>${d.file_name}</a></div></div>`;
+                    });
+                    $('#docList').html(html);
+                }
+            }
+        });
+    }
+
+    function sendMessage() {
+        const val = $('#msgInput').val().trim();
+        if(!val || !currentProjectId) return;
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            type: 'POST',
+            data: { action: 'send_message', project_id: currentProjectId, sender_id: CURRENT_USER_ID, receiver_id: currentReceiverId, content: val, type: 'text' },
+            success: function(res) { if(res.success) { $('#msgInput').val(''); loadMessages(); } }
+        });
+    }
+
+    function sendQuote() {
+        const form = new FormData(document.getElementById('quoteForm'));
+        const data = Object.fromEntries(form);
+        const json = JSON.stringify(data);
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            type: 'POST',
+            data: { action: 'send_message', project_id: currentProjectId, sender_id: CURRENT_USER_ID, receiver_id: currentReceiverId, content: json, type: 'quote' },
+            success: function(res) { if(res.success) { bootstrap.Modal.getInstance(document.getElementById('quoteModal')).hide(); loadMessages(); } }
+        });
+    }
+
+    function uploadFile(file) {
+        if(!file || !currentProjectId) return;
+        const formData = new FormData();
+        formData.append('action', 'upload_file');
+        formData.append('file', file);
+        formData.append('project_id', currentProjectId);
+        formData.append('sender_id', CURRENT_USER_ID);
+        formData.append('receiver_id', currentReceiverId);
+        $.ajax({
+            url: '/WEB_MXH/user/ajax/chat_handler_demo.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) { if(res.success) { loadMessages(); if(res.data.type == 'file') loadDocs(); } else alert('Upload failed: ' + res.message); }
+        });
+    }
+
+    $('#msgInput').on('keypress', function(e) { if(e.which === 13) sendMessage(); });
+    loadSessions();
+    setInterval(loadMessages, 3000);
+    setInterval(loadSessions, 10000);
 </script>
 </body>
 </html>
