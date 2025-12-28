@@ -1,0 +1,53 @@
+---
+description: Project Rules and Conventions
+globs: **/*.php, **/*.js, **/*.css, **/*.sql
+alwaysApply: true
+---
+
+# Project Rules & Conventions
+
+## Tech Stack
+- **Backend**: Native PHP (Version 8.x recommended).
+- **Database**: MySQL (MariaDB).
+- **Frontend**: 
+  - User: Bootstrap, jQuery, Owl Carousel.
+  - Admin/Superadmin: Bootstrap 5 Dashboard Template, jQuery.
+- **Server**: Apache (XAMPP Environment).
+
+## Architecture
+- **Roles**:
+  - `user` (Role ID: 2): End customers. Access via `user/`.
+  - `freelancer` (Role ID: 1): Content managers (formerly Admin). Access via `admin/`.
+  - `superadmin` (Role ID: 3): System owners. Access via `superadmin/`.
+- **Configuration**:
+  - Database config: `config/database.php`.
+  - Session/Auth: `includes/session.php`.
+- **Assets**:
+  - User assets: `user/assets/`.
+  - Admin assets: `admin/`.
+
+## Coding Conventions
+- **PHP**:
+  - Use `require_once` for inclusions.
+  - Always start files with `<?php`.
+  - Use `mysqli` for database interactions (prepared statements required for inputs).
+  - Error reporting: Enabled in development (`error_reporting(E_ALL);`).
+- **Database**:
+  - Table names: snake_case (e.g., `user_vouchers`).
+  - Primary keys: `id` or `tablename_id`.
+  - Charset: `utf8mb4`.
+- **Security**:
+  - Passwords: `password_hash()` and `password_verify()`.
+  - SQL Injection: Always use prepared statements (`$stmt->bind_param`).
+  - XSS: Use `htmlspecialchars()` when outputting user data.
+
+## Directory Structure
+- `/admin`: Freelancer interface (Product, Genre, Artist management).
+- `/superadmin`: Superadmin interface (User, Banner, System management).
+- `/user`: Frontend store interface.
+- `/includes`: Shared logic (session, common functions).
+- `/config`: Configuration files.
+
+## Workflow
+- When adding new roles, update `includes/session.php` and `login.php`.
+- When creating new admin pages, follow the existing `admin` dashboard layout.

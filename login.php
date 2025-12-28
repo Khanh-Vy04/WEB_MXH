@@ -45,7 +45,15 @@ if (isset($_POST['login'])) {
                 // Lưu session trước khi redirect
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['user_role'] = ($user['role_id'] == 1) ? 'admin' : 'user';
+                // Update role mapping: 1=Freelancer (Admin), 3=Superadmin
+                if ($user['role_id'] == 1) {
+                    $_SESSION['user_role'] = 'admin'; // Keep for compatibility
+                } elseif ($user['role_id'] == 3) {
+                    $_SESSION['user_role'] = 'superadmin';
+                } else {
+                    $_SESSION['user_role'] = 'user';
+                }
+                
                 $_SESSION['login_time'] = time();
                 
                 // Lưu thêm thông tin người dùng vào session
@@ -59,7 +67,12 @@ if (isset($_POST['login'])) {
                 
                 // Chuyển hướng dựa vào role_id
                 if ($user['role_id'] == 1) {
+                    // Role 1 is Freelancer (Current Admin Interface)
                     header("Location: admin/pages/dashboard/dashboard.php");
+                    exit();
+                } elseif ($user['role_id'] == 3) {
+                    // Role 3 is Superadmin (New Interface)
+                    header("Location: superadmin/dashboard.php");
                     exit();
                 } else {
                     header("Location: user/index.php");

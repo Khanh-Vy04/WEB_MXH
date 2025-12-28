@@ -453,7 +453,8 @@ div[style*="background"]:has(.admin-message),
 }
 
 /* Compact session avatar */
-.session-item .session-avatar div {
+.session-item .session-avatar div,
+.message-avatar div {
   width: 40px !important;
   height: 40px !important;
   font-size: 0.9em !important;
@@ -657,4 +658,161 @@ div.message-bubble.customer-message {
   background: #412d3b !important;
   color: #fff !important;
   border: none !important;
+}
+
+/* --- NEW STYLES --- */
+
+/* Completed Session */
+.session-item.completed {
+    border-left: 4px solid #4caf50 !important;
+    background: rgba(76, 175, 80, 0.05) !important;
+}
+
+.session-item.completed .session-avatar::after {
+    content: "\f00c"; /* FontAwesome check */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: #4caf50;
+    border: 1px solid white;
+    width: 14px;
+    height: 14px;
+    bottom: -2px;
+    right: -2px;
+}
+
+/* Tabs above chat list */
+.chat-filter-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.chat-filter-tab {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 15px;
+    background: #f1f1f1;
+    color: #666;
+    border: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chat-filter-tab.active {
+    background: #412d3b;
+    color: white;
+}
+
+.chat-filter-tab:hover:not(.active) {
+    background: #e9ecef;
+}
+
+/* Chat Input Toolbar */
+.chat-toolbar {
+    padding: 8px 12px;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-toolbar {
+    color: #6c757d;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    padding: 5px;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.btn-toolbar:hover {
+    color: #412d3b;
+}
+
+.btn-action-large {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-quote {
+    background: rgba(222, 204, 202, 0.3);
+    color: #412d3b;
+}
+
+.btn-quote:hover {
+    background: #deccca;
+}
+
+.btn-complete {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+.btn-complete:hover {
+    background: #4caf50;
+    color: white;
+}
+
+/* Quote Message Style */
+.quote-message {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    background: white;
+    overflow: hidden;
+    margin-top: 5px;
+    max-width: 250px;
+    text-align: left;
+    display: inline-block;
+}
+
+.quote-header {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #412d3b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quote-body {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+}
+
+.quote-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.quote-total {
+    border-top: 1px dashed #e9ecef;
+    margin-top: 5px;
+    padding-top: 5px;
+    font-weight: 700;
+    color: #412d3b;
 }

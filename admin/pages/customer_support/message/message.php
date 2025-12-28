@@ -99,7 +99,7 @@ function timeAgo($datetime) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="message.css">
+    <link rel="stylesheet" href="message.css?v=<?= time() ?>">
 </head>
 <body>
 <div class="container-fluid position-relative d-flex p-0">
@@ -135,23 +135,37 @@ function timeAgo($datetime) {
                 <?php endif; ?>
 
                 <div class="row" style="height: 65vh;">
-                    <div class="col-md-4 border-end">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="col-md-3 border-end">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5 class="mb-0" style="color: #412d3b; font-weight: 700;">
                                 <i class="fas fa-list" style="color: #deccca; margin-right: 8px;"></i> Danh sách chat
                             </h5>
                         </div>
                         
-                        <div style="height: calc(100% - 50px); max-height: 320px; overflow-y: auto;">
+                        <!-- Added Filter Tabs -->
+                        <div class="chat-filter-tabs">
+                            <button class="chat-filter-tab active" onclick="filterChat('all', this)">Tất cả</button>
+                            <button class="chat-filter-tab" onclick="filterChat('unanswered', this)">Chưa trả lời</button>
+                            <button class="chat-filter-tab" onclick="filterChat('unquoted', this)">Chưa báo giá</button>
+                            <button class="chat-filter-tab" onclick="filterChat('incomplete', this)">Chưa hoàn thành</button>
+                        </div>
+                        
+                        <div style="height: calc(100% - 90px); max-height: 280px; overflow-y: auto;">
                             <?php if (empty($sessions)): ?>
                                 <div class="text-center text-muted py-5">
                                     <i class="fas fa-comments fa-3x mb-3"></i>
                                     <p>Chưa có cuộc trò chuyện nào</p>
                                 </div>
                             <?php else: ?>
-                                <?php foreach($sessions as $session): ?>
-                                <div class="session-item p-3 mb-2 rounded <?= $session['support_id'] == $selected_id ? 'active' : '' ?>" 
-                                     onclick="selectSession(<?= $session['support_id'] ?>)" style="cursor: pointer;">
+                                <?php foreach($sessions as $index => $session): 
+                                    // Simulation: Mark the 2nd session as completed for demo
+                                    $is_completed = ($index === 1); 
+                                    $completed_class = $is_completed ? 'completed' : '';
+                                ?>
+                                <div class="session-item p-3 mb-2 rounded <?= $session['support_id'] == $selected_id ? 'active' : '' ?> <?= $completed_class ?>" 
+                                     onclick="selectSession(<?= $session['support_id'] ?>)" style="cursor: pointer;"
+                                     data-status="<?= $session['last_message_is_customer'] ? 'unanswered' : 'answered' ?>"
+                                     data-completed="<?= $is_completed ? 'true' : 'false' ?>">
                                     <div class="d-flex align-items-start">
                                         <div class="session-avatar me-3">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center" 
@@ -169,7 +183,14 @@ function timeAgo($datetime) {
                                             </div>
                                             
                                             <p class="mb-1 text-muted small text-truncate" style="max-width: 200px;">
-                                                <?= htmlspecialchars(substr($session['last_message'], 0, 35)) ?><?= strlen($session['last_message']) > 35 ? '...' : '' ?>
+                                                <?php 
+                                                    $lastMsg = $session['last_message'];
+                                                    if (strpos($lastMsg, '{"type":"quote"') === 0) {
+                                                        $lastMsg = '[Báo giá]';
+                                                    }
+                                                    echo htmlspecialchars(substr($lastMsg, 0, 35));
+                                                    echo strlen($lastMsg) > 35 ? '...' : '';
+                                                ?>
                                                 <?php if ($session['last_message_is_customer'] == 1): ?>
                                                     <span class="badge bg-warning text-dark ms-1" style="font-size: 0.6em;">chưa phản hồi</span>
                                                 <?php endif; ?>
@@ -194,7 +215,7 @@ function timeAgo($datetime) {
                         </div>
                     </div>
 
-                    <div class="col-md-8 d-flex flex-column">
+                    <div class="col-md-6 border-end d-flex flex-column">
                         <?php if ($current_session): ?>
                             <div class="chat-header p-3 border-bottom" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
                                 <div class="d-flex align-items-center">
@@ -248,7 +269,22 @@ function timeAgo($datetime) {
                                         <?php else: ?>
                                             <div class="message-content text-end">
                                                 <div class="message-bubble admin-message">
-                                                    <?= nl2br(htmlspecialchars($msg['reply_message'])) ?>
+                                                    <?php 
+                                                        // Check if message is a JSON "fake quote"
+                                                        if (strpos($msg['reply_message'], '{"type":"quote"') === 0) {
+                                                            $quoteData = json_decode($msg['reply_message'], true);
+                                                            echo '<div class="quote-message">
+                                                                    <div class="quote-header"><i class="fas fa-file-invoice-dollar"></i> BÁO GIÁ</div>
+                                                                    <div class="quote-body">
+                                                                        <div class="quote-row"><span>Dịch vụ:</span> <strong>'.htmlspecialchars($quoteData['service']).'</strong></div>
+                                                                        <div class="quote-row"><span>Mã dự án:</span> <span>'.htmlspecialchars($quoteData['projectCode']).'</span></div>
+                                                                        <div class="quote-total">Tổng cộng: '.htmlspecialchars($quoteData['price']).'</div>
+                                                                    </div>
+                                                                  </div>';
+                                                        } else {
+                                                            echo nl2br(htmlspecialchars($msg['reply_message']));
+                                                        }
+                                                    ?>
                                                 </div>
                                                 <small class="text-muted">
                                                     Admin • <?= date('H:i d/m/Y', strtotime($msg['created_at'])) ?>
@@ -265,8 +301,23 @@ function timeAgo($datetime) {
                                 <?php endforeach; ?>
                             </div>
 
-                            <div class="chat-input border-top p-3" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-                                <form method="POST" class="d-flex align-items-end gap-2">
+                            <!-- Chat Input Toolbar & Form -->
+                            <div class="chat-input border-top" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                <div class="chat-toolbar">
+                                    <div class="toolbar-actions">
+                                        <button class="btn-toolbar" title="Gửi file"><i class="fas fa-paperclip"></i></button>
+                                        <button class="btn-toolbar" title="Gửi ảnh"><i class="far fa-image"></i></button>
+                                    </div>
+                                    <div class="toolbar-actions">
+                                        <button type="button" class="btn-action-large btn-quote" data-bs-toggle="modal" data-bs-target="#quoteModal">
+                                            <i class="fas fa-file-invoice-dollar me-1"></i> Gửi báo giá
+                                        </button>
+                                        <button type="button" class="btn-action-large btn-complete" onclick="confirmCompletion()">
+                                            <i class="fas fa-check-circle me-1"></i> Xác nhận hoàn tất
+                                        </button>
+                                    </div>
+                                </div>
+                                <form method="POST" class="d-flex align-items-end gap-2 p-3">
                                     <input type="hidden" name="action" value="send_message">
                                     <input type="hidden" name="support_id" value="<?= $current_session['support_id'] ?>">
                                     
@@ -276,7 +327,7 @@ function timeAgo($datetime) {
                                                 required style="resize: none; border: 2px solid #e9ecef; border-radius: 15px; padding: 12px 16px; background: white;"></textarea>
                                     </div>
                                     
-                                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #412d3b 0%, #deccca 100%); color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600;">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-paper-plane"></i> Gửi
                                     </button>
                                 </form>
@@ -291,11 +342,120 @@ function timeAgo($datetime) {
                             </div>
                         <?php endif; ?>
                     </div>
+
+                    <!-- Project Documents Sidebar -->
+                    <div class="col-md-3 d-flex flex-column bg-white">
+                        <div class="p-3 border-bottom">
+                            <h6 class="mb-0" style="color: #412d3b; font-weight: 700;">
+                                <i class="fas fa-folder-open me-2" style="color: #deccca;"></i> Tài liệu dự án
+                            </h6>
+                        </div>
+                        <div class="flex-grow-1 p-3" style="overflow-y: auto;">
+                            <?php if ($current_session): ?>
+                                <div class="doc-list">
+                                    <!-- Mock Documents -->
+                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
+                                        <div class="doc-icon me-3 text-danger"><i class="fas fa-file-pdf fa-lg"></i></div>
+                                        <div class="flex-grow-1 min-width-0">
+                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Yeu_cau_du_an.pdf</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">2.5 MB • 10:30 AM</div>
+                                        </div>
+                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
+                                    </div>
+                                    
+                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
+                                        <div class="doc-icon me-3 text-primary"><i class="fas fa-file-word fa-lg"></i></div>
+                                        <div class="flex-grow-1 min-width-0">
+                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Hop_dong.docx</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">1.2 MB • Hôm qua</div>
+                                        </div>
+                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
+                                    </div>
+
+                                    <div class="doc-item p-2 mb-2 rounded border bg-light d-flex align-items-center">
+                                        <div class="doc-icon me-3 text-success"><i class="fas fa-file-image fa-lg"></i></div>
+                                        <div class="flex-grow-1 min-width-0">
+                                            <div class="fw-bold text-truncate" style="font-size: 0.9rem;">Logo_final.png</div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">500 KB • 2 ngày trước</div>
+                                        </div>
+                                        <button class="btn btn-link btn-sm text-muted"><i class="fas fa-download"></i></button>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <button class="btn btn-outline-primary btn-sm w-100 border-dashed" style="border-style: dashed;">
+                                        <i class="fas fa-plus me-1"></i> Thêm tài liệu mới
+                                    </button>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center text-muted mt-5">
+                                    <i class="fas fa-folder-open fa-3x mb-3" style="opacity: 0.3;"></i>
+                                    <p class="small">Chọn cuộc trò chuyện để xem tài liệu</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <?php include __DIR__.'/../../dashboard/footer.php'; ?>
     </div>
+</div>
+
+<!-- Quote Modal -->
+<div class="modal fade" id="quoteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background: linear-gradient(135deg, #412d3b 0%, #6c4a57 100%); color: white;">
+        <h5 class="modal-title"><i class="fas fa-file-invoice-dollar me-2"></i>Tạo Báo Giá</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="quoteForm">
+            <div class="mb-3">
+                <label class="form-label">Tên công việc</label>
+                <input type="text" class="form-control" name="jobName" required placeholder="VD: Thiết kế logo">
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Dịch vụ</label>
+                    <select class="form-select" name="service">
+                        <option value="Thiết kế đồ họa">Thiết kế đồ họa</option>
+                        <option value="Lập trình web">Lập trình web</option>
+                        <option value="Content Marketing">Content Marketing</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mã dự án</label>
+                    <input type="text" class="form-control" name="projectCode" required placeholder="VD: PRJ-001">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Người gửi</label>
+                    <input type="text" class="form-control" name="sender" value="Admin" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Người nhận</label>
+                    <input type="text" class="form-control" name="receiver" value="<?= $current_session['customer_name'] ?? '' ?>" readonly>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Đơn giá (VNĐ)</label>
+                <input type="text" class="form-control" name="price" required placeholder="300,000">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Điều khoản</label>
+                <textarea class="form-control" name="terms" rows="3">Thanh toán 50% trước khi bắt đầu. Hoàn thành trong 3 ngày.</textarea>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-primary" onclick="sendQuote()">Gửi Báo Giá</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -310,18 +470,96 @@ function refreshPage() {
     window.location.reload();
 }
 
+// Filter Logic
+function filterChat(type, btn) {
+    // Update active tab
+    document.querySelectorAll('.chat-filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Filter items
+    const items = document.querySelectorAll('.session-item');
+    items.forEach(item => {
+        if (type === 'all') {
+            item.style.display = 'block';
+        } else if (type === 'unanswered') {
+            if (item.dataset.status === 'unanswered') item.style.display = 'block';
+            else item.style.display = 'none';
+        } else if (type === 'incomplete') {
+             if (item.dataset.completed === 'false') item.style.display = 'block';
+             else item.style.display = 'none';
+        } else {
+             // Mockup for unquoted - show all for now or random
+             item.style.display = 'block';
+        }
+    });
+}
+
+function confirmCompletion() {
+    // Toggle visual state of current active session
+    const activeSession = document.querySelector('.session-item.active');
+    if (activeSession) {
+        if (activeSession.classList.contains('completed')) {
+             if(confirm('Đánh dấu dự án này là chưa hoàn thành?')) {
+                 activeSession.classList.remove('completed');
+             }
+        } else {
+             if(confirm('Xác nhận hoàn tất dự án này?')) {
+                 activeSession.classList.add('completed');
+                 // Create tick icon if not exists
+                 // (Handled by CSS ::after)
+                 // Also add "Completed" system message (Mock)
+                 appendSystemMessage('Dự án đã được đánh dấu hoàn tất.');
+             }
+        }
+    }
+}
+
+function sendQuote() {
+    const form = document.getElementById('quoteForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    // In real app, you would send this to backend to generate PDF
+    // Here we simulate by sending a special JSON message to be rendered as a quote card
+    
+    const quoteJson = JSON.stringify({
+        type: 'quote',
+        service: data.service,
+        projectCode: data.projectCode,
+        price: data.price + ' VNĐ'
+    });
+    
+    // We will submit the main form with this content
+    const msgInput = document.querySelector('textarea[name="message"]');
+    msgInput.value = quoteJson;
+    
+    // Close modal
+    var modal = bootstrap.Modal.getInstance(document.getElementById('quoteModal'));
+    modal.hide();
+    
+    // Submit
+    msgInput.closest('form').submit();
+}
+
+function appendSystemMessage(text) {
+    const chatBox = document.getElementById('chat-box');
+    const msgHtml = `
+        <div class="message-item mb-3 d-flex justify-content-center">
+            <div class="badge bg-success p-2">
+                <i class="fas fa-check-circle"></i> ${text}
+            </div>
+        </div>
+    `;
+    chatBox.insertAdjacentHTML('beforeend', msgHtml);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
 window.onload = function() {
     var chatBox = document.getElementById('chat-box');
     if(chatBox) {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
-
-setInterval(function() {
-    if (window.location.href.indexOf('?id=') > -1) {
-        window.location.reload();
-    }
-}, 30000);
 
 document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.querySelector('textarea[name="message"]');
@@ -336,4 +574,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-</html> 
+</html>

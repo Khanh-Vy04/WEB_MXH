@@ -123,10 +123,28 @@ function isAdmin($user = null) {
     }
 }
 
+// Hàm kiểm tra quyền superadmin
+function isSuperAdmin() {
+    if (isLoggedIn()) {
+        global $conn;
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT role_id FROM users WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $userData = $result->fetch_assoc();
+            return $userData['role_id'] == 3;
+        }
+    }
+    return false;
+}
+
 // Hàm bảo vệ trang yêu cầu đăng nhập
 function requireLogin() {
     if (!isLoggedIn()) {
-        header("Location: login.php");
+        header("Location: /WEB_MXH/login.php");
         exit();
     }
 }
@@ -135,7 +153,15 @@ function requireLogin() {
 function requireAdmin() {
     // Sử dụng isAdmin() mới có thể nhận parameter hoặc kiểm tra từ session
     if (!isAdmin()) {
-        header("Location: index.php");
+        header("Location: /WEB_MXH/index.php");
+        exit();
+    }
+}
+
+// Hàm bảo vệ trang superadmin
+function requireSuperAdmin() {
+    if (!isSuperAdmin()) {
+        header("Location: /WEB_MXH/login.php");
         exit();
     }
 }

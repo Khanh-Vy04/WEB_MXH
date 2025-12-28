@@ -572,7 +572,6 @@ if ($artist_id > 0) {
     <?php include 'includes/footer.php'; ?>
 
     <!-- Include Chat Widget -->
-    <?php include 'includes/chat-widget.php'; ?>
 
     <!-- jQuery -->
     <script src="assets/js/jquery.js"></script>
@@ -587,10 +586,8 @@ if ($artist_id > 0) {
     <script src="assets/js/custom-search.js"></script>
 
     <!-- Chat Widget CSS -->
-    <link rel="stylesheet" href="includes/chat-widget.css">
 
     <!-- Chat Widget JS -->
-    <script src="includes/chat-widget.js"></script>
 
     <script>
         <?php if ($debug): ?>
