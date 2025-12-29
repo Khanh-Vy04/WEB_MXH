@@ -799,6 +799,78 @@ div.message-bubble.customer-message {
     gap: 8px;
 }
 
+/* --- Chat alignment fixes ---
+   Ensure center chat column (col-md-6) matches flex behaviour and
+   remove extra bottom padding so messages sit flush with toolbar */
+.col-md-6.d-flex.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 65vh !important;
+  max-height: 65vh !important;
+  overflow: hidden !important;
+}
+
+/* Remove extra bottom padding so messages sit directly above toolbar */
+.chat-messages {
+  padding-bottom: 0 !important;
+}
+
+/* Slightly reduce message item bottom spacing */
+.chat-messages .mb-3 {
+  margin-bottom: 6px !important;
+}
+
+/* Ensure chat input is pinned immediately after messages */
+.chat-input {
+  flex-shrink: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* If any parent row uses inline height style, ensure the center column still lays out correctly */
+.row[style*="height: 65vh"] .col-md-6.d-flex.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 65vh !important;
+  max-height: 65vh !important;
+}
+
+/* Keep scroll area flexible and ensure no invisible gap at bottom */
+.chat-messages::-webkit-scrollbar { width: 6px; }
+
+/* Stronger, scoped overrides to make chat messages fill remaining height
+   and align flush with the toolbar, without touching other pages */
+.row[style*="height: 65vh"] {
+  /* Ensure the row remains fixed-height */
+  height: 65vh !important;
+}
+
+.row[style*="height: 65vh"] .col-md-6.d-flex.flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 65vh !important;
+}
+
+.row[style*="height: 65vh"] .col-md-6 .chat-messages {
+  /* remove previously set calc/max heights and use flex sizing */
+  height: auto !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important; /* allow flex children to shrink properly */
+  padding-bottom: 0 !important;
+  overflow-y: auto !important;
+}
+
+.row[style*="height: 65vh"] .col-md-6 .chat-input {
+  flex: 0 0 auto !important;
+  margin-top: 0 !important;
+}
+
+/* If toolbar height changes, ensure chat-messages still fits: compute pad */
+.row[style*="height: 65vh"] .col-md-6 .chat-header,
+.row[style*="height: 65vh"] .col-md-6 .chat-toolbar {
+  flex: 0 0 auto !important;
+}
+
 .quote-body {
     padding: 10px 12px;
     font-size: 0.85rem;
@@ -883,3 +955,23 @@ textarea:active,
 }
 
 /* ...existing code... */
+
+/* Doc list items (scoped) - change bg-light used for documents to deccca / 412d3b */
+#docList .bg-light {
+  background-color: #deccca !important;
+  color: #412d3b !important;
+  border-color: transparent !important;
+}
+
+#docList .bg-light a {
+  color: #412d3b !important;
+  text-decoration: none !important;
+}
+
+#docList .bg-light i {
+  color: #412d3b !important;
+}
+
+#docList .bg-light:hover {
+  background-color: #deccca !important;
+}
