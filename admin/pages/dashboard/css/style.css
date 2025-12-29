@@ -468,7 +468,7 @@ input.form-control.bg-dark {
 
 /* Ensure white text for voucher codes with dark gray background */
 .badge[style*="background-color: #412d3b"] {
-  color: #fff !important;
+    color: #fff !important;
 }
 
 /* Cập nhật màu cho các nút thao tác */

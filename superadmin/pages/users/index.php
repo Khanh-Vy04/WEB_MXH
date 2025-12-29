@@ -142,8 +142,8 @@ function getRoleName($roleId) {
             font-weight: 600;
         }
         .nav-tabs .nav-link.active {
-            color: #EB1616;
-            border-bottom: 2px solid #EB1616;
+            color: #412D3B;
+            border-bottom: 2px solid #412D3B;
             background: transparent;
         }
         .nav-tabs {
@@ -159,9 +159,9 @@ function getRoleName($roleId) {
             background: transparent;
         }
         .filter-btn.active {
-            background: #EB1616;
+            background: #412D3B;
             color: white;
-            border-color: #EB1616;
+            border-color: #412D3B;
         }
         .status-badge {
             padding: 5px 12px;
@@ -170,10 +170,34 @@ function getRoleName($roleId) {
             font-weight: 500;
         }
         .status-pending { background-color: #ffc107; color: #000; }
-        .action-btn { cursor: pointer; margin: 0 5px; font-size: 1.1rem; }
-        .btn-view { color: #000; }
-        .btn-edit { color: #000; }
-        .btn-delete { color: #dc3545; }
+        /* icon + label inline */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 1.05rem;
+            text-decoration: none;
+            color: inherit;
+        }
+        .action-btn small { font-size: 0.75rem; margin: 0; line-height: 1; display: inline-block; }
+
+        /* override delete / danger color to custom dark-maroon */
+        .btn-delete, .action-btn.text-danger { color: #412D3B !important; }
+
+        /* make search input light on this page */
+        input.search-input.form-control {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+            border: 1px solid #ced4da !important;
+        }
+
+        /* override danger badges (e.g. pending count) to custom color */
+        .badge.bg-danger, .badge.bg-danger.rounded-pill {
+            background-color: #412D3B !important;
+            color: #fff !important;
+        }
     </style>
 </head>
 
@@ -221,7 +245,7 @@ function getRoleName($roleId) {
                                 </div>
                                 <form action="index.php" method="GET" class="d-flex">
                                     <?php if($roleFilter): ?><input type="hidden" name="role" value="<?= $roleFilter ?>"><?php endif; ?>
-                                    <input type="text" name="search" class="form-control me-2" placeholder="Tìm kiếm người dùng..." value="<?= htmlspecialchars($search) ?>">
+                                    <input type="text" name="search" class="form-control me-2 search-input" placeholder="Tìm kiếm người dùng..." value="<?= htmlspecialchars($search) ?>">
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
                                 </form>
                             </div>
@@ -244,13 +268,13 @@ function getRoleName($roleId) {
                                                 <td><?= htmlspecialchars($user['email']) ?></td>
                                                 <td><?= getRoleName($user['role_id']) ?></td>
                                                 <td>
-                                                    <a href="#" class="action-btn btn-view" title="Xem"><i class="fa fa-eye"></i><br><small>Xem</small></a>
-                                                    <a href="#" class="action-btn btn-edit" title="Sửa"><i class="fa fa-edit"></i><br><small>Sửa</small></a>
+                                                    <a href="#" class="action-btn btn-view" title="Xem"><i class="fa fa-eye"></i><small>Xem</small></a>
+                                                    <a href="#" class="action-btn btn-edit" title="Khoá"><i class="fa fa-edit"></i><small>Khoá</small></a>
                                                     <?php if($user['role_id'] != 3): // Don't allow deleting SuperAdmin ?>
-                                                    <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa user này?');">
+                                                    <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn khoá user này?');">
                                                         <input type="hidden" name="action" value="delete_user">
                                                         <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                                        <button type="submit" class="border-0 bg-transparent action-btn btn-delete" title="Xóa"><i class="fa fa-trash-alt"></i><br><small>Xóa</small></button>
+                                                    
                                                     </form>
                                                     <?php endif; ?>
                                                 </td>
@@ -287,20 +311,20 @@ function getRoleName($roleId) {
                                                 <td><span class="status-badge status-pending">Chờ xét duyệt</span></td>
                                                 <td>
                                                     <!-- View Details (Mock) -->
-                                                    <a href="#" class="action-btn btn-view" title="Xem chi tiết" data-bs-toggle="modal" data-bs-target="#detailModal<?= $pUser['user_id'] ?>"><i class="fa fa-eye"></i><br><small>Xem</small></a>
+                                                    <a href="#" class="action-btn btn-view" title="Xem chi tiết" data-bs-toggle="modal" data-bs-target="#detailModal<?= $pUser['user_id'] ?>"><i class="fa fa-eye"></i><small>Xem</small></a>
                                                     
                                                     <!-- Approve -->
                                                     <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Phê duyệt yêu cầu này?');">
                                                         <input type="hidden" name="action" value="approve_freelancer">
                                                         <input type="hidden" name="user_id" value="<?= $pUser['user_id'] ?>">
-                                                        <button type="submit" class="border-0 bg-transparent action-btn text-success" title="Duyệt"><i class="fa fa-check-circle"></i><br><small>Duyệt</small></button>
+                                                        <button type="submit" class="border-0 bg-transparent action-btn text-success" title="Duyệt"><i class="fa fa-check-circle"></i><small>Duyệt</small></button>
                                                     </form>
                                                     
                                                     <!-- Reject -->
                                                     <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Từ chối yêu cầu này?');">
                                                         <input type="hidden" name="action" value="reject_freelancer">
                                                         <input type="hidden" name="user_id" value="<?= $pUser['user_id'] ?>">
-                                                        <button type="submit" class="border-0 bg-transparent action-btn text-danger" title="Từ chối"><i class="fa fa-times-circle"></i><br><small>Từ chối</small></button>
+                                                        <button type="submit" class="border-0 bg-transparent action-btn text-danger" title="Từ chối"><i class="fa fa-times-circle"></i><small>Từ chối</small></button>
                                                     </form>
                                                 </td>
                                             </tr>

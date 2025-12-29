@@ -293,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 padding: 20px;
                 margin: 0 10px;
                 max-width: calc(100% - 20px);
-            }
+        }
             
             .page-header {
                 flex-direction: column;
@@ -302,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             
             .form-buttons {
                 flex-direction: column;
-            }
+        }
             
             .btn-primary, .btn-secondary {
                 width: 100%;

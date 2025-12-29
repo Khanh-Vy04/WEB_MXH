@@ -67,7 +67,7 @@ if (isset($_GET['category_id']) && isset($categories[$_GET['category_id']])) {
         .action-btn { cursor: pointer; margin: 0 5px; font-size: 1.1rem; border: none; background: transparent; }
         .btn-view { color: #000; }
         .btn-edit { color: #000; }
-        .btn-delete { color: #dc3545; }
+        .btn-delete { color: #412D3B; }
         .cat-icon { width: 40px; height: 40px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #2d3436; }
         .clickable-row:hover { background-color: #f8f9fa; cursor: pointer; }
     </style>
