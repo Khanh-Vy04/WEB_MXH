@@ -272,6 +272,13 @@ $reviews = [
             font-size: 0.8rem;
             margin-bottom: 3px;
         }
+        /* Specific badge style for project IDs only */
+        .badge-project-id {
+            background-color: #deccca !important;
+            color: #412d3b !important;
+            border-color: transparent !important;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -374,7 +381,7 @@ $reviews = [
                                     </div>
                                     <small class="text-muted"><?= $review['date'] ?></small>
                                 </td>
-                                <td><span class="badge bg-light text-dark border"><?= $review['project_id'] ?></span></td>
+                                <td><span class="badge badge-project-id border"><?= $review['project_id'] ?></span></td>
                                 <td>
                                     <div class="customer-info">
                                         <img src="<?= htmlspecialchars($review['avatar']) ?>" 

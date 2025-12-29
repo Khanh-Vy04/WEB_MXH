@@ -36,7 +36,7 @@ $product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : 101;
         .logo-text { font-size: 20px; font-weight: 700; color: #412d3b; text-decoration: none; }
         .header-actions { display: flex; align-items: center; gap: 15px; }
         .nav-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; background: #f0f2f5; color: #65676b; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; }
-        .nav-btn:hover { background: #e4e6eb; color: #050505; }
+        .nav-btn:hover { background: #e4e6eb; color:rgb(149, 33, 81); }
         .user-actions { display: flex; align-items: center; gap: 20px; margin-left: 20px; border-left: 1px solid #e4e6eb; padding-left: 20px; }
         .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
         
@@ -89,7 +89,7 @@ $product_id = isset($_GET['product_id']) ? intval($_GET['product_id']) : 101;
         }
         
         .message-image { max-width: 200px; border-radius: 10px; cursor: pointer; }
-        .message-file { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 10px; }
+        .message-file { display: flex; align-items: center; gap: 10px; background: rgba(232, 12, 133, 0.05); padding: 10px; border-radius: 10px; }
         .message-quote { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 0; overflow: hidden; width: 300px; color: #333; }
         .quote-header { background: #f8f9fa; padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
         .quote-body { padding: 15px; }

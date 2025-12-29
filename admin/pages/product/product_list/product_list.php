@@ -32,7 +32,7 @@ $projects = [
 <html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>Dự án của tôi - UniWork</title>
+    <title>Quản lý dự án</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="/WEB_MXH/user/assets/logo/favicon.png" rel="icon">
     
@@ -193,8 +193,53 @@ $projects = [
             margin-bottom: 15px;
             color: #e9ecef;
         }
+        /* Layout for sticky footer without modifying backend footer file
+           - Use flex column so footer stays at bottom even with little content
+           - Do not add visual effects to footer (no shadows/transitions)
+           - Minimal, safe overrides only for layout behavior */
+        html, body {
+            height: 100%;
+        }
+
+        /* Keep main page container full viewport height */
+        .container-fluid.position-relative.d-flex.p-0 {
+            min-height: 100vh;
+        }
+
+        /* Make content a vertical flex container so footer can be pushed down */
+        .content {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 100vh;
+        }
+
+        /* The primary inner container that holds page content should grow */
+        .content > .main-body {
+            flex: 1 1 auto;
+        }
+
+        /* Any other immediate container-fluid children (e.g. included footer) must not grow */
+        .content > .container-fluid.pt-4:not(.main-body) {
+            flex: 0 0 auto;
+        }
+
+        /* Ensure included footer is normal-flow and sits at bottom (no effects) */
+        .content footer {
+            margin-top: auto !important;
+            position: static !important;
+            box-shadow: none !important;
+            transition: none !important;
+        }
+
+        /* Also ensure footer children don't introduce unexpected visuals */
+        .content footer * {
+            box-shadow: none !important;
+            transition: none !important;
+        }
     </style>
 </head>
+
 
 <body>
 <div class="container-fluid position-relative d-flex p-0">
@@ -203,7 +248,7 @@ $projects = [
     <div class="content">
         <?php include '../../dashboard/navbar.php'; ?>
         
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4 main-body">
             <h3 class="mb-4" style="color: #412d3b;">Quản lý dự án</h3>
             
             <div class="project-tabs">

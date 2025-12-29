@@ -198,7 +198,7 @@ try {
 
 <head>
     <meta charset="utf-8">
-    <title>AuraDisc - Admin Dashboard</title>
+    <title>UniWork - Freelancer Center</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -529,13 +529,13 @@ try {
                     <div class="col-sm-12 col-xl-6">
                         <div class="chart-container text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Top 3 sản phẩm bán chạy tuần này</h6>
+                                <h6 class="mb-0">Top 3 dịch vụ được thuê nhiều nhất tuần này</h6>
                             </div>
                             <?php if (empty($top_products)): ?>
                                 <div class="py-4">
                                     <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
                                     <h6 class="text-muted">Không có dữ liệu</h6>
-                                    <p class="text-muted">Chưa có sản phẩm nào được bán trong tuần này</p>
+                                    <p class="text-muted">Chưa có dịch vụ nào được thuê trong tuần này</p>
                                 </div>
                             <?php else: ?>
                                 <canvas id="worldwide-sales"></canvas>
@@ -891,6 +891,34 @@ try {
                 }
             }, 5000);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const newLabels = ['Lập trình Web trọn gói', 'Viết bài SEO chuẩn', 'Edit Video Tiktok']; // sửa thành chữ bạn muốn
+
+          function replaceLegend(labels) {
+            const canvas = document.getElementById('worldwide-sales');
+            if (!canvas) return;
+            let chart = null;
+
+            if (window.Chart && Chart.getChart) chart = Chart.getChart(canvas);
+            if (!chart && window.Chart && Chart.instances) {
+              for (const id in Chart.instances) {
+                if (Chart.instances[id].canvas === canvas) { chart = Chart.instances[id]; break; }
+              }
+            }
+            if (!chart) return setTimeout(() => replaceLegend(labels), 150);
+
+            if (chart.data && Array.isArray(chart.data.labels)) {
+              chart.data.labels = labels.slice(0, chart.data.labels.length);
+            } else if (chart.data && Array.isArray(chart.data.datasets)) {
+              chart.data.datasets.forEach((ds, i) => { ds.label = labels[i] ?? ds.label; });
+            }
+
+            chart.update();
+          }
+
+          replaceLegend(newLabels);
+        });
     </script>
 </body>
 

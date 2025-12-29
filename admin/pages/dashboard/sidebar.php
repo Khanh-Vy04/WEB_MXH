@@ -9,7 +9,7 @@
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
                     <div class="ms-3">
-                        <h6 class="mb-0">FREELANCER</h6>
+                        <h6 class="mb-0">FREELANCER CENTER</h6>
                         <span class="text-muted">Freelancer</span>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
                     
                     <!-- Dự án của tôi (Old Product Management) -->
                     <a href="/WEB_MXH/admin/pages/product/product_list/product_list.php" class="nav-item nav-link <?php if(isset($currentPage) && strpos($currentPage, 'product') === 0) echo 'active'; ?>">
-                        <i class="fa fa-briefcase me-2"></i>Dự án của tôi
+                        <i class="fa fa-briefcase me-2"></i>Quản lý dự án
                     </a>
 
                     <!-- Quản lý dịch vụ (New) -->

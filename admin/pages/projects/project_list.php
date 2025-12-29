@@ -54,12 +54,12 @@ $services = [
 
 function getStatusBadge($status) {
     switch ($status) {
-        case 'active': return '<span class="badge bg-success">Hoạt động</span>';
-        case 'pending': return '<span class="badge bg-warning text-dark">Chờ phê duyệt</span>';
-        case 'draft': return '<span class="badge bg-secondary">Bản nháp</span>';
-        case 'paused': return '<span class="badge bg-info text-dark">Tạm dừng</span>';
-        case 'inactive': return '<span class="badge bg-danger">Không hoạt động</span>';
-        default: return '<span class="badge bg-secondary">Không xác định</span>';
+        case 'active': return '<span class="badge badge-draft">Hoạt động</span>';
+        case 'pending': return '<span class="badge badge-draft">Chờ phê duyệt</span>';
+        case 'draft': return '<span class="badge badge-draft">Bản nháp</span>';
+        case 'paused': return '<span class="badge badge-draft">Tạm dừng</span>';
+        case 'inactive': return '<span class="badge badge-draft">Không hoạt động</span>';
+        default: return '<span class="badge badge-draft">Không xác định</span>';
     }
 }
 ?>
@@ -260,6 +260,11 @@ function getStatusBadge($status) {
             font-size: 0.8rem;
             font-weight: 600;
         }
+        .badge-draft {
+    background-color: #deccca !important;
+    color: #412d3b !important;
+    border-color: transparent !important;
+}
     </style>
 </head>
 

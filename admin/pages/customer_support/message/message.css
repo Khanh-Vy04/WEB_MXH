@@ -1,7 +1,7 @@
 /* Form Controls */
 .form-control:focus {
   border-color: #ffffff !important;
-  box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
+  box-shadow: 0 0 0 0.2rem rgba(171, 8, 62, 0.25) !important;
 }
 
 /* Admin Chat Support Styles */
@@ -11,7 +11,7 @@
   transition: all 0.3s ease;
   border: 1px solid #e9ecef;
   background: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 5px rgba(65, 45, 59, 0.2);
   width: 100% !important;
   max-width: 100% !important;
   overflow: hidden !important;
@@ -72,7 +72,7 @@
   word-wrap: break-word;
   line-height: 1.4;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(195, 5, 68, 0.1);
 }
 
 .customer-message {
@@ -112,8 +112,9 @@
 }
 
 .chat-input textarea:focus {
-  border-color: #ffffff !important;
-  box-shadow: 0 0 0 0.2rem rgba(65, 45, 59, 0.25) !important;
+  border-color: #ffffff !important; /* Giữ nguyên màu viền trắng */
+  box-shadow: none !important;      /* Tắt hiệu ứng bóng/glow */
+  outline: none !important; 
 }
 
 .chat-input .btn-primary {
@@ -285,7 +286,7 @@ div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
   background: white;
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(189, 6, 97, 0.1);
   border: 1px solid #e9ecef;
 }
 
@@ -816,3 +817,69 @@ div.message-bubble.customer-message {
     font-weight: 700;
     color: #412d3b;
 }
+/* ...existing code... */
+/* Force form controls and chat inputs to white/gray background, black text and remove focus/active background changes */
+.form-control,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input,
+textarea,
+.message-input,
+.chat-input textarea {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #e9ecef !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: none !important;
+}
+
+/* Prevent background/color change on focus/active/hover */
+.form-control:focus,
+input:focus,
+textarea:focus,
+.message-input:focus,
+.chat-input textarea:focus,
+.form-control:active,
+input:active,
+textarea:active,
+.message-input:active,
+.message-input:hover,
+.chat-input textarea:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #e9ecef !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ensure same look even if user prefers dark scheme */
+@media (prefers-color-scheme: dark) {
+  .form-control,
+  input,
+  textarea,
+  .message-input,
+  .chat-input textarea {
+    background: #f8f9fa !important;
+    color: #000000 !important;
+    border-color: #e9ecef !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+}
+/* ...existing code... */
+/* ...existing code... */
+
+/* Override .bg-primary red -> #deccca and replace white text with #412d3b */
+.bg-primary {
+  background-color: #deccca !important;
+}
+
+/* If element also has .text-white, force new text color */
+.bg-primary.text-white,
+.bg-primary.text-white * {
+  color: #412d3b !important;
+}
+
+/* ...existing code... */
