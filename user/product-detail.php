@@ -624,28 +624,10 @@ $freelancer_avatar = $artist_info ? $artist_info['image_url'] : "assets/images/c
                             </div>
                         </div>
 
-                        <!-- Quick Stats Box -->
-                        <div class="quick-stats">
-                            <h5>Thông tin nhanh</h5>
-                            <div class="stat-row">
-                                <div class="rating-box">
-                                    <div class="rating-num"><?php echo $rating; ?></div>
-                                    <div class="text-muted small">Đánh giá</div>
-                                </div>
-                                <div class="review-count-box">
-                                    <div class="review-num"><?php echo $review_count; ?></div>
-                                    <div class="text-muted small">Lượt đánh giá</div>
-                                </div>
-                            </div>
-                            <div class="mt-3 small text-muted">
-                                <p><i class="fa fa-shield text-success"></i> Đảm bảo hoàn tiền</p>
-                                <p><i class="fa fa-trophy text-warning"></i> Freelancer chuyên nghiệp</p>
-                            </div>
-                        </div>
+                
+                        
 
-                        <div class="text-center mt-3">
-                             <button class="btn btn-outline-secondary w-100">Liên hệ Freelancer</button>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

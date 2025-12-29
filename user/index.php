@@ -87,6 +87,16 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
         <![endif]-->
 
         <style>
+            /* Override text-transform capitalize từ style.css */
+            body, body * {
+                text-transform: none !important;
+            }
+            
+            /* Giữ lại uppercase cho các nút cần thiết */
+            .btn-promo {
+                text-transform: uppercase !important;
+            }
+            
             /* --- Restored CSS for Cards & Vouchers --- */
             .section-padding { padding: 80px 0; }
             .section-title { margin-bottom: 50px; text-align: center; }
@@ -168,7 +178,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 
             /* --- New Hero & Promo CSS --- */
             .hero-area {
-                padding: 120px 0 80px;
+                padding: 180px 0 80px;
                 background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
                 position: relative;
                 overflow: hidden;
@@ -181,30 +191,30 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
             }
             .badge-item i { color: #28a745; }
             .badge-item:first-child i { color: #ffc107; }
-            .hero-content h1 { font-size: 3.5rem; font-weight: 800; color: #2d3436; line-height: 1.2; margin-bottom: 25px; }
-            .hero-desc { font-size: 1.15rem; color: #636e72; max-width: 800px; margin: 0 auto 50px; line-height: 1.8; }
+            .hero-content h1 { font-size: 3.5rem; font-weight: 800; color: #2d3436; line-height: 1.2; margin-bottom: 25px; text-transform: none; }
+            .hero-desc { font-size: 1.4rem; color: #636e72; max-width: 800px; margin: 0 auto 50px; line-height: 1.8; text-transform: none; }
             .hero-buttons { display: flex; justify-content: center; gap: 20px; margin-bottom: 70px; }
-            .btn-hero { padding: 15px 40px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; }
-            .btn-hero.btn-primary { background: linear-gradient(to right, #4e54c8, #8f94fb); border: none; color: white; box-shadow: 0 10px 25px rgba(78, 84, 200, 0.4); }
-            .btn-hero.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(78, 84, 200, 0.5); color: white; }
+            .btn-hero { padding: 15px 40px; border-radius: 50px; font-weight: 600; font-size: 1.1rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 10px; text-transform: none; }
+            .btn-hero.btn-primary { background: linear-gradient(to right,rgb(89, 70, 83),#deccca); border: none; color: white; box-shadow: 0 10px 25px rgba(248, 235, 235, 0.4); }
+            .btn-hero.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(239, 239, 255, 0.5); color: white; }
             .btn-hero.btn-outline { background: white; border: 2px solid #eee; color: #2d3436; }
             .btn-hero.btn-outline:hover { background: #f8f9fa; border-color: #ddd; transform: translateY(-3px); }
             .hero-stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
-            .stat-box { background: white; padding: 30px 50px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); min-width: 220px; text-align: center; transition: transform 0.3s; }
+            .stat-box { background: white; padding: 30px 50px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); min-width: 220px; text-align: center; transition: transform 0.3s; text-transform: none; }
             .stat-box:hover { transform: translateY(-5px); }
-            .stat-box h3 { font-size: 2.2rem; font-weight: 700; color: #4e54c8; margin: 0 0 5px 0; }
-            .stat-box p { margin: 0; color: #777; font-weight: 500; }
+            .stat-box h3 { font-size: 2.2rem; font-weight: 700; color:rgb(228, 229, 255); margin: 0 0 5px 0; text-transform: none; }
+            .stat-box p { margin: 0; color: #777; font-weight: 500; text-transform: none; }
 
             .promo-section { padding: 100px 0; background: white; }
-            .promo-badge { background: #eef2ff; color: #4e54c8; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; }
-            .promo-content h2 { font-size: 2.8rem; font-weight: 800; color: #2d3436; line-height: 1.3; margin-bottom: 30px; }
+            .promo-badge { background: #eef2ff; color: #412D3B; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px; text-transform: none; }
+            .promo-content h2 { font-size: 2.8rem; font-weight: 800; color: #2d3436; line-height: 1.3; margin-bottom: 30px; text-transform: none; }
             .promo-list { list-style: none; padding: 0; margin-bottom: 40px; }
-            .promo-list li { display: flex; gap: 20px; margin-bottom: 25px; color: #636e72; font-size: 1.1rem; line-height: 1.6; }
+            .promo-list li { display: flex; gap: 20px; margin-bottom: 25px; color: #636e72; font-size: 1.1rem; line-height: 1.6; text-transform: none; }
             .promo-list li .icon-box { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
             .promo-list li:nth-child(1) .icon-box { background: #e6fffa; color: #38b2ac; }
             .promo-list li:nth-child(2) .icon-box { background: #ebf8ff; color: #4299e1; }
-            .btn-promo { background: linear-gradient(to right, #4e54c8, #8f94fb); color: white; padding: 16px 50px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border: none; box-shadow: 0 10px 25px rgba(78, 84, 200, 0.4); transition: all 0.3s; font-size: 1rem; }
-            .btn-promo:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(78, 84, 200, 0.5); color: white; text-decoration: none; }
+            .btn-promo { background: linear-gradient(to right, #412D3B,#deccca); color: white; padding: 16px 50px; border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border: none; box-shadow: 0 10px 25px rgba(255, 231, 254, 0.4); transition: all 0.3s; font-size: 1rem; }
+            .btn-promo:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgb(89, 70, 83); color: white; text-decoration: none; }
             .row-flex { display: flex; align-items: center; flex-wrap: wrap; }
 
             @media (max-width: 992px) {
@@ -240,16 +250,12 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
                 <div class="row">
                     <div class="col-md-12 text-center">
                         <div class="hero-content">
-                            <div class="hero-badges">
-                                <span class="badge-item"><i class="fa fa-star"></i> 4.9/5 đánh giá</span>
-                                <span class="badge-item"><i class="fa fa-users"></i> 10,000+ sinh viên</span>
-                                <span class="badge-item"><i class="fa fa-check-circle"></i> Đảm bảo chất lượng</span>
-                            </div>
-                            <h1>Việc "Ngon" Cho Sinh Viên,<br>Giải Pháp Nhanh Cho Bạn</h1>
+                            
+                            <h1>Việc "ngon" cho sinh viên,<br>giải pháp nhanh cho bạn</h1>
                             <p class="hero-desc">UniWork kết nối những người có nhu cầu cần hỗ trợ với cộng đồng sinh viên tài năng.<br>Từ làm slide, xử lý Excel đến thiết kế ảnh... Mọi việc đều được giải quyết nhanh chóng, hiệu quả.</p>
                             <div class="hero-buttons">
                                 <a href="javascript:void(0)" onclick="checkFreelancerRegistration()" class="btn btn-hero btn-primary">Đăng ký ngay <i class="fa fa-arrow-right"></i></a>
-                                <a href="about.php" class="btn btn-hero btn-outline"><i class="fa fa-play"></i> Xem demo</a>
+                                <a href="about.php" class="btn btn-hero btn-outline"> Về chúng tôi </a>
                             </div>
                             <div class="hero-stats">
                                 <div class="stat-box">
@@ -276,7 +282,7 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 			<div class="container">
 				<div class="section-title">
 					<h2>Khám phá các dịch vụ<br>được yêu thích nhất</h2>
-                    <p>Từ thiết kế đồ họa đến lập trình web, chúng tôi có đầy đủ các dịch vụ để hỗ trợ mọi nhu cầu của bạn</p>
+            
 				</div>
 				<div class="products-grid">
 					<?php foreach ($new_products as $product): ?>
@@ -333,31 +339,151 @@ if ($result_vouchers && $result_vouchers->num_rows > 0) {
 			<div class="container">
 				<div class="section-title">
 					<h2>Khám phá các dịch vụ của UniWork</h2>
-                    <p>Tìm kiếm dịch vụ phù hợp với nhu cầu của bạn từ hàng nghìn freelancer tài năng</p>
+    
 				</div>
 				<div class="grid-container" id="genresGrid">
 					<?php 
+					// Icon mapping cho các dịch vụ freelancer
 					$genre_icons = [
-						'Rock' => 'fa fa-music', 'Pop' => 'fa fa-music', 'Jazz' => 'fa fa-music',
-						'Classical' => 'fa fa-music', 'Electronic' => 'fa fa-music',
-						'Hip Hop' => 'fa fa-music', 'Country' => 'fa fa-music', 'R&B' => 'fa fa-music'
+						// Thiết kế & Đồ họa
+						'Thiết kế đồ họa' => 'fa fa-paint-brush',
+						'Design' => 'fa fa-paint-brush',
+						'Đồ họa' => 'fa fa-image',
+						'Photoshop' => 'fa fa-picture-o',
+						
+						// Lập trình & Công nghệ
+						'Lập trình' => 'fa fa-code',
+						'Web Development' => 'fa fa-laptop',
+						'Mobile App' => 'fa fa-mobile',
+						'Công nghệ' => 'fa fa-cogs',
+						
+						// Viết lách & Nội dung
+						'Viết lách' => 'fa fa-pencil',
+						'Content Writing' => 'fa fa-file-text-o',
+						'Copywriting' => 'fa fa-edit',
+						
+						// Excel & Data
+						'Excel' => 'fa fa-table',
+						'Data Entry' => 'fa fa-database',
+						'Xử lý dữ liệu' => 'fa fa-file-excel-o',
+						
+						// Slide & Presentation
+						'PowerPoint' => 'fa fa-file-powerpoint-o',
+						'Presentation' => 'fa fa-desktop',
+						'Slide' => 'fa fa-slideshare',
+						
+						// Marketing & SEO
+						'Marketing' => 'fa fa-bullhorn',
+						'SEO' => 'fa fa-line-chart',
+						'Quảng cáo' => 'fa fa-megaphone',
+						
+						// Video & Audio
+						'Video' => 'fa fa-video-camera',
+						'Chỉnh sửa video' => 'fa fa-film',
+						'Audio' => 'fa fa-headphones',
+						
+						// Dịch thuật
+						'Dịch thuật' => 'fa fa-language',
+						'Translation' => 'fa fa-globe',
+						
+						// Mặc định cho các dịch vụ khác
+						'default' => 'fa fa-briefcase'
 					];
+					
+					// Danh sách icon mặc định để xoay vòng nếu không tìm thấy
+					$default_icons = [
+						'fa fa-paint-brush',  // Thiết kế
+						'fa fa-code',         // Lập trình
+						'fa fa-pencil',       // Viết lách
+						'fa fa-table',        // Excel
+						'fa fa-file-powerpoint-o', // Slide
+						'fa fa-bullhorn',     // Marketing
+						'fa fa-video-camera', // Video
+						'fa fa-language'      // Dịch thuật
+					];
+					
+					// Mapping tên hiển thị
+					$genre_display_names = [
+						'đời sống cá nhân' => 'Lập trình & Công nghệ',
+						'Đời sống cá nhân' => 'Lập trình & Công nghệ',
+						'ĐỜI SỐNG CÁ NHÂN' => 'Lập trình & Công nghệ',
+						'Đời sống & Cá nhân' => 'Lập trình & Công nghệ',
+						'đời sống & cá nhân' => 'Lập trình & Công nghệ',
+						'ĐỜI SỐNG & CÁ NHÂN' => 'Lập trình & Công nghệ'
+					];
+					
+					// Mapping mô tả cho các genre cụ thể
+					$genre_descriptions = [
+						'đời sống cá nhân' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+						'Đời sống cá nhân' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+						'ĐỜI SỐNG CÁ NHÂN' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+						'Đời sống & Cá nhân' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+						'đời sống & cá nhân' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+						'ĐỜI SỐNG & CÁ NHÂN' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...'
+					];
+					
+					$icon_index = 0;
 					foreach ($genres as $genre): 
-						$icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
+						// Tìm icon phù hợp
+						$icon = 'fa fa-briefcase'; // Mặc định
+						$genre_name = $genre['genre_name'];
+						
+						// Kiểm tra nếu là "đời sống" hoặc "cá nhân" để đổi thành "Lập trình & Công nghệ"
+						$is_life_personal = false;
+						if (stripos($genre_name, 'đời sống') !== false || 
+						    stripos($genre_name, 'cá nhân') !== false ||
+						    stripos($genre_name, 'đời sống & cá nhân') !== false ||
+						    stripos($genre_name, 'đời sống cá nhân') !== false) {
+							$is_life_personal = true;
+							$display_name = 'Lập trình & Công nghệ';
+							$icon = 'fa fa-code';
+							$display_description = isset($genre_descriptions[$genre_name]) 
+								? $genre_descriptions[$genre_name] 
+								: 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...';
+						} else {
+							// Lấy tên hiển thị (nếu có mapping thì dùng, không thì dùng tên gốc)
+							$display_name = isset($genre_display_names[$genre_name]) 
+								? $genre_display_names[$genre_name] 
+								: $genre_name;
+							
+							// Lấy mô tả (nếu có mapping thì dùng, không thì dùng mô tả gốc)
+							$display_description = isset($genre_descriptions[$genre_name]) 
+								? $genre_descriptions[$genre_name] 
+								: $genre['description'];
+							
+							// Kiểm tra trong mapping icon
+							if (isset($genre_icons[$genre_name])) {
+								$icon = $genre_icons[$genre_name];
+							} else {
+								// Tìm kiếm không phân biệt hoa thường
+								foreach ($genre_icons as $key => $value) {
+									if (stripos($genre_name, $key) !== false || stripos($key, $genre_name) !== false) {
+										$icon = $value;
+										break;
+									}
+								}
+								
+								// Nếu vẫn không tìm thấy, dùng icon mặc định xoay vòng
+								if ($icon === 'fa fa-briefcase') {
+									$icon = $default_icons[$icon_index % count($default_icons)];
+									$icon_index++;
+								}
+							}
+						}
 					?>
 					<div class="genre-card">
 						<div class="genre-header">
 							<span class="genre-icon"><i class="<?php echo $icon; ?>"></i></span>
-							<div class="genre-name"><?php echo htmlspecialchars($genre['genre_name']); ?></div>
+							<div class="genre-name"><?php echo htmlspecialchars($display_name); ?></div>
 						</div>
 						<div class="genre-info">
-							<div class="genre-description"><?php echo htmlspecialchars($genre['description']); ?></div>
+							<div class="genre-description"><?php echo htmlspecialchars($display_description); ?></div>
 						</div>
 					</div>
 					<?php endforeach; ?>
 				</div>
 				<div class="text-center">
-					<a href="genre/genres.php" class="btn-view-more">Xem tất cả dòng nhạc</a>
+					<a href="genre/genres.php" class="btn-view-more">Xem tất cả dịch vụ</a>
 				</div>
 			</div>
 		</section>

@@ -89,8 +89,8 @@ if ($checkTable && $checkTable->num_rows > 0) {
 function getStatusBadge($status) {
     switch ($status) {
         case 'pending': return '<span class="badge bg-warning text-dark">Chưa xử lý</span>';
-        case 'resolved_buyer': return '<span class="badge bg-success">Thắng: Người mua</span>';
-        case 'resolved_freelancer': return '<span class="badge bg-primary">Thắng: Freelancer</span>';
+        case 'resolved_buyer': return '<span class="badge bg-success">Phê duyệt</span>';
+        case 'resolved_freelancer': return '<span class="badge bg-primary">Từ chối</span>';
         case 'rejected': return '<span class="badge bg-danger">Đã từ chối</span>';
         default: return '<span class="badge bg-secondary">Unknown</span>';
     }
@@ -121,12 +121,53 @@ function getSource($roleId) {
     <link href="/WEB_MXH/admin/pages/dashboard/css/style.css" rel="stylesheet">
     
     <style>
-        .action-btn { cursor: pointer; font-size: 1.1rem; color: #EB1616; border: none; background: transparent; }
-        .action-btn:hover { color: #a50e0e; }
-        .modal-header { border-bottom: 1px solid #444; }
-        .modal-footer { border-top: 1px solid #444; }
-        .form-control-dark { background-color: #000; color: white; border: 1px solid #444; }
-        .form-control-dark:focus { background-color: #222; color: white; border-color: #EB1616; }
+
+    /* Nút bấm giữ nguyên màu đỏ nhưng điều chỉnh độ tương phản */
+    .action-btn { 
+        cursor: pointer; 
+        font-size: 1.1rem; 
+        color: #EB1616; 
+        border: none; 
+        background: transparent; 
+    }
+    .action-btn:hover { 
+        color: #a50e0e; 
+    }
+
+    /* Viền của Header và Footer modal chuyển sang màu xám nhạt */
+    .modal-header { 
+        border-bottom: 1px solid #dee2e6; 
+        background-color: #ffffff;
+    }
+    .modal-footer { 
+        border-top: 1px solid #dee2e6; 
+        background-color: #ffffff;
+    }
+
+    /* Fix lỗi ô nhập liệu: Đổi từ nền đen chữ trắng sang nền trắng chữ đen */
+    /* Tăng độ ưu tiên và chỉ áp dụng trong modal để ghi đè Bootstrap */
+    /* Option A (khuyên dùng) — dùng class riêng cho textarea */
+.modal-content .form-control-dark {
+    background-color: #fff !important;
+    color: #212529 !important;
+    border: 1px solid #ced4da !important;
+}
+.modal-content .form-control-dark:focus {
+    border-color: #EB1616 !important;
+    box-shadow: 0 0 0 0.2rem rgba(235,22,22,0.25) !important;
+}
+
+/* Option B — override trực tiếp nếu không muốn thay HTML */
+.modal-content .form-control {
+    background-color: #fff !important;
+    color: #212529 !important;
+    border: 1px solid #ced4da !important;
+}
+.modal-content .form-control:focus {
+    border-color: #412D3B !important;
+    box-shadow: 0 0 0 0.2rem rgba(235,22,22,0.25) !important;
+}
+
     </style>
 </head>
 
@@ -176,7 +217,7 @@ function getSource($roleId) {
                                     <!-- Resolution Modal -->
                                     <div class="modal fade" id="resolveModal<?= $complaint['complaint_id'] ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
-                                            <div class="modal-content bg-secondary text-white">
+                                            <div class="modal-content bg-white text-dark">
                                                 <form action="" method="POST">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Xử lý khiếu nại: <?= htmlspecialchars($complaint['complaint_code']) ?></h5>
@@ -187,7 +228,7 @@ function getSource($roleId) {
                                                         
                                                         <div class="mb-3">
                                                             <label class="form-label">Nội dung khiếu nại:</label>
-                                                            <div class="p-3 bg-dark rounded border border-secondary mb-2">
+                                                            <div class="p-3 bg-white text-dark rounded border border-secondary mb-2">
                                                                 <?= nl2br(htmlspecialchars($complaint['description'])) ?>
                                                             </div>
                                                         </div>
@@ -195,12 +236,12 @@ function getSource($roleId) {
                                                         <?php if($complaint['status'] == 'pending'): ?>
                                                             <div class="mb-3">
                                                                 <label class="form-label">Phản hồi / Ghi chú xử lý:</label>
-                                                                <textarea class="form-control" name="resolution_note" rows="4" placeholder="Nhập lý do xử lý hoặc phản hồi..." required></textarea>
+                                                                <textarea class="form-control form-control-dark" name="resolution_note" rows="4" placeholder="Nhập lý do xử lý hoặc phản hồi..." required></textarea>
                                                             </div>
                                                         <?php else: ?>
                                                             <div class="mb-3">
                                                                 <label class="form-label">Kết quả xử lý:</label>
-                                                                <div class="p-3 bg-dark rounded border border-secondary">
+                                                                <div class="p-3 bg-white text-dark rounded border border-secondary">
                                                                     <?= nl2br(htmlspecialchars($complaint['resolution_note'])) ?>
                                                                 </div>
                                                             </div>
@@ -209,14 +250,12 @@ function getSource($roleId) {
                                                     <div class="modal-footer">
                                                         <?php if($complaint['status'] == 'pending'): ?>
                                                             <button type="submit" name="action" value="resolve_buyer" class="btn btn-success" onclick="return confirm('Xác nhận xử lý thắng cho Người mua?')">
-                                                                <i class="fa fa-user me-2"></i>Thắng: Người mua
+                                                                <i class="fa fa-user me-2"></i>Phê duyệt khiếu nại
                                                             </button>
                                                             <button type="submit" name="action" value="resolve_freelancer" class="btn btn-primary" onclick="return confirm('Xác nhận xử lý thắng cho Freelancer?')">
-                                                                <i class="fa fa-id-badge me-2"></i>Thắng: Freelancer
+                                                                <i class="fa fa-id-badge me-2"></i>Từ chối khiếu nại
                                                             </button>
-                                                            <button type="submit" name="action" value="reject" class="btn btn-danger" onclick="return confirm('Xác nhận từ chối xử lý?')">
-                                                                <i class="fa fa-times-circle me-2"></i>Từ chối xử lý
-                                                            </button>
+                                                            
                                                         <?php else: ?>
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                                                         <?php endif; ?>

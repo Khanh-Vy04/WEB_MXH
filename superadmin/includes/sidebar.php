@@ -21,7 +21,6 @@
             
             <a href="/WEB_MXH/superadmin/pages/complaints/index.php" class="nav-item nav-link <?php echo (isset($currentPage) && $currentPage == 'complaints') ? 'active' : ''; ?>"><i class="fa fa-exclamation-circle me-2"></i>Quản lý khiếu nại</a>
 
-            <a href="/WEB_MXH/superadmin/pages/banners/index.php" class="nav-item nav-link <?php echo (isset($currentPage) && $currentPage == 'banner') ? 'active' : ''; ?>"><i class="fa fa-images me-2"></i>Quản lý Banner</a>
             <a href="/WEB_MXH/superadmin/pages/content/index.php" class="nav-item nav-link <?php echo (isset($currentPage) && $currentPage == 'content') ? 'active' : ''; ?>"><i class="fa fa-layer-group me-2"></i>Quản lý nội dung/ dịch vụ</a>
             <a href="/WEB_MXH/superadmin/pages/settings/index.php" class="nav-item nav-link <?php echo (isset($currentPage) && $currentPage == 'settings') ? 'active' : ''; ?>"><i class="fa fa-cogs me-2"></i>Cấu hình hệ thống</a>
             <a href="/WEB_MXH/logout.php" class="nav-item nav-link"><i class="fa fa-sign-out-alt me-2"></i>Đăng xuất</a>

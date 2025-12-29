@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thể Loại Nhạc - AuraDisc</title>
+    <title>Dịch Vụ - UniWork</title>
     
     <!-- Bootstrap CSS -->
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
@@ -191,54 +191,96 @@ if ($result->num_rows > 0) {
 
             <!-- Tìm kiếm -->
             <div class="search-container">
-                <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm thể loại nhạc...">
+                <input type="text" class="search-box" id="searchInput" placeholder="Tìm kiếm dịch vụ...">
                 <i class="fa fa-search search-icon"></i>
             </div>
 
             <!-- Danh sách thể loại -->
-            <?php if (count($genres) > 0): ?>
             <div class="grid-container" id="genresGrid">
                 <?php 
-                $genre_icons = [
-                    'Rock' => 'fa fa-music',
-                    'Pop' => 'fa fa-music',
-                    'Jazz' => 'fa fa-music',
-                    'Classical' => 'fa fa-music',
-                    'Electronic' => 'fa fa-music',
-                    'Hip Hop' => 'fa fa-music',
-                    'Country' => 'fa fa-music',
-                    'R&B' => 'fa fa-music'
+                // Mapping 4 loại genre chính với icon và mô tả
+                $genre_categories = [
+                    'Thiết kế' => [
+                        'icon' => 'fa fa-paint-brush',
+                        'description' => 'Thiết kế đồ họa, logo, banner, UI/UX, Photoshop, Illustrator, Canva...',
+                        'keywords' => ['thiết kế', 'design', 'đồ họa', 'graphic', 'logo', 'banner', 'ui', 'ux', 'photoshop', 'illustrator', 'canva', 'poster', 'flyer']
+                    ],
+                    'Marketing & truyền thông' => [
+                        'icon' => 'fa fa-bullhorn',
+                        'description' => 'Marketing online, SEO, quảng cáo Facebook/Google, content marketing, social media...',
+                        'keywords' => ['marketing', 'truyền thông', 'seo', 'quảng cáo', 'advertising', 'facebook', 'google', 'social media', 'content marketing', 'pr', 'truyền thông']
+                    ],
+                    'Viết lách & dịch thuật' => [
+                        'icon' => 'fa fa-pencil',
+                        'description' => 'Viết content, copywriting, dịch thuật, biên tập, viết bài SEO, blog...',
+                        'keywords' => ['viết', 'writing', 'copywriting', 'dịch thuật', 'translation', 'content', 'biên tập', 'edit', 'blog', 'article', 'dịch', 'translate']
+                    ],
+                    'Lập trình' => [
+                        'icon' => 'fa fa-code',
+                        'description' => 'Lập trình web, mobile app, phát triển phần mềm, công nghệ thông tin, AI & Machine Learning...',
+                        'keywords' => ['lập trình', 'programming', 'code', 'web', 'app', 'mobile', 'software', 'công nghệ', 'technology', 'developer', 'development', 'đời sống', 'cá nhân']
+                    ]
                 ];
                 
-                foreach ($genres as $genre): 
-                    $icon = isset($genre_icons[$genre['genre_name']]) ? $genre_icons[$genre['genre_name']] : 'fa fa-music';
+                // Hàm xác định category dựa trên tên genre
+                function getGenreCategory($genre_name, $genre_categories) {
+                    $genre_name_lower = mb_strtolower($genre_name, 'UTF-8');
+                    
+                    // Kiểm tra từng category
+                    foreach ($genre_categories as $category_name => $category_data) {
+                        foreach ($category_data['keywords'] as $keyword) {
+                            if (stripos($genre_name_lower, $keyword) !== false) {
+                                return $category_name;
+                            }
+                        }
+                    }
+                    
+                    // Nếu không tìm thấy, mặc định là "Thiết kế"
+                    return 'Thiết kế';
+                }
+                
+                // Nhóm các genre theo category và tính tổng sản phẩm
+                $grouped_genres = [];
+                foreach ($genres as $genre) {
+                    $category = getGenreCategory($genre['genre_name'], $genre_categories);
+                    if (!isset($grouped_genres[$category])) {
+                        $grouped_genres[$category] = [
+                            'category_info' => $genre_categories[$category],
+                            'total_products' => 0
+                        ];
+                    }
+                    $grouped_genres[$category]['total_products'] += $genre['product_count'];
+                }
+                
+                // Hiển thị theo thứ tự: Thiết kế, Marketing & truyền thông, Viết lách & dịch thuật, Lập trình
+                $display_order = ['Thiết kế', 'Marketing & truyền thông', 'Viết lách & dịch thuật', 'Lập trình'];
+                
+                foreach ($display_order as $category_name):
+                    $category_data = $genre_categories[$category_name];
+                    $total_products = isset($grouped_genres[$category_name]) 
+                        ? $grouped_genres[$category_name]['total_products'] 
+                        : 0;
                 ?>
-                <a href="../products.php?genre_id=<?php echo $genre['genre_id']; ?>" class="genre-card fade-in" data-name="<?php echo strtolower($genre['genre_name']); ?>">
+                <a href="../products.php?category=<?php echo urlencode($category_name); ?>" class="genre-card fade-in" data-name="<?php echo mb_strtolower($category_name, 'UTF-8'); ?>">
                     <div class="genre-header">
                         <div class="genre-icon">
-                            <i class="<?php echo $icon; ?>"></i>
+                            <i class="<?php echo $category_data['icon']; ?>"></i>
                         </div>
-                        <h3 class="genre-name"><?php echo htmlspecialchars($genre['genre_name']); ?></h3>
+                        <h3 class="genre-name"><?php echo htmlspecialchars($category_name); ?></h3>
                         <p class="genre-count">
                             <i class="fa fa-music"></i>
-                            <?php echo $genre['product_count']; ?> sản phẩm
+                            <?php echo $total_products; ?> sản phẩm
                         </p>
                     </div>
                     
                     <div class="genre-info">
                         <p class="genre-description">
-                            <?php echo htmlspecialchars($genre['description']); ?>
+                            <?php echo htmlspecialchars($category_data['description']); ?>
                         </p>
                     </div>
                 </a>
                 <?php endforeach; ?>
             </div>
-            <?php else: ?>
-            <div class="no-results">
-                <i class="fa fa-tags"></i>
-                <p>Hiện tại chưa có thể loại nhạc nào.</p>
-            </div>
-            <?php endif; ?>
         </div>
     </div>
 
